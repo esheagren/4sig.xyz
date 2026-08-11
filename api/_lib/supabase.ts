@@ -8,3 +8,12 @@ if (!supabaseUrl || !supabaseKey) {
 }
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
+
+/**
+ * PGRST116 = `.single()` matched no rows — an expected miss, not a failure.
+ * Any other error (network down, bad credentials, RLS) is a real problem
+ * and should be thrown, not treated as "not found".
+ */
+export function isNoRowsError(error: { code?: string } | null): boolean {
+  return error?.code === 'PGRST116';
+}

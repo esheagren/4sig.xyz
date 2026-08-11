@@ -33,23 +33,25 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const action = path.replace('/api/auth', '').replace('/', '');
 
   try {
+    // `return await` (not bare `return`) so rejections from the handlers
+    // are caught below instead of crashing the function invocation
     switch (action) {
       case 'device':
-        return handleDevice(req, res);
+        return await handleDevice(req, res);
       case 'signup':
-        return handleSignup(req, res);
+        return await handleSignup(req, res);
       case 'login':
-        return handleLogin(req, res);
+        return await handleLogin(req, res);
       case 'logout':
-        return handleLogout(req, res);
+        return await handleLogout(req, res);
       case 'me':
-        return handleMe(req, res);
+        return await handleMe(req, res);
       case 'claim-username':
-        return handleClaimUsername(req, res);
+        return await handleClaimUsername(req, res);
       case 'check-username':
-        return handleCheckUsername(req, res);
+        return await handleCheckUsername(req, res);
       case 'claim-account':
-        return handleClaimAccount(req, res);
+        return await handleClaimAccount(req, res);
       default:
         return res.status(404).json({ error: 'Not found' });
     }

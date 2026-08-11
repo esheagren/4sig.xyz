@@ -32,15 +32,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   const action = path.replace('/api/session', '').replace('/', '');
 
   try {
+    // `return await` (not bare `return`) so rejections from the handlers
+    // are caught below instead of crashing the function invocation
     switch (action) {
       case 'start':
-        return handleStart(req, res);
+        return await handleStart(req, res);
       case 'answer':
-        return handleAnswer(req, res);
+        return await handleAnswer(req, res);
       case 'finalize':
-        return handleFinalize(req, res);
+        return await handleFinalize(req, res);
       case 'leaderboard':
-        return handleLeaderboard(req, res);
+        return await handleLeaderboard(req, res);
       default:
         return res.status(404).json({ error: 'Not found' });
     }

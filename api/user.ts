@@ -25,15 +25,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
+    // `return await` (not bare `return`) so rejections from the handlers
+    // are caught below instead of crashing the function invocation
     switch (action) {
       case 'profile':
-        return handleProfile(req, res, authUser.userId);
+        return await handleProfile(req, res, authUser.userId);
       case 'stats':
-        return handleStats(req, res, authUser.userId);
+        return await handleStats(req, res, authUser.userId);
       case 'daily-stats':
-        return handleDailyStats(req, res, authUser.userId);
+        return await handleDailyStats(req, res, authUser.userId);
       case 'performance-history':
-        return handlePerformanceHistory(req, res, authUser.userId);
+        return await handlePerformanceHistory(req, res, authUser.userId);
       default:
         return res.status(404).json({ error: 'Not found' });
     }

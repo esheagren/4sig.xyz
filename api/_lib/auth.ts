@@ -1,5 +1,5 @@
 import type { VercelRequest } from '@vercel/node';
-import { supabase } from './supabase.js';
+import { supabase, isNoRowsError } from './supabase.js';
 import { AuthUser, User } from './types.js';
 
 // Helper to convert database row to User type
@@ -63,6 +63,10 @@ export async function getUserByAuthId(authId: string): Promise<User | null> {
     .eq('auth_id', authId)
     .single();
 
+  if (error && !isNoRowsError(error)) {
+    throw new Error(`Failed to look up user by auth ID: ${error.message}`);
+  }
+
   if (error || !data) {
     return null;
   }
@@ -80,6 +84,10 @@ export async function getUserByDeviceId(deviceId: string): Promise<User | null> 
     .eq('device_id', deviceId)
     .single();
 
+  if (error && !isNoRowsError(error)) {
+    throw new Error(`Failed to look up user by device ID: ${error.message}`);
+  }
+
   if (error || !data) {
     return null;
   }
@@ -96,6 +104,10 @@ export async function getUserById(userId: string): Promise<User | null> {
     .select('*')
     .eq('id', userId)
     .single();
+
+  if (error && !isNoRowsError(error)) {
+    throw new Error(`Failed to look up user by ID: ${error.message}`);
+  }
 
   if (error || !data) {
     return null;

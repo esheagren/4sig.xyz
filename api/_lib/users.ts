@@ -1,4 +1,4 @@
-import { supabase } from './supabase.js';
+import { supabase, isNoRowsError } from './supabase.js';
 import { User } from './types.js';
 import { rowToUser, getUserById } from './auth.js';
 
@@ -25,6 +25,12 @@ export async function getOrCreateDeviceUser(deviceId: string): Promise<User> {
 
   if (existingUser && !findError) {
     return rowToUser(existingUser);
+  }
+
+  // Only fall through to creation when the lookup genuinely found no rows —
+  // a connection/credentials failure here must not spawn a duplicate user
+  if (findError && !isNoRowsError(findError)) {
+    throw new Error(`Failed to look up user: ${findError.message}`);
   }
 
   // Create new anonymous user
@@ -54,6 +60,10 @@ export async function getUserByEmail(email: string): Promise<User | null> {
     .select('*')
     .eq('email', email)
     .single();
+
+  if (error && !isNoRowsError(error)) {
+    throw new Error(`Failed to look up user by email: ${error.message}`);
+  }
 
   if (error || !data) {
     return null;
@@ -222,6 +232,12 @@ export async function getUserByUsername(username: string): Promise<User | null> 
     .ilike('username', username)
     .neq('username', 'Guest Player')
     .single();
+
+  // A real failure here must throw: returning null would make
+  // isUsernameAvailable() report every name as available during an outage
+  if (error && !isNoRowsError(error)) {
+    throw new Error(`Failed to look up username: ${error.message}`);
+  }
 
   if (error || !data) {
     return null;
