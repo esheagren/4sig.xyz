@@ -2,6 +2,14 @@ import { Question } from './types.js';
 import { supabase } from './supabase.js';
 
 /**
+ * Get current date string in Pacific time (YYYY-MM-DD)
+ * Handles PST/PDT automatically
+ */
+function getPacificDateString(date: Date = new Date()): string {
+  return date.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+}
+
+/**
  * Get a question by ID from Supabase
  */
 export async function getQuestionById(id: string): Promise<Question | undefined> {
@@ -78,7 +86,7 @@ export async function getQuestionsForSession(count: number = 3): Promise<Questio
  * @param overrideDate - Optional date string (YYYY-MM-DD) for testing different days
  */
 export async function getDailyQuestions(overrideDate?: string): Promise<Question[]> {
-  const dateStr = overrideDate || new Date().toISOString().split('T')[0];
+  const dateStr = overrideDate || getPacificDateString();
 
   const { data, error } = await supabase
     .from('daily_questions')

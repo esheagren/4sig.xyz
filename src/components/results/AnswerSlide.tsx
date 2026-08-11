@@ -37,6 +37,11 @@ export const AnswerSlide = forwardRef<HTMLDivElement, AnswerSlideProps>(({
             <h2 className="slide-question">{prompt}</h2>
           </div>
 
+          {/* Score Badge - prominently shows this question's score */}
+          <div className={`answer-score-badge ${hit ? 'hit' : 'miss'}`}>
+            {hit ? '+' : ''}{score.toLocaleString()}
+          </div>
+
           {/* Visualization */}
           <div className="slide-viz-container">
             <RangeVisualization

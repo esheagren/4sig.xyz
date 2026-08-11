@@ -3,26 +3,23 @@ import { AnswerSlide } from './AnswerSlide';
 import { ExplanationSlide } from './ExplanationSlide';
 import { DailyStatsSlide } from './DailyStatsSlide';
 import { UserStatsSlide } from './UserStatsSlide';
-import { ScoreOrbSlide } from './ScoreOrbSlide';
 import { ShareScoreCard, type ShareScoreCardRef } from './ShareScoreCard';
 import { useAuth } from '../../context/AuthContext';
 import { useAnalytics } from '../../context/PostHogContext';
 
 // Maps slide index to dot index for the indicator navigation
 // Each question has 2 slides (answer + explanation) but only 1 dot
+// No ScoreOrbSlide - first slide is Q1's answer
 function slideIndexToDotIndex(slideIndex: number, questionCount: number): number {
-  // ScoreOrbSlide
-  if (slideIndex === 0) return 0;
-
-  // Question slides region (indices 1 to questionCount * 2)
+  // Question slides region (indices 0 to questionCount * 2 - 1)
   const questionSlideEnd = questionCount * 2;
-  if (slideIndex <= questionSlideEnd) {
+  if (slideIndex < questionSlideEnd) {
     // Both answer & explanation slides map to same question dot
-    return 1 + Math.floor((slideIndex - 1) / 2);
+    return Math.floor(slideIndex / 2);
   }
 
   // Post-question slides (DailyStats, UserStats)
-  return 1 + questionCount + (slideIndex - questionSlideEnd - 1);
+  return questionCount + (slideIndex - questionSlideEnd);
 }
 
 interface CrowdData {
@@ -119,12 +116,13 @@ export function ResultsCarousel({
   const slideRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [isSharing, setIsSharing] = useState(false);
   const [activeSlideIndex, setActiveSlideIndex] = useState(0);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const [completedQuestions, setCompletedQuestions] = useState<number>(0);
 
   // Defensive check: ensure judgements is always an array
   const safeJudgements = judgements ?? [];
 
-  // Track scroll position for orb shrinking effect and cumulative score
+  // Track scroll position for discrete score updates
+  // Score jumps when scrolling past each question's answer slide
   useEffect(() => {
     const container = scrollContainerRef.current;
     if (!container) return;
@@ -132,46 +130,48 @@ export function ResultsCarousel({
     const handleScroll = () => {
       const scrollTop = container.scrollTop;
       const slideHeight = window.innerHeight;
-      // Progress: 0 at top, 1 when scrolled one full slide (for orb positioning)
-      const orbProgress = Math.min(scrollTop / slideHeight, 1);
-      setScrollProgress(orbProgress);
+      // Current slide index (0-based, no ScoreOrbSlide offset)
+      const currentSlide = Math.floor(scrollTop / slideHeight);
 
-      // Full scroll progress (which slide are we on, uncapped)
-      const fullProgress = scrollTop / slideHeight;
-
-      // Calculate cumulative score based on scroll position
-      // Each question has 2 slides (answer + explanation)
-      // Score for question i is added as user scrolls through its slides
-      let cumulativeScore = 0;
+      // Count how many questions are "complete" (scrolled past their answer slide)
+      // Each question has 2 slides: answer (even indices) + explanation (odd indices)
+      // Question i's answer slide is at index i * 2
+      // Question is complete when we've scrolled past its answer slide
+      let newCompleted = 0;
       for (let i = 0; i < safeJudgements.length; i++) {
-        const questionStartSlide = 1 + (i * 2); // After ScoreOrbSlide
-        const questionEndSlide = questionStartSlide + 2; // Both answer + explanation
-
-        if (fullProgress >= questionEndSlide) {
-          // Fully past this question - add full score
-          cumulativeScore += safeJudgements[i].score;
-        } else if (fullProgress > questionStartSlide) {
-          // Partially through this question - add proportional score
-          const questionProgress = (fullProgress - questionStartSlide) / 2;
-          cumulativeScore += safeJudgements[i].score * questionProgress;
+        const answerSlideIndex = i * 2;
+        if (currentSlide > answerSlideIndex) {
+          newCompleted = i + 1;
         }
       }
 
-      // Notify parent of scroll progress and cumulative score
-      onScroll?.(orbProgress, Math.round(cumulativeScore));
+      // Only update if completed count changed (prevents unnecessary re-renders)
+      if (newCompleted !== completedQuestions) {
+        setCompletedQuestions(newCompleted);
+
+        // Calculate cumulative score from completed questions (discrete jumps)
+        const cumulativeScore = safeJudgements
+          .slice(0, newCompleted)
+          .reduce((sum, j) => sum + j.score, 0);
+
+        // Notify parent of progress (unused) and cumulative score
+        const progress = Math.min(scrollTop / slideHeight, 1);
+        onScroll?.(progress, cumulativeScore);
+      }
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
     return () => container.removeEventListener('scroll', handleScroll);
-  }, [onScroll, safeJudgements]);
+  }, [onScroll, safeJudgements, completedQuestions]);
+
   const hits = safeJudgements.filter(j => j.hit).length;
   const total = safeJudgements.length;
   // Each question now has 2 slides (answer + explanation)
   const questionSlideCount = safeJudgements.length * 2;
-  // +3 for ScoreOrbSlide, DailyStatsSlide, UserStatsSlide
-  const totalSlides = questionSlideCount + 3;
-  // Dots: one per question + non-question slides (ScoreOrb, DailyStats, UserStats)
-  const totalDots = safeJudgements.length + 3;
+  // +2 for DailyStatsSlide, UserStatsSlide (no ScoreOrbSlide)
+  const totalSlides = questionSlideCount + 2;
+  // Dots: one per question + 2 non-question slides (DailyStats, UserStats)
+  const totalDots = safeJudgements.length + 2;
 
   // Calculate active dot index from active slide index
   const activeDotIndex = useMemo(
@@ -296,17 +296,12 @@ export function ResultsCarousel({
 
         {/* Scroll snap container */}
         <div className="tiktok-scroll-container" ref={scrollContainerRef}>
-          {/* Score Orb Slide - spacer for scroll snap (orb rendered by Game.tsx) */}
-          <ScoreOrbSlide
-            ref={setSlideRef(0)}
-            scrollProgress={scrollProgress}
-          />
-
           {/* Individual question slides - each question has 2 slides */}
+          {/* First slide is Q1's answer (no ScoreOrbSlide spacer) */}
           {safeJudgements.map((judgement, i) => (
             <React.Fragment key={judgement.questionId}>
               <AnswerSlide
-                ref={setSlideRef(1 + i * 2)}
+                ref={setSlideRef(i * 2)}
                 prompt={judgement.prompt}
                 unit={judgement.unit}
                 lower={judgement.lower}
@@ -317,7 +312,7 @@ export function ResultsCarousel({
                 crowdData={judgement.crowdData}
               />
               <ExplanationSlide
-                ref={setSlideRef(2 + i * 2)}
+                ref={setSlideRef(i * 2 + 1)}
                 prompt={judgement.prompt}
                 answerContext={judgement.answerContext}
                 sourceUrl={judgement.sourceUrl}
@@ -329,13 +324,13 @@ export function ResultsCarousel({
 
           {/* Daily Stats Slide (Overall Leaderboard) */}
           <DailyStatsSlide
-            ref={setSlideRef(1 + safeJudgements.length * 2)}
+            ref={setSlideRef(safeJudgements.length * 2)}
             overallLeaderboard={overallLeaderboard}
           />
 
           {/* User Stats Slide (Long-term stats) */}
           <UserStatsSlide
-            ref={setSlideRef(2 + safeJudgements.length * 2)}
+            ref={setSlideRef(safeJudgements.length * 2 + 1)}
             calibration={calibration}
             performanceHistory={performanceHistory}
             calibrationMilestones={calibrationMilestones}

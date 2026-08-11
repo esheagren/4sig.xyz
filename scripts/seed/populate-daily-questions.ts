@@ -49,10 +49,11 @@ function shuffle<T>(array: T[]): T[] {
 }
 
 /**
- * Format date as YYYY-MM-DD
+ * Format date as YYYY-MM-DD in Pacific time
+ * This ensures consistency with the daily questions retrieval logic
  */
 function formatDate(date: Date): string {
-  return date.toISOString().split('T')[0];
+  return date.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
 }
 
 /**

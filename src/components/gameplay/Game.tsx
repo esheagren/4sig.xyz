@@ -97,7 +97,6 @@ export function Game() {
   const [error, setError] = useState<string | null>(null);
   const [results, setResults] = useState<FinalizeResponse | null>(null);
   const [isFinalizingSession, setIsFinalizingSession] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
   const [cumulativeScore, setCumulativeScore] = useState(0);
 
   // Track response time for each question
@@ -108,40 +107,25 @@ export function Game() {
   const isRevealing = animationPhase === 'reveal';
   // Hide question card once we start finalizing (prevents flicker if API is slower than animation)
   const showQuestionCard = !results && !isFinalizingSession && (animationPhase === 'idle' || isFadingOut);
-  // Single orb: show during animation phases AND after results exist (scroll controls position)
-  const showOrb = results
-    ? true  // Always show orb once we have results
-    : ['showOrb', 'scoreReveal'].includes(animationPhase);
-  const showScoreInOrb = animationPhase === 'scoreReveal' || (results && animationPhase === 'idle');
+  // Orb: only show when results exist and animation is complete (idle)
+  // Progressive reveal: orb starts at 0 and builds as user scrolls
+  const showOrb = results && animationPhase === 'idle';
+  const showScoreInOrb = results && animationPhase === 'idle';
   const showResults = results && ['reveal', 'idle'].includes(animationPhase);
 
-  // Handle scroll progress from Results carousel
-  const handleResultsScroll = (progress: number, cumScore: number) => {
-    setScrollProgress(progress);
+  // Handle scroll progress from Results carousel - cumulative score builds as user scrolls
+  const handleResultsScroll = (_progress: number, cumScore: number) => {
     setCumulativeScore(cumScore);
   };
 
-  // Compute orb position/scale based on animation phase and scroll progress
-  const getOrbStyle = () => {
-    // During animation phases (not yet idle with results), orb is centered
-    if (!results || animationPhase !== 'idle') {
-      return {
-        top: '50%',
-        transform: 'translateX(-50%) translateY(-50%)',
-      };
-    }
-    // After reveal (idle with results), scroll controls position
-    // Scale: 1.0 at progress=0, 0.25 at progress=1 (shrink more to get closer to card)
-    const scale = 1 - (scrollProgress * 0.75);
-    // Top: 50% (centered) at progress=0, 5% (aligned with nav button) at progress=1
-    const topPercent = 50 - (scrollProgress * 45);
-    return {
-      top: `${topPercent}%`,
-      transform: `translateX(-50%) translateY(-50%) scale(${scale})`,
-    };
+  // Orb position: fixed at top-right, aligned with nav bar icon
+  // Progressive reveal: orb stays in place, score builds as user scrolls through questions
+  const orbStyle = {
+    top: '5%',
+    left: 'auto',
+    right: '5%',
+    transform: 'translateY(-50%) scale(0.25)',
   };
-
-  const orbStyle = getOrbStyle();
 
   // Helper to get auth headers
   const getHeaders = (): HeadersInit => {
@@ -381,14 +365,12 @@ export function Game() {
         </div>
       )}
 
-      {/* Single orb - positioned based on animation phase and scroll progress */}
+      {/* Score orb - fixed at top-right, shows cumulative score that builds as user scrolls */}
       {showOrb && (
         <div className="game-orb-container" style={orbStyle}>
           <LoadingOrb
-            score={animationPhase === 'idle' ? cumulativeScore : results?.score}
+            score={cumulativeScore}
             showScore={showScoreInOrb}
-            animateScore={animationPhase === 'scoreReveal'}
-            scrollScale={animationPhase === 'idle' ? 1 - (scrollProgress * 0.75) : undefined}
           />
         </div>
       )}

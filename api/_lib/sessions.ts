@@ -2,18 +2,28 @@ import { supabase } from './supabase.js';
 import { CrowdData } from './types.js';
 
 /**
- * Get UTC date string for "today" (YYYY-MM-DD)
+ * Get date string in Pacific time (YYYY-MM-DD)
+ * Handles PST/PDT automatically
  */
-function getUTCDateString(date: Date = new Date()): string {
-  return date.toISOString().split('T')[0];
+function getPacificDateString(date: Date = new Date()): string {
+  return date.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
 }
 
 /**
- * Get start of UTC day as ISO string
+ * Get start of Pacific day as ISO string
+ * Returns the UTC timestamp for midnight Pacific time
  */
-function getUTCDayStart(date: Date = new Date()): string {
-  const dateStr = getUTCDateString(date);
-  return `${dateStr}T00:00:00.000Z`;
+function getPacificDayStart(date: Date = new Date()): string {
+  const dateStr = getPacificDateString(date);
+  // Try PST first (UTC-8), check if the date matches
+  const pstDate = new Date(dateStr + 'T00:00:00-08:00');
+  const pstCheck = pstDate.toLocaleDateString('en-CA', { timeZone: 'America/Los_Angeles' });
+
+  if (pstCheck === dateStr) {
+    return pstDate.toISOString();
+  }
+  // Otherwise we're in PDT (UTC-7)
+  return new Date(dateStr + 'T00:00:00-07:00').toISOString();
 }
 
 /**
@@ -85,26 +95,28 @@ export async function updateUserStatsAfterSession(
   const newBestSingleScore = Math.max(Number(user.best_single_score), sessionData.sessionScore);
 
   // Update streak based on consecutive days played (not performance)
-  const now = new Date();
-  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-  const lastPlayed = user.last_played_at ? new Date(user.last_played_at) : null;
-  const lastPlayedDate = lastPlayed
-    ? new Date(lastPlayed.getFullYear(), lastPlayed.getMonth(), lastPlayed.getDate())
+  // Use Pacific time for day boundaries (midnight Pacific)
+  const todayPacific = getPacificDateString(new Date());
+  const lastPlayedPacific = user.last_played_at
+    ? getPacificDateString(new Date(user.last_played_at))
     : null;
 
   let newCurrentStreak = user.current_streak;
 
-  if (!lastPlayedDate) {
+  if (!lastPlayedPacific) {
     // First time playing - start streak at 1
     newCurrentStreak = 1;
   } else {
-    const daysDiff = Math.floor((today.getTime() - lastPlayedDate.getTime()) / (1000 * 60 * 60 * 24));
+    // Calculate days difference using date strings
+    const todayDate = new Date(todayPacific + 'T00:00:00');
+    const lastPlayedDate = new Date(lastPlayedPacific + 'T00:00:00');
+    const daysDiff = Math.floor((todayDate.getTime() - lastPlayedDate.getTime()) / (1000 * 60 * 60 * 24));
 
     if (daysDiff === 0) {
-      // Already played today - don't change streak
+      // Already played today (Pacific time) - don't change streak
       newCurrentStreak = user.current_streak;
     } else if (daysDiff === 1) {
-      // Played yesterday - increment streak
+      // Played yesterday (Pacific time) - increment streak
       newCurrentStreak = user.current_streak + 1;
     } else {
       // Missed a day or more - reset streak to 1 (playing today counts)
@@ -153,7 +165,7 @@ export async function getDailyStats(userId: string): Promise<{
     isCurrentUser?: boolean;
   }>;
 }> {
-  const todayStart = getUTCDayStart();
+  const todayStart = getPacificDayStart();
 
   // Fetch today's scores for ranking
   const { data: dailyScores, error: dailyError } = await supabase
@@ -293,7 +305,7 @@ export async function getPerformanceHistory(
   const startDate = new Date();
   startDate.setUTCDate(startDate.getUTCDate() - (days - 1));
 
-  const startDateStr = getUTCDayStart(startDate);
+  const startDateStr = getPacificDayStart(startDate);
 
   // Fetch responses from the display window for daily scores
   const { data: recentResponses, error: recentError } = await supabase
@@ -322,7 +334,7 @@ export async function getPerformanceHistory(
   const dateUserStats: Map<string, Map<string, { score: number; captured: number; total: number }>> = new Map();
 
   for (const response of recentResponses || []) {
-    const dateStr = getUTCDateString(new Date(response.answered_at));
+    const dateStr = getPacificDateString(new Date(response.answered_at));
 
     if (!dateUserStats.has(dateStr)) {
       dateUserStats.set(dateStr, new Map());
@@ -345,7 +357,7 @@ export async function getPerformanceHistory(
   for (const response of allUserResponses || []) {
     runningCaptured += response.captured ? 1 : 0;
     runningTotal += 1;
-    const dateStr = getUTCDateString(new Date(response.answered_at));
+    const dateStr = getPacificDateString(new Date(response.answered_at));
     cumulativeByDate.set(dateStr, { captured: runningCaptured, total: runningTotal });
   }
 
@@ -365,7 +377,7 @@ export async function getPerformanceHistory(
   for (let i = 0; i < days; i++) {
     const date = new Date(startDate);
     date.setUTCDate(startDate.getUTCDate() + i);
-    const dateStr = getUTCDateString(date);
+    const dateStr = getPacificDateString(date);
     const dayOfWeek = date.getUTCDay();
 
     const dayStats = dateUserStats.get(dateStr);
@@ -443,7 +455,7 @@ export async function getCalibrationMilestones(userId: string): Promise<Array<{
   for (const response of allUserResponses) {
     runningCaptured += response.captured ? 1 : 0;
     runningTotal += 1;
-    const dateStr = getUTCDateString(new Date(response.answered_at));
+    const dateStr = getPacificDateString(new Date(response.answered_at));
     dateCalibration.set(dateStr, {
       cumulativeCaptured: runningCaptured,
       cumulativeTotal: runningTotal,
