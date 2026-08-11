@@ -98,6 +98,7 @@ export function Game() {
   const [results, setResults] = useState<FinalizeResponse | null>(null);
   const [isFinalizingSession, setIsFinalizingSession] = useState(false);
   const [cumulativeScore, setCumulativeScore] = useState(0);
+  const [revealInView, setRevealInView] = useState(true);
 
   // Track response time for each question
   const questionStartTime = useRef<number>(Date.now());
@@ -107,25 +108,28 @@ export function Game() {
   const isRevealing = animationPhase === 'reveal';
   // Hide question card once we start finalizing (prevents flicker if API is slower than animation)
   const showQuestionCard = !results && !isFinalizingSession && (animationPhase === 'idle' || isFadingOut);
-  // Orb: only show when results exist and animation is complete (idle)
-  // Progressive reveal: orb starts at 0 and builds as user scrolls
-  const showOrb = results && animationPhase === 'idle';
-  const showScoreInOrb = results && animationPhase === 'idle';
+  // Orb HUD: ambient (small, top-center, shows question progress) during gameplay,
+  // hero (large, bright, shows score) once results are in
+  const isHeroOrb = !!results && animationPhase === 'idle';
+  const showOrb = isHeroOrb || (showQuestionCard && questions.length > 0);
   const showResults = results && ['reveal', 'idle'].includes(animationPhase);
 
-  // Handle scroll progress from Results carousel - cumulative score builds as user scrolls
-  const handleResultsScroll = (_progress: number, cumScore: number) => {
+  // Perfect game lights the hero orb gold
+  const isPerfectGame = !!results
+    && results.judgements.length > 0
+    && results.judgements.every(j => j.hit);
+
+  // Score reveal sequence in ResultsFlow drives the orb's cumulative score
+  const handleCumulativeScore = (cumScore: number) => {
     setCumulativeScore(cumScore);
   };
 
-  // Orb position: fixed at top-right, aligned with nav bar icon
-  // Progressive reveal: orb stays in place, score builds as user scrolls through questions
-  const orbStyle = {
-    top: '5%',
-    left: 'auto',
-    right: '5%',
-    transform: 'translateY(-50%) scale(0.25)',
-  };
+  const orbClassName = [
+    'game-orb-container',
+    isHeroOrb ? 'orb-hero' : 'orb-ambient',
+    isHeroOrb && !revealInView ? 'orb-compact' : '',
+    isHeroOrb && isPerfectGame ? 'orb-perfect' : '',
+  ].filter(Boolean).join(' ');
 
   // Helper to get auth headers
   const getHeaders = (): HeadersInit => {
@@ -144,6 +148,8 @@ export function Game() {
     setError(null);
     setResults(null);
     setCurrentQuestionIndex(0);
+    setCumulativeScore(0);
+    setRevealInView(true);
 
     try {
       const response = await fetch('/api/session/start', {
@@ -339,7 +345,6 @@ export function Game() {
   const performanceHistory = results?.performanceHistory;
   const calibrationMilestones = results?.calibrationMilestones;
   const overallLeaderboard = results?.overallLeaderboard;
-  const overallStanding = results?.overallStanding;
 
   // Calculate calibration from this session's judgements
   const sessionCalibration = results && results.judgements.length > 0
@@ -365,12 +370,13 @@ export function Game() {
         </div>
       )}
 
-      {/* Score orb - fixed at top-right, shows cumulative score that builds as user scrolls */}
+      {/* Score orb HUD - fixed top-center; question progress during play, score at results */}
       {showOrb && (
-        <div className="game-orb-container" style={orbStyle}>
+        <div className={orbClassName}>
           <LoadingOrb
             score={cumulativeScore}
-            showScore={showScoreInOrb}
+            showScore={isHeroOrb}
+            label={!isHeroOrb ? `${currentQuestionIndex + 1} / ${questions.length}` : undefined}
           />
         </div>
       )}
@@ -383,16 +389,13 @@ export function Game() {
             score={results.score}
             onRestart={startSession}
             dailyRank={dailyStats?.dailyRank ?? undefined}
-            topScoreGlobal={dailyStats?.topScoreToday ?? undefined}
-            dailyAverageScore={dailyStats?.todaysAverage ?? undefined}
             calibration={calibration}
             performanceHistory={performanceHistory}
             calibrationMilestones={calibrationMilestones}
             totalParticipants={dailyStats?.totalParticipantsToday ?? undefined}
-            todayLeaderboard={dailyStats?.todayLeaderboard}
             overallLeaderboard={overallLeaderboard}
-            overallStanding={overallStanding}
-            onScroll={handleResultsScroll}
+            onCumulativeScore={handleCumulativeScore}
+            onRevealVisibility={setRevealInView}
           />
         </div>
       )}

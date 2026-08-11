@@ -3,11 +3,13 @@ import { useState, useEffect, useMemo, useRef } from 'react';
 interface LoadingOrbProps {
   score?: number;
   showScore?: boolean;
+  /** Small text shown in the orb center when no score is displayed (e.g. "2 / 3") */
+  label?: string;
   onScoreClick?: () => void;
   isClickable?: boolean;
 }
 
-export function LoadingOrb({ score, showScore = false, onScoreClick, isClickable = true }: LoadingOrbProps) {
+export function LoadingOrb({ score, showScore = false, label, onScoreClick, isClickable = true }: LoadingOrbProps) {
   const [isPulsing, setIsPulsing] = useState(false);
   const prevScoreRef = useRef<number | undefined>(undefined);
 
@@ -90,6 +92,9 @@ export function LoadingOrb({ score, showScore = false, onScoreClick, isClickable
           >
             {(score ?? 0).toLocaleString()}
           </div>
+        )}
+        {!showScore && label && (
+          <div className="loading-orb-label">{label}</div>
         )}
       </div>
     </div>

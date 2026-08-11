@@ -1,4 +1,4 @@
-import { ResultsCarousel } from './ResultsCarousel';
+import { ResultsFlow } from './ResultsFlow';
 
 interface CrowdGuess {
   min: number;
@@ -48,13 +48,6 @@ interface CalibrationMilestone {
   calibration: number;
 }
 
-interface TodayLeaderboardEntry {
-  rank: number;
-  username: string;
-  score: number;
-  isCurrentUser?: boolean;
-}
-
 interface OverallLeaderboardEntry {
   rank: number;
   displayName: string;
@@ -63,27 +56,18 @@ interface OverallLeaderboardEntry {
   isCurrentUser?: boolean;
 }
 
-interface OverallStanding {
-  percentile: number;
-  totalPlayers: number;
-}
-
 interface ResultsProps {
   judgements: Judgement[];
   score: number;
   onRestart: () => void;
   dailyRank?: number;
-  topScoreGlobal?: number;
-  averageScore?: number;
-  dailyAverageScore?: number;
   calibration?: number;
   performanceHistory?: PerformanceHistoryEntry[];
   calibrationMilestones?: CalibrationMilestone[];
   totalParticipants?: number;
-  todayLeaderboard?: TodayLeaderboardEntry[];
   overallLeaderboard?: OverallLeaderboardEntry[];
-  overallStanding?: OverallStanding;
-  onScroll?: (progress: number) => void;
+  onCumulativeScore?: (score: number) => void;
+  onRevealVisibility?: (visible: boolean) => void;
 }
 
 export function Results({
@@ -94,26 +78,22 @@ export function Results({
   performanceHistory,
   calibrationMilestones,
   totalParticipants,
-  topScoreGlobal,
-  todayLeaderboard,
   overallLeaderboard,
-  overallStanding,
-  onScroll,
+  onCumulativeScore,
+  onRevealVisibility,
 }: ResultsProps) {
   return (
-    <ResultsCarousel
+    <ResultsFlow
       judgements={judgements}
       score={score}
       calibration={calibration}
       dailyRank={dailyRank}
       totalParticipants={totalParticipants}
-      topScoreToday={topScoreGlobal}
       performanceHistory={performanceHistory}
       calibrationMilestones={calibrationMilestones}
-      todayLeaderboard={todayLeaderboard}
       overallLeaderboard={overallLeaderboard}
-      overallStanding={overallStanding}
-      onScroll={onScroll}
+      onCumulativeScore={onCumulativeScore}
+      onRevealVisibility={onRevealVisibility}
     />
   );
 }

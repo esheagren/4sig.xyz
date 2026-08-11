@@ -9689,3 +9689,481 @@ a.judgement-answer-below:hover .judgement-answer-value {
     font-size: 1.5rem;
   }
 }
+
+/* ============================================
+   Results redesign: HUD orb + score reveal + answer cards
+   ============================================ */
+
+/* --- Orb HUD states --- */
+/* Ambient during gameplay (small, top-center, question progress);
+   hero at results (large, bright, score). Class swap animates between them. */
+.game-orb-container {
+  z-index: 101;
+  transition: top 0.5s ease, transform 0.5s ease;
+}
+
+.game-orb-container .loading-orb-container {
+  padding: 0;
+}
+
+.game-orb-container.orb-ambient {
+  top: 68px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) scale(0.34);
+  transform-origin: top center;
+}
+
+.game-orb-container.orb-hero {
+  top: 96px;
+  left: 50%;
+  right: auto;
+  transform: translateX(-50%) scale(1);
+  transform-origin: top center;
+}
+
+/* Scrolled past the reveal: the orb tucks into a compact top-center HUD
+   so it stays visible without sitting on top of the content below */
+.game-orb-container.orb-hero.orb-compact {
+  top: 10px;
+  transform: translateX(-50%) scale(0.42);
+}
+
+.orb-hero .loading-orb {
+  filter: brightness(1.35) saturate(1.15);
+}
+
+.orb-hero .loading-orb-dot {
+  width: 7px;
+  height: 7px;
+  margin: -3.5px;
+  box-shadow: 0 0 12px var(--primary), 0 0 22px rgba(99, 91, 255, 0.6);
+}
+
+.orb-hero .loading-orb-score {
+  font-size: 2.4rem;
+  font-weight: 400;
+}
+
+/* Perfect game: the orb goes gold */
+.orb-perfect .loading-orb-dot {
+  background: #f59e0b;
+  box-shadow: 0 0 12px #f59e0b, 0 0 22px rgba(245, 158, 11, 0.6);
+}
+
+.orb-perfect .loading-orb-score {
+  text-shadow: 0 0 20px #f59e0b, 0 0 40px rgba(245, 158, 11, 0.6);
+}
+
+/* Question progress inside the ambient orb */
+.loading-orb-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 1.6rem;
+  font-weight: 300;
+  font-family: var(--font-mono);
+  color: rgba(255, 255, 255, 0.85);
+  text-shadow: 0 0 16px var(--primary);
+  white-space: nowrap;
+  z-index: 10;
+}
+
+/* --- Results flow container --- */
+.results-flow {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: transparent;
+  z-index: 100;
+}
+
+.results-flow-container {
+  height: 100%;
+  overflow-y: auto;
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.results-flow-container::-webkit-scrollbar {
+  display: none;
+}
+
+/* Plain scroll, no snap: sections read one after another and the
+   answer stack can never be skipped past by scroll momentum */
+.results-flow-container .tiktok-slide {
+  scroll-snap-align: none;
+}
+
+/* --- Score reveal section --- */
+.score-reveal-section {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* Clear the hero orb (fixed at top: 96px, 120px tall) */
+  padding: calc(96px + 120px + 2.5rem) 1.5rem 2rem;
+  box-sizing: border-box;
+  scroll-snap-align: start;
+}
+
+.reveal-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.reveal-pips {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.reveal-pip {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.reveal-pip.pip-hit {
+  background: #22c55e;
+  box-shadow: 0 0 10px rgba(34, 197, 94, 0.6);
+  animation: pipPop 0.35s ease-out;
+}
+
+.reveal-pip.pip-miss {
+  background: #ef4444;
+  box-shadow: 0 0 10px rgba(239, 68, 68, 0.6);
+  animation: pipPop 0.35s ease-out;
+}
+
+@keyframes pipPop {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.6); }
+  100% { transform: scale(1); }
+}
+
+/* Chips + share fade in once the reveal lands */
+.reveal-details {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
+  width: 100%;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.reveal-details.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.reveal-perfect {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: #f59e0b;
+  text-shadow: 0 0 16px rgba(245, 158, 11, 0.5);
+}
+
+.reveal-chips {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.reveal-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+  padding: 0.6rem 1.1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.reveal-chip-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: white;
+}
+
+.reveal-chip-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.reveal-streak {
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.share-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.share-btn {
+  font-size: 0.95rem;
+  font-weight: 600;
+  padding: 0.8rem 1.6rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+
+.share-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.share-btn-primary {
+  background: var(--primary);
+  color: white;
+  box-shadow: 0 4px 20px rgba(99, 91, 255, 0.4);
+}
+
+.share-btn-primary:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 26px rgba(99, 91, 255, 0.55);
+}
+
+.share-btn-secondary {
+  background: transparent;
+  color: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.share-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.reveal-scroll-hint {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.1rem;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.reveal-scroll-hint svg {
+  animation: hintBounce 1.8s ease-in-out infinite;
+}
+
+@keyframes hintBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+
+/* --- Answers section --- */
+.answers-section {
+  padding: 2.5rem 1.5rem 3rem;
+  max-width: 600px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.answers-section-title {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: rgba(255, 255, 255, 0.5);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.answer-card {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-left-width: 3px;
+  border-radius: 16px;
+  padding: 1.1rem 1.25rem;
+  margin-bottom: 1rem;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.answer-card.card-hit {
+  border-left-color: rgba(34, 197, 94, 0.6);
+}
+
+.answer-card.card-miss {
+  border-left-color: rgba(239, 68, 68, 0.6);
+}
+
+.answer-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.answer-card-index {
+  font-size: 0.75rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.answer-card-points {
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+
+.answer-card-points.hit {
+  color: #22c55e;
+}
+
+.answer-card-points.miss {
+  color: #ef4444;
+}
+
+.answer-card-prompt {
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0 0 0.75rem;
+}
+
+.answer-card-numbers {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.answer-card-number {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.answer-card-number-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.answer-card-number-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  font-family: var(--font-mono);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.answer-card-number-value.hit {
+  color: #22c55e;
+}
+
+.answer-card-number-value.miss {
+  color: #ef4444;
+}
+
+.answer-card-nearmiss {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.6);
+  font-style: italic;
+  margin: 0 0 0.5rem;
+}
+
+.answer-card-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: none;
+  border: none;
+  padding: 0.25rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary);
+  cursor: pointer;
+}
+
+.answer-card-chevron {
+  transition: transform 0.2s ease;
+}
+
+.answer-card-chevron.open {
+  transform: rotate(180deg);
+}
+
+.answer-card-detail {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.answer-card-viz {
+  margin-bottom: 0.75rem;
+}
+
+.answer-card-context {
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: rgba(255, 255, 255, 0.75);
+  margin: 0 0 0.75rem;
+}
+
+.answer-card-context-empty {
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+/* --- Reduced motion --- */
+@media (prefers-reduced-motion: reduce) {
+  .game-orb-container {
+    transition: none;
+  }
+  .reveal-pip.pip-hit,
+  .reveal-pip.pip-miss {
+    animation: none;
+  }
+  .reveal-scroll-hint svg {
+    animation: none;
+  }
+  .reveal-details {
+    transition: none;
+  }
+}
+
+/* --- Small screens: tighten the reveal layout --- */
+@media (max-width: 480px) {
+  .game-orb-container.orb-hero {
+    top: 80px;
+    transform: translateX(-50%) scale(0.85);
+  }
+
+  .score-reveal-section {
+    padding-top: calc(80px + 105px + 2rem);
+  }
+
+  .answer-card-numbers {
+    gap: 1rem;
+  }
+}
