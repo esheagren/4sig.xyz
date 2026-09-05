@@ -1,121 +1,52 @@
-import { Question } from './types.js';
-import { supabase } from './supabase.js';
-
-/**
- * Get a question by ID from Supabase
- */
-export async function getQuestionById(id: string): Promise<Question | undefined> {
-  const { data, error } = await supabase
-    .from('questions')
-    .select(`
-      id,
-      question_text,
-      answer_value,
-      answer_context,
-      source_url,
-      source_name,
-      units (name)
-    `)
-    .eq('id', id)
-    .single();
-
-  if (error || !data) {
-    console.error('Error fetching question:', error);
-    return undefined;
-  }
-
+import { query, transaction } from "./db.js";
+import type { QueryResultRow } from "pg";
+import type { Question } from "./types.js";
+export const pacificDate = () =>
+  new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
+const questionSelect = `SELECT q.*,u.name unit FROM questions q LEFT JOIN units u ON u.id=q.unit_id`;
+function question(row: QueryResultRow): Question {
   return {
-    id: data.id,
-    prompt: data.question_text,
-    unit: (data.units as any)?.name || '',
-    trueValue: data.answer_value,
-    source: data.source_name || '',
-    sourceUrl: data.source_url || '',
-    answerContext: data.answer_context || undefined,
+    id: row.id,
+    prompt: row.question_text,
+    unit: row.unit ?? "",
+    trueValue: Number(row.answer_value),
+    scoringReference: Number(row.scoring_reference),
+    source: row.source_name ?? "",
+    sourceUrl: row.source_url ?? "",
+    answerContext: row.answer_context ?? "",
   };
 }
-
-/**
- * Get a set of random questions for a new session from Supabase
- */
-export async function getQuestionsForSession(count: number = 3): Promise<Question[]> {
-  const { data, error } = await supabase
-    .from('questions')
-    .select(`
-      id,
-      question_text,
-      answer_value,
-      source_url,
-      source_name,
-      units (name)
-    `)
-    .eq('is_active', true)
-    .limit(100);
-
-  if (error || !data || data.length === 0) {
-    console.error('Error fetching questions:', error);
-    return [];
-  }
-
-  // Shuffle and pick `count` questions
-  const shuffled = data.sort(() => Math.random() - 0.5);
-  const selected = shuffled.slice(0, count);
-
-  return selected.map(q => ({
-    id: q.id,
-    prompt: q.question_text,
-    unit: (q.units as any)?.name || '',
-    trueValue: q.answer_value,
-    source: q.source_name || '',
-    sourceUrl: q.source_url || '',
-  }));
+export async function getQuestionById(id: string) {
+  const { rows } = await query(questionSelect + " WHERE q.id=$1", [id]);
+  return rows[0] ? question(rows[0]) : undefined;
 }
-
-/**
- * Get the daily questions for a specific date
- * All users get the same questions for a given day
- *
- * @param overrideDate - Optional date string (YYYY-MM-DD) for testing different days
- */
-export async function getDailyQuestions(overrideDate?: string): Promise<Question[]> {
-  const dateStr = overrideDate || new Date().toISOString().split('T')[0];
-
-  const { data, error } = await supabase
-    .from('daily_questions')
-    .select(`
-      id,
-      display_order,
-      questions!inner (
-        id,
-        question_text,
-        answer_value,
-        answer_context,
-        source_url,
-        source_name,
-        units (name)
-      )
-    `)
-    .eq('date', dateStr)
-    .eq('is_published', true)
-    .order('display_order');
-
-  if (error) {
-    console.error('Error fetching daily questions:', error);
-    return [];
-  }
-
-  if (!data || data.length === 0) {
-    console.warn(`No daily questions found for date: ${dateStr}`);
-    return [];
-  }
-
-  return data.map((dq: any) => ({
-    id: dq.questions.id,
-    prompt: dq.questions.question_text,
-    unit: dq.questions.units?.name || '',
-    trueValue: dq.questions.answer_value,
-    source: dq.questions.source_name || '',
-    sourceUrl: dq.questions.source_url || '',
-    answerContext: dq.questions.answer_context || undefined,
-  }));
+export async function getDailyQuestions(
+  edition = pacificDate(),
+): Promise<Question[]> {
+  return transaction(async (client) => {
+    // Stable schedule shared by every player, including after the imported calendar runs out.
+    await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [
+      "daily:" + edition,
+    ]);
+    const existing = await client.query(
+      "SELECT 1 FROM daily_questions WHERE date=$1",
+      [edition],
+    );
+    if (!existing.rowCount) {
+      await client.query(
+        `INSERT INTO daily_questions(question_id,date,display_order)
+        SELECT id,$1::date,(row_number() OVER(ORDER BY recently_used,md5(id::text||$1)) - 1)::int FROM (
+          SELECT q.id,EXISTS(SELECT 1 FROM daily_questions d WHERE d.question_id=q.id AND d.date BETWEEN $1::date-7 AND $1::date-1) recently_used
+          FROM questions q WHERE q.is_active AND q.usage_type='daily'
+        ) candidates ORDER BY recently_used,md5(id::text||$1) LIMIT 3`,
+        [edition],
+      );
+    }
+    const { rows } = await client.query(
+      questionSelect +
+        ` JOIN daily_questions d ON d.question_id=q.id WHERE d.date=$1 AND d.is_published AND q.is_active ORDER BY d.display_order`,
+      [edition],
+    );
+    return rows.map(question);
+  });
 }

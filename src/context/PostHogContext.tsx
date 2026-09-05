@@ -1,7 +1,8 @@
-import { createContext, useContext, useEffect, useRef, ReactNode } from 'react';
-import { posthog, initPostHog } from '../lib/posthog';
-import { useAuth } from './AuthContext';
-import { getDeviceId } from '../lib/device';
+import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useRef } from "react";
+import { posthog, initPostHog } from "../lib/posthog";
+import { useAuth } from "./AuthContext";
+import { getDeviceId } from "../lib/device";
 
 interface PostHogContextType {
   capture: (event: string, properties?: Record<string, unknown>) => void;
@@ -14,7 +15,7 @@ const PostHogContext = createContext<PostHogContextType | null>(null);
 export function useAnalytics() {
   const context = useContext(PostHogContext);
   if (!context) {
-    throw new Error('useAnalytics must be used within PostHogProvider');
+    throw new Error("useAnalytics must be used within PostHogProvider");
   }
   return context;
 }
@@ -90,8 +91,6 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
   };
 
   return (
-    <PostHogContext.Provider value={value}>
-      {children}
-    </PostHogContext.Provider>
+    <PostHogContext.Provider value={value}>{children}</PostHogContext.Provider>
   );
 }

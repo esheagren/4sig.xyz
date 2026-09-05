@@ -1,6 +1,8 @@
 // Core data types for API
 
 export interface User {
+  avatarIcon?: string | null;
+  sessionCount?: number;
   id: string;
   deviceId: string | null;
   authId: string | null;
@@ -30,6 +32,7 @@ export interface AuthUser {
 }
 
 export interface Question {
+  scoringReference?: number;
   id: string;
   prompt: string;
   unit?: string;
@@ -40,6 +43,7 @@ export interface Question {
 }
 
 export interface Answer {
+  judgement?: Judgement;
   questionId: string;
   lower: number;
   upper: number;

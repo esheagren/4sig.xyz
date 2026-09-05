@@ -1,4 +1,4 @@
-const DEVICE_ID_KEY = 'four_sigma_device_id';
+const DEVICE_ID_KEY = "four_sigma_device_id";
 
 /**
  * Get the device ID from localStorage, creating one if it doesn't exist
@@ -33,13 +33,13 @@ export function hasDeviceId(): boolean {
  */
 export function isTouchDevice(): boolean {
   // Check for touch points
-  const hasTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
 
   // Check for coarse pointer (finger) vs fine pointer (mouse)
-  const hasCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+  const hasCoarsePointer = window.matchMedia("(pointer: coarse)").matches;
 
   // Check if hover is not available (touch devices don't truly hover)
-  const noHover = window.matchMedia('(hover: none)').matches;
+  const noHover = window.matchMedia("(hover: none)").matches;
 
   // A device is considered touch-primary if it has touch AND either coarse pointer or no hover
   // This correctly identifies tablets and phones while excluding laptops with touchscreens

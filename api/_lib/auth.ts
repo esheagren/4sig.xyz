@@ -1,158 +1,100 @@
-import type { VercelRequest } from '@vercel/node';
-import { supabase } from './supabase.js';
-import { AuthUser, User } from './types.js';
-
-// Helper to convert database row to User type
-export function rowToUser(row: any): User {
-  return {
-    id: row.id,
-    deviceId: row.device_id,
-    authId: row.auth_id,
-    email: row.email,
-    username: row.username,
-    isAnonymous: row.is_anonymous,
-    emailVerified: row.email_verified ?? false,
-    createdAt: new Date(row.created_at),
-    lastPlayedAt: row.last_played_at ? new Date(row.last_played_at) : null,
-    timezone: row.timezone,
-    totalScore: Number(row.total_score),
-    averageScore: Number(row.average_score),
-    weeklyScore: Number(row.weekly_score),
-    gamesPlayed: row.games_played,
-    questionsCaptured: row.questions_captured,
-    calibrationRate: Number(row.calibration_rate),
-    currentStreak: row.current_streak,
-    bestStreak: row.best_streak,
-    bestSingleScore: Number(row.best_single_score),
-    themePreference: row.theme_preference || 'default',
-  };
+import { createHash, randomBytes, scrypt, timingSafeEqual } from "node:crypto";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import type { PoolClient } from "pg";
+import { query } from "./db.js";
+import { HttpError } from "./http.js";
+export { getUserById } from "./users.js";
+const COOKIE = "four_sigma_session";
+export const hashToken = (token: string) =>
+  createHash("sha256").update(token).digest("hex");
+export function sessionToken(req: VercelRequest) {
+  const value = req.headers.cookie
+    ?.split(";")
+    .map((c) => c.trim())
+    .find((c) => c.startsWith(COOKIE + "="))
+    ?.slice(COOKIE.length + 1);
+  return value && /^[a-f0-9]{64}$/.test(value) ? value : null;
 }
-
-/**
- * Extract device ID from request header
- */
-export function extractDeviceId(req: VercelRequest): string | null {
-  return (req.headers['x-device-id'] as string) || null;
+export async function getAuthUser(req: VercelRequest) {
+  const token = sessionToken(req);
+  if (!token) return null;
+  const { rows } = await query(
+    "SELECT user_id FROM auth_sessions WHERE token_hash=$1 AND expires_at>now()",
+    [hashToken(token)],
+  );
+  return rows[0]
+    ? { userId: rows[0].user_id as string, authId: null, isAnonymous: false }
+    : null;
 }
-
-/**
- * Extract and validate Supabase JWT from Authorization header
- */
-export async function validateAuthToken(token: string): Promise<{ authId: string } | null> {
-  try {
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-
-    if (error || !user) {
-      return null;
-    }
-
-    return { authId: user.id };
-  } catch (err) {
-    console.error('Token validation error:', err);
-    return null;
-  }
+export async function requireUser(req: VercelRequest) {
+  const user = await getAuthUser(req);
+  if (!user) throw new HttpError(401, "Choose a username before playing.");
+  return user;
 }
-
-/**
- * Get user by Supabase auth ID
- */
-export async function getUserByAuthId(authId: string): Promise<User | null> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('auth_id', authId)
-    .single();
-
-  if (error || !data) {
-    return null;
-  }
-
-  return rowToUser(data);
+export async function createAuthSession(client: PoolClient, userId: string) {
+  const token = randomBytes(32).toString("hex");
+  await client.query(
+    `INSERT INTO auth_sessions(token_hash,user_id,expires_at) VALUES($1,$2,now()+interval '180 days')`,
+    [hashToken(token), userId],
+  );
+  return token;
 }
-
-/**
- * Get user by device ID
- */
-export async function getUserByDeviceId(deviceId: string): Promise<User | null> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('device_id', deviceId)
-    .single();
-
-  if (error || !data) {
-    return null;
-  }
-
-  return rowToUser(data);
+export function setSessionCookie(res: VercelResponse, token: string | null) {
+  res.setHeader(
+    "Set-Cookie",
+    `${COOKIE}=${token ?? ""}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${token ? 15552000 : 0}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`,
+  );
 }
-
-/**
- * Get user by ID
- */
-export async function getUserById(userId: string): Promise<User | null> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', userId)
-    .single();
-
-  if (error || !data) {
-    return null;
-  }
-
-  return rowToUser(data);
+export async function revokeSession(req: VercelRequest) {
+  const token = sessionToken(req);
+  if (token)
+    await query("DELETE FROM auth_sessions WHERE token_hash=$1", [
+      hashToken(token),
+    ]);
 }
-
-/**
- * Attach user to request - returns user info or null
- */
-export async function getAuthUser(req: VercelRequest): Promise<AuthUser | null> {
-  try {
-    // Check for Bearer token first (authenticated user)
-    const authHeader = req.headers.authorization;
-    console.log(`[getAuthUser] Authorization header: ${authHeader ? 'present' : 'missing'}`);
-
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
-      const validatedAuth = await validateAuthToken(token);
-      console.log(`[getAuthUser] Token validation result:`, validatedAuth ? 'valid' : 'invalid');
-
-      if (validatedAuth) {
-        const user = await getUserByAuthId(validatedAuth.authId);
-        console.log(`[getAuthUser] User by authId ${validatedAuth.authId}:`, user ? user.id : 'not found');
-        if (user) {
-          return {
-            userId: user.id,
-            authId: user.authId,
-            isAnonymous: false,
-          };
-        }
-      }
-    }
-
-    // Check for device ID (anonymous user)
-    const deviceId = extractDeviceId(req);
-    console.log(`[getAuthUser] Device ID from header: ${deviceId || 'missing'}`);
-
-    if (deviceId) {
-      const user = await getUserByDeviceId(deviceId);
-      console.log(`[getAuthUser] User by deviceId ${deviceId}:`, user ? `found (id=${user.id}, username=${user.username})` : 'not found');
-      if (user) {
-        return {
-          userId: user.id,
-          authId: user.authId,
-          isAnonymous: user.isAnonymous,
-        };
-      } else {
-        console.log(`[getAuthUser] No user found for deviceId=${deviceId}. User may not have been created yet.`);
-      }
-    }
-
-    console.log(`[getAuthUser] Returning null - no auth method succeeded`);
-    return null;
-  } catch (err) {
-    console.error('[getAuthUser] Auth error:', err);
-    return null;
-  }
+function derive(password: string, salt: string) {
+  return new Promise<Buffer>((resolve, reject) =>
+    scrypt(
+      password,
+      salt,
+      64,
+      { N: 32768, r: 8, p: 1, maxmem: 64 * 1024 * 1024 },
+      (err, key) => (err ? reject(err) : resolve(key)),
+    ),
+  );
+}
+export async function hashPassword(password: string) {
+  const salt = randomBytes(16).toString("hex");
+  return `scrypt-v1:${salt}:${(await derive(password, salt)).toString("hex")}`;
+}
+export async function verifyPassword(password: string, encoded?: string) {
+  const [version, salt, expected] = encoded?.split(":") ?? [];
+  const valid =
+    version === "scrypt-v1" &&
+    /^[a-f0-9]{32}$/.test(salt) &&
+    /^[a-f0-9]{128}$/.test(expected);
+  // Do equivalent expensive work when the email does not exist.
+  const actual = await derive(password, valid ? salt : "0".repeat(32));
+  return !!valid && timingSafeEqual(actual, Buffer.from(expected, "hex"));
+}
+export async function rateLimit(
+  req: VercelRequest,
+  action: string,
+  limit = 20,
+) {
+  const ip = process.env.VERCEL
+    ? req.headers["x-vercel-forwarded-for"]
+    : req.socket?.remoteAddress;
+  const key = hashToken(`${action}:${ip ?? "unknown"}`);
+  const { rows } = await query(
+    `INSERT INTO auth_rate_limits(key,attempts,resets_at) VALUES($1,1,now()+interval '15 minutes')
+    ON CONFLICT(key) DO UPDATE SET attempts=CASE WHEN auth_rate_limits.resets_at<=now() THEN 1 ELSE auth_rate_limits.attempts+1 END,
+    resets_at=CASE WHEN auth_rate_limits.resets_at<=now() THEN now()+interval '15 minutes' ELSE auth_rate_limits.resets_at END RETURNING attempts`,
+    [key],
+  );
+  if (rows[0].attempts > limit)
+    throw new HttpError(
+      429,
+      "Too many attempts. Please try again in 15 minutes.",
+    );
 }

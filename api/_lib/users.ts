@@ -1,309 +1,124 @@
-import { supabase } from './supabase.js';
-import { User } from './types.js';
-import { rowToUser, getUserById } from './auth.js';
+import { query } from "./db.js";
+import { HttpError } from "./http.js";
+import type { User } from "./types.js";
 
-// Username validation regex: 3-20 chars, alphanumeric + underscore
-const USERNAME_REGEX = /^[a-zA-Z0-9_]{3,20}$/;
-
-/**
- * Validate username format
- */
-export function isValidUsername(username: string): boolean {
-  return USERNAME_REGEX.test(username);
+export const isValidUsername = (name: unknown): name is string =>
+  typeof name === "string" && /^[a-zA-Z0-9_]{3,20}$/.test(name);
+export async function isUsernameAvailable(name: string) {
+  return !(
+    await query("SELECT 1 FROM users WHERE lower(username)=lower($1)", [name])
+  ).rowCount;
 }
-
-/**
- * Get or create an anonymous user by device ID
- */
-export async function getOrCreateDeviceUser(deviceId: string): Promise<User> {
-  // First try to find existing user with this device ID
-  const { data: existingUser, error: findError } = await supabase
-    .from('users')
-    .select('*')
-    .eq('device_id', deviceId)
-    .single();
-
-  if (existingUser && !findError) {
-    return rowToUser(existingUser);
+export async function getUserById(id: string): Promise<User | null> {
+  const { rows } = await query(
+    `SELECT u.*,
+    COALESCE(sum(g.score),0)::float8 total_score, COALESCE(avg(g.score),0)::float8 average_score,
+    COALESCE(sum(g.score) FILTER(WHERE g.edition >= date_trunc('week',now() AT TIME ZONE 'America/Los_Angeles')::date),0)::float8 weekly_score,
+    count(g.id)::int games_played, COALESCE(sum(g.questions_captured),0)::int questions_captured,
+    COALESCE(sum(g.questions_captured)::float8/nullif(sum(g.questions_answered),0),0)::float8 calibration_rate,
+    COALESCE(max(g.score),0)::float8 best_single_score,max(g.completed_at) last_played_at,
+    COALESCE(array_agg(DISTINCT g.edition::text ORDER BY g.edition::text) FILTER(WHERE g.edition IS NOT NULL),'{}') played_dates
+    FROM users u LEFT JOIN completed_games g ON g.user_id=u.id AND g.is_ranked WHERE u.id=$1 GROUP BY u.id`,
+    [id],
+  );
+  const row = rows[0];
+  if (!row) return null;
+  let streak = 0,
+    best = 0,
+    previous = "";
+  for (const day of row.played_dates as string[]) {
+    const gap = previous
+      ? (Date.parse(day) - Date.parse(previous)) / 86400000
+      : 0;
+    streak = gap === 1 ? streak + 1 : 1;
+    best = Math.max(best, streak);
+    previous = day;
   }
-
-  // Create new anonymous user
-  const { data: newUser, error: createError } = await supabase
-    .from('users')
-    .insert({
-      device_id: deviceId,
-      username: 'Guest Player',
-      is_anonymous: true,
-    })
-    .select()
-    .single();
-
-  if (createError) {
-    throw new Error(`Failed to create user: ${createError.message}`);
-  }
-
-  return rowToUser(newUser);
-}
-
-/**
- * Get user by email
- */
-export async function getUserByEmail(email: string): Promise<User | null> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('email', email)
-    .single();
-
-  if (error || !data) {
-    return null;
-  }
-
-  return rowToUser(data);
-}
-
-/**
- * Convert anonymous user to authenticated user (with email)
- */
-export async function convertToAuthenticatedUser(
-  userId: string,
-  authId: string,
-  email: string,
-  username: string
-): Promise<User> {
-  const { data, error } = await supabase
-    .from('users')
-    .update({
-      auth_id: authId,
-      email: email,
-      username: username,
-      is_anonymous: false,
-      email_verified: true,
-    })
-    .eq('id', userId)
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to convert user: ${error.message}`);
-  }
-
-  return rowToUser(data);
-}
-
-/**
- * Create a new authenticated user (with email)
- */
-export async function createAuthenticatedUser(
-  authId: string,
-  email: string,
-  username: string,
-  deviceId?: string
-): Promise<User> {
-  const { data, error } = await supabase
-    .from('users')
-    .insert({
-      auth_id: authId,
-      email: email,
-      username: username,
-      device_id: deviceId || null,
-      is_anonymous: false,
-      email_verified: true,
-    })
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to create user: ${error.message}`);
-  }
-
-  return rowToUser(data);
-}
-
-/**
- * Link a device to an authenticated user
- */
-export async function linkDeviceToUser(userId: string, deviceId: string): Promise<void> {
-  const { error } = await supabase
-    .from('users')
-    .update({ device_id: deviceId })
-    .eq('id', userId);
-
-  if (error) {
-    throw new Error(`Failed to link device: ${error.message}`);
-  }
-}
-
-/**
- * Merge anonymous user data into authenticated user
- */
-export async function mergeUsers(anonymousUserId: string, authenticatedUserId: string): Promise<void> {
-  const { error } = await supabase.rpc('merge_anonymous_user', {
-    p_anonymous_user_id: anonymousUserId,
-    p_authenticated_user_id: authenticatedUserId,
+  const today = new Date().toLocaleDateString("en-CA", {
+    timeZone: "America/Los_Angeles",
   });
-
-  if (error) {
-    throw new Error(`Failed to merge users: ${error.message}`);
-  }
-}
-
-/**
- * Update user profile
- */
-export async function updateUserProfile(
-  userId: string,
-  updates: { username?: string; timezone?: string; themePreference?: string }
-): Promise<User> {
-  const updateData: any = {};
-  if (updates.username !== undefined) {
-    updateData.username = updates.username;
-  }
-  if (updates.timezone !== undefined) {
-    updateData.timezone = updates.timezone;
-  }
-  if (updates.themePreference !== undefined) {
-    updateData.theme_preference = updates.themePreference;
-  }
-
-  const { data, error } = await supabase
-    .from('users')
-    .update(updateData)
-    .eq('id', userId)
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to update user: ${error.message}`);
-  }
-
-  return rowToUser(data);
-}
-
-/**
- * Get user stats with additional computed fields
- */
-export async function getUserStats(userId: string): Promise<{
-  user: User;
-  recentGames: any[];
-} | null> {
-  const user = await getUserById(userId);
-  if (!user) {
-    return null;
-  }
-
-  // Get recent games
-  const { data: recentGames } = await supabase
-    .from('user_responses')
-    .select(`
-      id,
-      score,
-      captured,
-      answered_at,
-      question:questions(question_text)
-    `)
-    .eq('user_id', userId)
-    .order('answered_at', { ascending: false })
-    .limit(10);
-
+  if (previous && (Date.parse(today) - Date.parse(previous)) / 86400000 > 1)
+    streak = 0;
   return {
-    user,
-    recentGames: recentGames || [],
+    id: row.id,
+    avatarIcon: row.avatar_icon,
+    deviceId: null,
+    authId: null,
+    email: row.email,
+    username: row.username,
+    isAnonymous: false,
+    emailVerified: false,
+    createdAt: row.created_at,
+    lastPlayedAt: row.last_played_at,
+    timezone: row.timezone,
+    totalScore: row.total_score,
+    averageScore: row.average_score,
+    weeklyScore: row.weekly_score,
+    gamesPlayed: row.games_played,
+    sessionCount: row.games_played,
+    questionsCaptured: row.questions_captured,
+    calibrationRate: row.calibration_rate,
+    currentStreak: streak,
+    bestStreak: best,
+    bestSingleScore: row.best_single_score,
+    themePreference: row.theme_preference,
   };
 }
-
-/**
- * Get user by username (case-insensitive)
- */
-export async function getUserByUsername(username: string): Promise<User | null> {
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .ilike('username', username)
-    .neq('username', 'Guest Player')
-    .single();
-
-  if (error || !data) {
-    return null;
+export function publicUser(user: User) {
+  return {
+    ...user,
+    displayName: user.username,
+    deviceId: undefined,
+    authId: undefined,
+  };
+}
+export async function updateUserProfile(
+  id: string,
+  updates: {
+    displayName?: unknown;
+    timezone?: unknown;
+    themePreference?: unknown;
+  },
+) {
+  if (
+    updates.displayName !== undefined &&
+    !isValidUsername(updates.displayName)
+  )
+    throw new HttpError(400, "Use 3–20 letters, numbers, or underscores.");
+  if (updates.timezone !== undefined) {
+    try {
+      new Intl.DateTimeFormat("en", { timeZone: String(updates.timezone) });
+    } catch {
+      throw new HttpError(400, "Invalid timezone.");
+    }
   }
-
-  return rowToUser(data);
+  if (
+    updates.themePreference !== undefined &&
+    (typeof updates.themePreference !== "string" ||
+      updates.themePreference.length > 50)
+  )
+    throw new HttpError(400, "Invalid theme.");
+  await query(
+    `UPDATE users SET username=COALESCE($2,username), timezone=COALESCE($3,timezone),theme_preference=COALESCE($4,theme_preference) WHERE id=$1`,
+    [
+      id,
+      updates.displayName ?? null,
+      updates.timezone ?? null,
+      updates.themePreference ?? null,
+    ],
+  );
+  return (await getUserById(id))!;
 }
-
-/**
- * Check if a username is available (case-insensitive)
- */
-export async function isUsernameAvailable(username: string): Promise<boolean> {
-  const existing = await getUserByUsername(username);
-  return existing === null;
-}
-
-/**
- * Generate username suggestions based on a taken username
- */
-export function generateUsernameSuggestions(baseUsername: string): string[] {
-  const suggestions: string[] = [];
-  const random = Math.floor(Math.random() * 1000);
-
-  suggestions.push(`${baseUsername}${random}`);
-  suggestions.push(`${baseUsername}_${random}`);
-  suggestions.push(`${baseUsername}${Math.floor(Math.random() * 100)}`);
-
-  return suggestions;
-}
-
-/**
- * Set username for a device user (converts from anonymous to username-only)
- * This is for username-only signup (no email/password)
- */
-export async function setUsernameForDevice(
-  deviceId: string,
-  username: string
-): Promise<User> {
-  // First, get or create the device user
-  const existingUser = await getOrCreateDeviceUser(deviceId);
-
-  // Update the user with the username and mark as non-anonymous
-  const { data, error } = await supabase
-    .from('users')
-    .update({
-      username: username,
-      is_anonymous: false,
-    })
-    .eq('id', existingUser.id)
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to set username: ${error.message}`);
-  }
-
-  return rowToUser(data);
-}
-
-/**
- * Link email to a username-only user (creates Supabase auth)
- * This upgrades a username-only account to a full account with email
- */
-export async function linkEmailToUser(
-  userId: string,
-  authId: string,
-  email: string
-): Promise<User> {
-  const { data, error } = await supabase
-    .from('users')
-    .update({
-      auth_id: authId,
-      email: email,
-      email_verified: true,
-    })
-    .eq('id', userId)
-    .select()
-    .single();
-
-  if (error) {
-    throw new Error(`Failed to link email: ${error.message}`);
-  }
-
-  return rowToUser(data);
+export async function getUserStats(id: string) {
+  const user = await getUserById(id);
+  if (!user) return null;
+  const { rows } = await query(
+    `SELECT a.question_id id,a.score::float8 score,a.captured,a.answered_at,
+    json_build_object('question_text',q.snapshot->>'prompt') question
+    FROM game_answers a JOIN game_sessions s ON s.id=a.session_id
+    JOIN game_questions q ON (q.session_id,q.question_id)=(a.session_id,a.question_id)
+    WHERE s.user_id=$1 AND s.completed_at IS NOT NULL AND s.is_ranked ORDER BY a.answered_at DESC LIMIT 10`,
+    [id],
+  );
+  return { user, recentGames: rows, categoryStats: [] };
 }

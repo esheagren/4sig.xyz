@@ -1,26 +1,13 @@
-import { Routes, Route } from 'react-router-dom'
-import { Game } from './components/gameplay/Game'
-import { Nav } from './components/nav/Nav'
-import { BackgroundAnimation } from './components/BackgroundAnimation'
-import { ProfilePage } from './pages/ProfilePage'
-import { AnimationProvider } from './context/AnimationContext'
-import './App.css'
-
-function App() {
+import { Routes, Route, Navigate } from "react-router-dom";
+import IntervalGame from "./components/interval/IntervalGame";
+import { ProfilePage } from "./pages/ProfilePage";
+import "./App.css";
+export default function App() {
   return (
-    <AnimationProvider>
-      <BackgroundAnimation />
-      <div className="app-layout">
-        <Nav />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Game />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Routes>
-        </main>
-      </div>
-    </AnimationProvider>
-  )
+    <Routes>
+      <Route path="/" element={<IntervalGame />} />
+      <Route path="/profile" element={<ProfilePage />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
+  );
 }
-
-export default App

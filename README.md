@@ -1,213 +1,52 @@
-# Four Sigma - Numerical Calibration Game
+# Four Sigma
 
-A game that helps you calibrate your confidence intervals by asking numerical questions and checking if the true value falls within your 95% confidence interval.
-
-## Overview
-
-Four Sigma presents three numerical questions per game session. For each question, you provide a lower and upper bound representing your 95% confidence interval. After all three questions, you'll see your score and whether the true values fell within your intervals.
-
-## Tech Stack
-
-- **Frontend**: React 19 with TypeScript, Vite
-- **Backend**: Express with TypeScript
-- **Styling**: Custom CSS with modern design
-
-## Getting Started
-
-> **Quick Start:** See [QUICKSTART.md](QUICKSTART.md) for the fastest way to get up and running!
-
-### Prerequisites
-
-- Node.js 20.x or higher
-- npm 10.x or higher
-
-### Installation
-
-```bash
-npm install
-```
-
-### Running the Application
-
-Start both the backend and frontend with a single command:
-
-```bash
-npm run dev
-```
-
-This will:
-- Start the Express server on `http://localhost:3001` (with hot reloading)
-- Start the Vite development server on `http://localhost:5173` (with hot reloading)
-- Show color-coded output for both servers in one terminal
-
-Open your browser to `http://localhost:5173` to play the game!
-
-**Alternative:** Run servers separately (optional)
-```bash
-# Terminal 1
-npm run dev:server
-
-# Terminal 2
-npm run dev:client
-```
-
-## How to Play
-
-1. When the game loads, you'll see the first of three questions
-2. Enter a lower bound and upper bound for your 95% confidence interval
-3. Click "Submit Answer" to move to the next question
-4. After three questions, you'll see your results:
-   - Your total score (out of 3)
-   - Each question with your interval, the true value, and whether you got it right
-5. Click "Play Again" to start a new game
-
-## Game Rules
-
-### Scoring
-- **Hit**: True value is within your interval → Positive score based on interval width
-- **Miss**: True value is outside your interval → Score of 0
-- **Narrower intervals get higher scores** when they contain the true value
-- Total score is the sum of all individual question scores
-
-### Validation
-The submit button is disabled if:
-- Either input is empty
-- Either input is not a number
-- Lower bound is greater than upper bound
-
-### Scoring Formula
-The game uses a logarithmic scoring algorithm that:
-- Rewards narrow, accurate confidence intervals
-- Misses score 0 points (no penalty)
-- Accounts for the magnitude of values (1000 vs 1,000,000)
-
-### Visual Feedback
-Each result card displays:
-- Your interval and score
-- True value
-- **Precision score** - Visible percentage showing interval narrowness (100% = perfectly narrow; 0% for misses). Hover ⓘ icon for explanation
-- **Community statistics**:
-  - Community average score for this question
-  - Community best score for this question
-- **Source attribution** - Clickable link to the source of the true value
-
-This helps you compare your performance, understand calibration quality, and verify the accuracy of information.
-
-See [SCORING_VISUAL.md](SCORING_VISUAL.md), [COMMUNITY_STATS.md](COMMUNITY_STATS.md), [SOURCES.md](SOURCES.md), and [server/utils/README.md](server/utils/README.md) for detailed documentation.
-
-## Project Structure
-
-```
-four-sigma/
-├── src/                      # Frontend (React + TypeScript)
-│   ├── components/
-│   │   ├── Game.tsx          # Main game orchestrator
-│   │   ├── QuestionCard.tsx  # Question display and input
-│   │   └── Results.tsx       # Results and score display
-│   ├── App.tsx               # Root component
-│   ├── App.css               # Main styles
-│   └── main.tsx              # Entry point
-├── server/                   # Backend (Express + TypeScript)
-│   ├── server.ts             # Main server setup
-│   ├── types/
-│   │   └── index.ts          # TypeScript type definitions
-│   ├── database/
-│   │   ├── questions.ts      # Question data and queries
-│   │   └── storage.ts        # In-memory session storage
-│   └── routes/
-│       └── session.routes.ts # API route handlers
-└── package.json
-```
-
-See [server/README.md](server/README.md) for detailed backend architecture documentation.
-
-## API Endpoints
-
-### POST /api/session/start
-Creates a new game session and returns three questions (without true values).
-
-**Response:**
-```json
-{
-  "sessionId": "session_123...",
-  "questions": [
-    {
-      "id": "q1",
-      "prompt": "Height of Mount Everest in meters",
-      "unit": "meters"
-    }
-  ]
-}
-```
-
-### POST /api/session/answer
-Submits an answer for a question.
-
-**Request:**
-```json
-{
-  "sessionId": "session_123...",
-  "questionId": "q1",
-  "lower": 8000,
-  "upper": 9000
-}
-```
-
-**Response:**
-```json
-{
-  "success": true
-}
-```
-
-### POST /api/session/finalize
-Finalizes the session and returns judgements with true values.
-
-**Request:**
-```json
-{
-  "sessionId": "session_123..."
-}
-```
-
-**Response:**
-```json
-{
-  "judgements": [
-    {
-      "questionId": "q1",
-      "prompt": "Height of Mount Everest in meters",
-      "unit": "meters",
-      "lower": 8000,
-      "upper": 9000,
-      "trueValue": 8849,
-      "hit": true
-    }
-  ],
-  "score": 2,
-  "totalQuestions": 3
-}
-```
-
-## Future Enhancements
-
-- Supabase integration for persistence
-- User authentication and profiles
-- Scoring that penalizes overly wide intervals
-- Streak tracking
-- More questions and question categories
-- Leaderboards
+A daily estimation game. Choose a username and symbol, enter an estimate (including `4E5` or `-196`), then draw your range. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
 
 ## Development
 
-### Building for Production
+Node 22+, PostgreSQL 15+, and npm are required.
 
-```bash
+```sh
+npm install
+# Set DATABASE_URL in .env (never VITE_DATABASE_URL).
+npm run dev
+```
+
+The React client runs through Vite. The Express development server invokes the same handlers as Vercel, so local and production scoring, accounts, and transactions are identical.
+
+```sh
+npm run check
 npm run build
+npm test
 ```
 
-### Linting
+`npm test` creates and removes an isolated PostgreSQL server using `initdb` and `pg_ctl`; it never connects to the live database. To verify an exported dataset as well:
 
-```bash
-npm run lint
+```sh
+bash test/database.integration.sh /absolute/path/to/supabase-export
 ```
+
+## Database
+
+Neon Postgres is provisioned through the Vercel Marketplace. Production and preview use separate Free-plan databases, in the same `iad1` region as the API. Database credentials stay on the server. There is no Supabase runtime dependency.
+
+For an empty database, apply `scripts/postgres/001_schema.sql`. To import the verified Supabase export into an empty database instead:
+
+```sh
+npm run db:migrate -- /absolute/path/to/supabase-export
+npm run db:check
+```
+
+The migration checks hashes, imports in one transaction, and refuses to overwrite an existing schema. All source rows are retained in `legacy.supabase_exports`; only editorial data enters the active game. Old test accounts and scores do not affect new rankings. Ten unfinished zero-valued questions are inactive; any scheduled occurrences are replaced. Review and verify them before reactivating. Historical Supabase SQL remains in `scripts/migrations/` for reference and must not be applied to Neon.
+
+Questions belong to units and optionally multiple subcategories. Daily schedules have unique positions and question IDs per date. When the imported schedule runs out, a transaction creates a shared three-question edition from active daily questions, preferring those not used in the previous week. The bank eventually repeats; add verified questions regularly.
+
+A game snapshots question text, truth, units and citations at start. Each locked answer is stored once, with a composite foreign key to that game's questions. The server computes the score and only reveals a truth after saving a range. Completion is idempotent. Totals, hit rates and leaderboards are derived from completed ranked games, without mutable duplicate counters. Practice games are saved but excluded from rankings and profile totals.
+
+Profiles use server-generated random session cookies (HttpOnly, SameSite, Secure in production); only token hashes are stored. Empty visitors do not create users. Optional email/password sign-in uses salted scrypt hashes and shared database rate limits. There is no email verification or password-reset mail service yet; do not treat email as verified. Username-only profiles are retained in that browser; adding sign-in enables another device.
+
+## Deployment
+
+The repository is linked to Vercel's `4-sigma` project, serving `4sig.xyz`. Run a preview deployment and check `/api/health`, the full play flow, sharing, and profile before deploying production. Vercel injects the environment-specific `DATABASE_URL`. Keep `.env*`, `.vercel`, exports, and database credentials out of git.
+
+See [migration review](docs/postgres-migration.md) for the model changes and migration record.

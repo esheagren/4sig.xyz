@@ -1,194 +1,182 @@
-import { useState, useRef, useEffect } from 'react';
-import { useAuth } from '../context/AuthContext';
-import { useAnalytics } from '../context/PostHogContext';
-import { AuthModal } from '../components/nav/AuthModal';
-import { PerformanceChart } from '../components/results/PerformanceChart';
-
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { AuthModal } from "../components/nav/AuthModal";
+import { PlayerMark } from "../components/interval/PlayerIdentity";
+import { validPlayerIcon } from "../components/interval/player";
+import { scoreText } from "../components/interval/game";
 export function ProfilePage() {
-  const { user, isAnonymous, logout, isLoading } = useAuth();
-  const { capture } = useAnalytics();
-  const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editDisplayName, setEditDisplayName] = useState('');
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const settingsRef = useRef<HTMLDivElement>(null);
-  const hasTrackedView = useRef(false);
-
-  // Track profile page view (once per mount when user is loaded)
+  const { user, isLoading, refreshUser, logout } = useAuth();
+  const [history, setHistory] = useState<
+    Array<{ date: string; userScore: number; avgScore: number }>
+  >([]);
+  const [authOpen, setAuthOpen] = useState(false),
+    [editing, setEditing] = useState(false),
+    [username, setUsername] = useState(""),
+    [error, setError] = useState("");
   useEffect(() => {
-    if (!isLoading && user && !hasTrackedView.current) {
-      capture('profile_viewed', {
-        isAnonymous,
-        gamesPlayed: user.gamesPlayed,
-        totalScore: user.totalScore,
+    if (!user || user.isAnonymous) return;
+    const abort = new AbortController();
+    void fetch("/api/user/performance-history", { signal: abort.signal })
+      .then(async (r) => {
+        if (!r.ok) throw new Error();
+        return r.json();
+      })
+      .then((data) => setHistory(data.history))
+      .catch((e) => {
+        if (e.name !== "AbortError")
+          setError("Could not load your history. Please reload.");
       });
-      hasTrackedView.current = true;
+    return () => abort.abort();
+  }, [user]);
+  async function saveName(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    try {
+      const r = await fetch("/api/user/profile", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ displayName: username }),
+      });
+      const data = await r.json();
+      if (!r.ok) throw new Error(data.error);
+      await refreshUser();
+      setEditing(false);
+    } catch (e) {
+      setError(
+        e instanceof Error ? e.message : "Could not save. Please try again.",
+      );
     }
-  }, [isLoading, user, isAnonymous]);
-
-  // Close settings dropdown when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (settingsRef.current && !settingsRef.current.contains(event.target as Node)) {
-        setIsSettingsOpen(false);
-      }
-    }
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
-
-  if (isLoading) {
-    return (
-      <div className="profile-container">
-        <div className="loading">Loading profile...</div>
-      </div>
-    );
   }
-
-  if (!user) {
-    return (
-      <div className="profile-container">
-        <div className="profile-empty">
-          <h2>Profile</h2>
-          <p>No user data available.</p>
-        </div>
-      </div>
-    );
-  }
-
-  const handleStartEdit = () => {
-    setEditDisplayName(user.displayName);
-    setIsEditing(true);
-  };
-
-  const handleSaveEdit = async () => {
-    // TODO: Implement profile update API call
-    setIsEditing(false);
-  };
-
-  const handleCancelEdit = () => {
-    setIsEditing(false);
-    setEditDisplayName('');
-  };
-
   return (
-    <div className="profile-container">
-      <div className="profile-header">
-        <div className="profile-avatar">
-          {user.displayName.charAt(0).toUpperCase()}
-        </div>
-        <div className="profile-info">
-          {isEditing ? (
-            <div className="profile-edit-name">
-              <input
-                type="text"
-                value={editDisplayName}
-                onChange={(e) => setEditDisplayName(e.target.value)}
-                maxLength={50}
-              />
-              <button onClick={handleSaveEdit} className="profile-save-btn">Save</button>
-              <button onClick={handleCancelEdit} className="profile-cancel-btn">Cancel</button>
-            </div>
+    <div className="interval-page">
+      <div className="interval-app profile-page">
+        <header>
+          <Link className="text-button" to="/">
+            ← Play
+          </Link>
+        </header>
+        <main>
+          {isLoading ? (
+            <p>Loading…</p>
+          ) : !user || user.isAnonymous ? (
+            <>
+              <h1>Your profile</h1>
+              <p>Choose a username to begin.</p>
+              <Link className="primary" to="/">
+                Play →
+              </Link>
+            </>
           ) : (
-            <h1>
-              {user.displayName}
-            </h1>
-          )}
-          {isAnonymous && (
-            <span className="profile-badge guest-badge">Guest</span>
-          )}
-        </div>
-        <div className="profile-settings" ref={settingsRef}>
-          <button
-            className="settings-gear-btn"
-            onClick={() => setIsSettingsOpen(!isSettingsOpen)}
-            aria-label="Settings"
-          >
-            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <circle cx="10" cy="10" r="3" />
-              <path d="M10 1v2M10 17v2M1 10h2M17 10h2M3.5 3.5l1.4 1.4M15.1 15.1l1.4 1.4M3.5 16.5l1.4-1.4M15.1 4.9l1.4-1.4" />
-            </svg>
-          </button>
-          {isSettingsOpen && (
-            <div className="settings-dropdown">
-              <button
-                className="settings-dropdown-item"
-                onClick={() => {
-                  handleStartEdit();
-                  setIsSettingsOpen(false);
-                }}
-              >
-                Change Username
-              </button>
-              {!isAnonymous && (
+            <>
+              <div className="result-person">
+                <PlayerMark
+                  icon={
+                    validPlayerIcon(user.avatarIcon) ? user.avatarIcon : "orbit"
+                  }
+                />
+                <h1>{user.displayName}</h1>
+              </div>
+              {editing ? (
+                <form className="profile-name" onSubmit={saveName}>
+                  <label htmlFor="profile-name">Username</label>
+                  <input
+                    id="profile-name"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    pattern="[a-zA-Z0-9_]{3,20}"
+                    minLength={3}
+                    maxLength={20}
+                    required
+                  />
+                  <button className="primary">Save</button>
+                  <button
+                    type="button"
+                    className="text-button"
+                    onClick={() => setEditing(false)}
+                  >
+                    Cancel
+                  </button>
+                </form>
+              ) : (
                 <button
-                  className="settings-dropdown-item settings-logout"
+                  className="text-button"
                   onClick={() => {
-                    capture('auth_logout');
-                    logout();
-                    setIsSettingsOpen(false);
+                    setUsername(user.displayName);
+                    setEditing(true);
                   }}
                 >
-                  Sign Out
+                  Edit username
                 </button>
               )}
-            </div>
+              <dl className="profile-stats-grid">
+                {[
+                  [scoreText(user.totalScore), "Total points"],
+                  [user.gamesPlayed, "Daily games"],
+                  [scoreText(user.averageScore), "Average score"],
+                  [Math.round(user.calibrationRate * 100) + "%", "In range"],
+                  [user.currentStreak, "Day streak"],
+                  [user.bestStreak, "Best streak"],
+                ].map(([v, l]) => (
+                  <div key={l}>
+                    <dt>{l}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <h2>Last 7 days</h2>
+              <p className="muted">First attempts only.</p>
+              <table className="history-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Your score</th>
+                    <th>Daily average</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((day) => (
+                    <tr key={day.date}>
+                      <td>{day.date.slice(5)}</td>
+                      <td>{scoreText(day.userScore)}</td>
+                      <td>{scoreText(day.avgScore)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {!user.email ? (
+                <div className="profile-account">
+                  <p>
+                    Your profile is saved in this browser. Add an email and
+                    password to sign in on another device.
+                  </p>
+                  <button
+                    className="text-button"
+                    onClick={() => setAuthOpen(true)}
+                  >
+                    Add sign-in
+                  </button>
+                </div>
+              ) : (
+                <div className="profile-account">
+                  <p>{user.email}</p>
+                  <button className="text-button" onClick={() => void logout()}>
+                    Sign out
+                  </button>
+                </div>
+              )}
+            </>
           )}
-        </div>
+          <p role="status" className="entry-error">
+            {error}
+          </p>
+        </main>
+        <AuthModal
+          isOpen={authOpen}
+          onClose={() => setAuthOpen(false)}
+          initialMode="signup"
+        />
       </div>
-
-      {isAnonymous && (
-        <div className="profile-cta">
-          <h3>Save Your Progress</h3>
-          <p>Create an account to save your scores and play on any device.</p>
-          <button
-            onClick={() => setIsAuthModalOpen(true)}
-            className="profile-cta-button"
-          >
-            Create Account
-          </button>
-        </div>
-      )}
-
-      <div className="profile-stats">
-        <h2>Your Stats</h2>
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-value">{user.gamesPlayed}</div>
-            <div className="stat-label">Games Played</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{Math.round(user.totalScore)}</div>
-            <div className="stat-label">Total Score</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{user.averageScore?.toFixed(1) || '0.0'}</div>
-            <div className="stat-label">Average Score</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{(user.calibrationRate * 100).toFixed(0)}%</div>
-            <div className="stat-label">Calibration Rate</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{user.currentStreak}</div>
-            <div className="stat-label">Current Streak</div>
-          </div>
-          <div className="stat-card">
-            <div className="stat-value">{user.bestStreak || 0}</div>
-            <div className="stat-label">Best Streak</div>
-          </div>
-        </div>
-      </div>
-
-      <div className="profile-performance">
-        <h2>7-Day Performance</h2>
-        <PerformanceChart />
-      </div>
-
-      <AuthModal
-        isOpen={isAuthModalOpen}
-        onClose={() => setIsAuthModalOpen(false)}
-      />
     </div>
   );
 }

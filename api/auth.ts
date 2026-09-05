@@ -1,406 +1,160 @@
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { supabase } from './_lib/supabase.js';
-import { extractDeviceId, getAuthUser, getUserByAuthId, getUserByDeviceId, getUserById } from './_lib/auth.js';
+import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { query, transaction } from "./_lib/db.js";
 import {
-  getOrCreateDeviceUser,
-  getUserByEmail,
-  convertToAuthenticatedUser,
-  createAuthenticatedUser,
-  mergeUsers,
-  linkDeviceToUser,
+  getAuthUser,
+  requireUser,
+  createAuthSession,
+  setSessionCookie,
+  revokeSession,
+  rateLimit,
+  hashPassword,
+  verifyPassword,
+} from "./_lib/auth.js";
+import {
+  getUserById,
   isValidUsername,
   isUsernameAvailable,
-  generateUsernameSuggestions,
-  setUsernameForDevice,
-  linkEmailToUser,
-} from './_lib/users.js';
-
-function setCors(res: VercelResponse) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Device-Id');
-}
-
+  publicUser,
+} from "./_lib/users.js";
+import { validIcon } from "./_lib/player-profile.js";
+import { HttpError, prepare, fail, requireMethod } from "./_lib/http.js";
+const guest = {
+  id: "",
+  displayName: "",
+  email: null,
+  isAnonymous: true,
+  avatarIcon: null,
+  sessionCount: 0,
+  totalScore: 0,
+  averageScore: 0,
+  gamesPlayed: 0,
+  currentStreak: 0,
+  bestStreak: 0,
+  calibrationRate: 0,
+  questionsCaptured: 0,
+  bestSingleScore: 0,
+};
 export default async function handler(req: VercelRequest, res: VercelResponse) {
-  setCors(res);
-
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  // Route based on the path: /api/auth/device, /api/auth/signup, etc.
-  const path = req.url?.split('?')[0] || '';
-  const action = path.replace('/api/auth', '').replace('/', '');
-
   try {
-    switch (action) {
-      case 'device':
-        return handleDevice(req, res);
-      case 'signup':
-        return handleSignup(req, res);
-      case 'login':
-        return handleLogin(req, res);
-      case 'logout':
-        return handleLogout(req, res);
-      case 'me':
-        return handleMe(req, res);
-      case 'claim-username':
-        return handleClaimUsername(req, res);
-      case 'check-username':
-        return handleCheckUsername(req, res);
-      case 'claim-account':
-        return handleClaimAccount(req, res);
-      default:
-        return res.status(404).json({ error: 'Not found' });
+    if (!prepare(req, res)) return;
+    const action = req.url?.split("?")[0].split("/").pop();
+    requireMethod(req, action === "me" ? "GET" : "POST");
+    const body = req.body ?? {};
+    const auth = await getAuthUser(req);
+    if (action === "device" || action === "me") {
+      const user = auth ? await getUserById(auth.userId) : null;
+      return res.json({ user: user ? publicUser(user) : guest });
     }
-  } catch (err) {
-    console.error('Auth error:', err);
-    return res.status(500).json({ error: 'Internal server error' });
-  }
-}
-
-async function handleDevice(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const deviceId = extractDeviceId(req);
-  if (!deviceId) {
-    return res.status(400).json({ error: 'X-Device-Id header required' });
-  }
-
-  const user = await getOrCreateDeviceUser(deviceId);
-  return res.json({
-    user: {
-      id: user.id,
-      displayName: user.username,
-      isAnonymous: user.isAnonymous,
-      sessionCount: user.sessionCount || 0,
-      totalScore: user.totalScore,
-      averageScore: user.averageScore,
-      gamesPlayed: user.gamesPlayed,
-      currentStreak: user.currentStreak,
-      bestStreak: user.bestStreak,
-      calibrationRate: user.calibrationRate,
-      questionsCaptured: user.questionsCaptured,
-      bestSingleScore: user.bestSingleScore,
-      createdAt: user.createdAt,
-    },
-  });
-}
-
-async function handleSignup(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { email, password, displayName } = req.body;
-  const deviceId = extractDeviceId(req);
-
-  if (!email || !password || !displayName) {
-    return res.status(400).json({ error: 'Email, password, and display name required' });
-  }
-
-  const existingUser = await getUserByEmail(email);
-  if (existingUser) {
-    return res.status(409).json({ error: 'Email already registered' });
-  }
-
-  const { data: authData, error: authError } = await supabase.auth.signUp({ email, password });
-  if (authError || !authData.user) {
-    return res.status(400).json({ error: authError?.message || 'Failed to create account' });
-  }
-
-  const authId = authData.user.id;
-  let user;
-
-  if (deviceId) {
-    const anonymousUser = await getUserByDeviceId(deviceId);
-    if (anonymousUser && anonymousUser.isAnonymous) {
-      user = await convertToAuthenticatedUser(anonymousUser.id, authId, email, displayName);
+    if (action === "logout") {
+      await revokeSession(req);
+      setSessionCookie(res, null);
+      return res.json({ success: true });
     }
-  }
-
-  if (!user) {
-    user = await createAuthenticatedUser(authId, email, displayName, deviceId || undefined);
-  }
-
-  return res.status(201).json({
-    user: {
-      id: user.id,
-      email: user.email,
-      displayName: user.username,
-      isAnonymous: user.isAnonymous,
-      totalScore: user.totalScore,
-      averageScore: user.averageScore,
-      gamesPlayed: user.gamesPlayed,
-      currentStreak: user.currentStreak,
-      bestStreak: user.bestStreak,
-      calibrationRate: user.calibrationRate,
-      questionsCaptured: user.questionsCaptured,
-      bestSingleScore: user.bestSingleScore,
-      createdAt: user.createdAt,
-    },
-    session: authData.session,
-  });
-}
-
-async function handleLogin(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { email, password } = req.body;
-  const deviceId = extractDeviceId(req);
-
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password required' });
-  }
-
-  const { data: authData, error: authError } = await supabase.auth.signInWithPassword({ email, password });
-  if (authError || !authData.user) {
-    return res.status(401).json({ error: 'Invalid email or password' });
-  }
-
-  let user = await getUserByAuthId(authData.user.id);
-
-  if (!user) {
-    user = await createAuthenticatedUser(authData.user.id, email, email.split('@')[0], deviceId || undefined);
-  }
-
-  if (deviceId) {
-    const anonymousUser = await getUserByDeviceId(deviceId);
-    if (anonymousUser && anonymousUser.isAnonymous && anonymousUser.id !== user.id) {
-      await mergeUsers(anonymousUser.id, user.id);
-      user = await getUserByAuthId(authData.user.id);
+    if (action === "check-username") {
+      await rateLimit(req, "check-username", 100);
+      const valid = isValidUsername(body.username);
+      return res.json({
+        valid,
+        available: valid && (await isUsernameAvailable(body.username)),
+      });
     }
-    if (user && user.deviceId !== deviceId) {
-      await linkDeviceToUser(user.id, deviceId);
+    if (action === "profile") {
+      const identity = await requireUser(req);
+      if (!validIcon(body.avatarIcon))
+        throw new HttpError(400, "Choose one of the available symbols.");
+      await query("UPDATE users SET avatar_icon=$2 WHERE id=$1", [
+        identity.userId,
+        body.avatarIcon,
+      ]);
+      return res.json({
+        user: publicUser((await getUserById(identity.userId))!),
+      });
     }
-  }
-
-  return res.json({
-    user: user ? {
-      id: user.id,
-      email: user.email,
-      displayName: user.username,
-      isAnonymous: user.isAnonymous,
-      totalScore: user.totalScore,
-      averageScore: user.averageScore,
-      gamesPlayed: user.gamesPlayed,
-      currentStreak: user.currentStreak,
-      bestStreak: user.bestStreak,
-      calibrationRate: user.calibrationRate,
-      questionsCaptured: user.questionsCaptured,
-      bestSingleScore: user.bestSingleScore,
-      createdAt: user.createdAt,
-    } : null,
-    session: authData.session,
-  });
-}
-
-async function handleLogout(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const authHeader = req.headers.authorization;
-  if (authHeader && authHeader.startsWith('Bearer ')) {
-    await supabase.auth.signOut();
-  }
-
-  return res.json({ success: true });
-}
-
-async function handleMe(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const authUser = await getAuthUser(req);
-  if (!authUser) {
-    return res.status(401).json({ error: 'Not authenticated' });
-  }
-
-  const user = await getUserById(authUser.userId);
-  if (!user) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  return res.json({
-    user: {
-      id: user.id,
-      email: user.email,
-      displayName: user.username,
-      isAnonymous: user.isAnonymous,
-      sessionCount: user.sessionCount || 0,
-      totalScore: user.totalScore,
-      averageScore: user.averageScore,
-      gamesPlayed: user.gamesPlayed,
-      currentStreak: user.currentStreak,
-      bestStreak: user.bestStreak,
-      calibrationRate: user.calibrationRate,
-      questionsCaptured: user.questionsCaptured,
-      bestSingleScore: user.bestSingleScore,
-      createdAt: user.createdAt,
-    },
-  });
-}
-
-async function handleClaimUsername(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { username } = req.body;
-  const deviceId = extractDeviceId(req);
-
-  if (!deviceId) {
-    return res.status(400).json({ error: 'Device ID required' });
-  }
-
-  if (!username || !username.trim()) {
-    return res.status(400).json({ error: 'Username required' });
-  }
-
-  // Validate username format (use existing isValidUsername)
-  if (!isValidUsername(username)) {
-    return res.status(400).json({
-      error: 'Username must be 3-20 characters (letters, numbers, underscores only)'
+    if (action === "claim-username") {
+      if (auth)
+        return res.json({
+          user: publicUser((await getUserById(auth.userId))!),
+        });
+      if (!isValidUsername(body.username))
+        throw new HttpError(400, "Use 3–20 letters, numbers, or underscores.");
+      await rateLimit(req, "signup");
+      const created = await transaction(async (client) => {
+        const { rows } = await client.query(
+          "INSERT INTO users(username) VALUES($1) RETURNING id",
+          [body.username],
+        );
+        return {
+          id: rows[0].id,
+          token: await createAuthSession(client, rows[0].id),
+        };
+      });
+      setSessionCookie(res, created.token);
+      return res.json({ user: publicUser((await getUserById(created.id))!) });
+    }
+    if (!["signup", "claim-account", "login"].includes(action ?? ""))
+      throw new HttpError(404, "Not found");
+    await rateLimit(req, "credentials");
+    const email =
+      typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    const password = body.password;
+    if (
+      !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+      email.length > 254 ||
+      typeof password !== "string" ||
+      password.length > 256
+    )
+      throw new HttpError(400, "Enter a valid email and password.");
+    if (action === "login") {
+      const { rows } = await query(
+        "SELECT u.id,c.password_hash FROM users u JOIN user_credentials c ON c.user_id=u.id WHERE lower(u.email)=$1",
+        [email],
+      );
+      if (!(await verifyPassword(password, rows[0]?.password_hash)))
+        throw new HttpError(401, "Invalid email or password.");
+      const token = await transaction((client) =>
+        createAuthSession(client, rows[0].id),
+      );
+      await revokeSession(req);
+      setSessionCookie(res, token);
+      return res.json({ user: publicUser((await getUserById(rows[0].id))!) });
+    }
+    if (password.length < 12)
+      throw new HttpError(400, "Use a password with at least 12 characters.");
+    if (action === "claim-account" && !auth)
+      throw new HttpError(401, "Choose a username first.");
+    if (!auth && !isValidUsername(body.displayName))
+      throw new HttpError(400, "Use 3–20 letters, numbers, or underscores.");
+    const passwordHash = await hashPassword(password);
+    const created = await transaction(async (client) => {
+      let id = auth?.userId;
+      if (id) {
+        const { rows } = await client.query(
+          "SELECT email FROM users WHERE id=$1 FOR UPDATE",
+          [id],
+        );
+        if (rows[0]?.email)
+          throw new HttpError(409, "This profile already has an email.");
+        await client.query("UPDATE users SET email=$2 WHERE id=$1", [
+          id,
+          email,
+        ]);
+      } else {
+        const { rows } = await client.query(
+          "INSERT INTO users(username,email) VALUES($1,$2) RETURNING id",
+          [body.displayName, email],
+        );
+        id = rows[0].id;
+      }
+      await client.query(
+        "INSERT INTO user_credentials(user_id,password_hash) VALUES($1,$2)",
+        [id, passwordHash],
+      );
+      return { id: id!, token: await createAuthSession(client, id!) };
     });
+    await revokeSession(req);
+    setSessionCookie(res, created.token);
+    return res.json({ user: publicUser((await getUserById(created.id))!) });
+  } catch (error) {
+    return fail(res, error);
   }
-
-  // Check availability (use existing isUsernameAvailable)
-  const available = await isUsernameAvailable(username);
-  if (!available) {
-    const suggestions = generateUsernameSuggestions(username);
-    return res.status(409).json({
-      error: 'Username already taken',
-      suggestions
-    });
-  }
-
-  // Set username (use existing setUsernameForDevice function)
-  const user = await setUsernameForDevice(deviceId, username);
-
-  // Update username_claimed_at timestamp
-  await supabase
-    .from('users')
-    .update({ username_claimed_at: new Date().toISOString() })
-    .eq('id', user.id);
-
-  return res.json({
-    user: {
-      id: user.id,
-      displayName: user.username,
-      isAnonymous: user.isAnonymous,
-      sessionCount: user.sessionCount || 0,
-      totalScore: user.totalScore,
-      averageScore: user.averageScore,
-      gamesPlayed: user.gamesPlayed,
-      currentStreak: user.currentStreak,
-      bestStreak: user.bestStreak,
-      calibrationRate: user.calibrationRate,
-      questionsCaptured: user.questionsCaptured,
-      bestSingleScore: user.bestSingleScore,
-      createdAt: user.createdAt,
-    },
-  });
-}
-
-async function handleCheckUsername(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { username } = req.body;
-
-  if (!username || !username.trim()) {
-    return res.json({ valid: false, available: false, error: 'Username required' });
-  }
-
-  const valid = isValidUsername(username);
-  if (!valid) {
-    return res.json({ valid: false, available: false, error: 'Invalid format' });
-  }
-
-  const available = await isUsernameAvailable(username);
-  return res.json({ valid: true, available });
-}
-
-async function handleClaimAccount(req: VercelRequest, res: VercelResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { email, password } = req.body;
-  const deviceId = extractDeviceId(req);
-
-  if (!deviceId) {
-    return res.status(400).json({ error: 'Device ID required' });
-  }
-
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password required' });
-  }
-
-  // Get current user by device ID
-  const currentUser = await getUserByDeviceId(deviceId);
-  if (!currentUser) {
-    return res.status(404).json({ error: 'User not found' });
-  }
-
-  // Verify user has claimed username but doesn't have email yet
-  if (currentUser.isAnonymous || currentUser.email) {
-    return res.status(400).json({ error: 'Invalid account claim request' });
-  }
-
-  // Check if email is already in use
-  const existingEmail = await getUserByEmail(email);
-  if (existingEmail) {
-    return res.status(409).json({ error: 'Email already registered' });
-  }
-
-  // Create Supabase auth account
-  const { data: authData, error: authError } = await supabase.auth.signUp({
-    email,
-    password,
-  });
-
-  if (authError || !authData.user) {
-    return res.status(400).json({ error: authError?.message || 'Failed to create auth account' });
-  }
-
-  // Link email to existing user (use existing linkEmailToUser function)
-  const upgradedUser = await linkEmailToUser(
-    currentUser.id,
-    authData.user.id,
-    email
-  );
-
-  // Update account_claimed_at timestamp
-  await supabase
-    .from('users')
-    .update({ account_claimed_at: new Date().toISOString() })
-    .eq('id', upgradedUser.id);
-
-  return res.json({
-    user: {
-      id: upgradedUser.id,
-      email: upgradedUser.email,
-      displayName: upgradedUser.username,
-      isAnonymous: upgradedUser.isAnonymous,
-      sessionCount: upgradedUser.sessionCount || 0,
-      totalScore: upgradedUser.totalScore,
-      averageScore: upgradedUser.averageScore,
-      gamesPlayed: upgradedUser.gamesPlayed,
-      currentStreak: upgradedUser.currentStreak,
-      bestStreak: upgradedUser.bestStreak,
-      calibrationRate: upgradedUser.calibrationRate,
-      questionsCaptured: upgradedUser.questionsCaptured,
-      bestSingleScore: upgradedUser.bestSingleScore,
-      createdAt: upgradedUser.createdAt,
-    },
-    session: authData.session,
-  });
 }

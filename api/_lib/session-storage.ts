@@ -1,172 +1,170 @@
-import { supabase } from './supabase.js';
-import { Answer } from './types.js';
-
-/**
- * Generate a unique session ID
- */
-export function generateSessionId(): string {
-  return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-}
-
-/**
- * Create a new session in Supabase
- * @param sessionId - Unique session identifier
- * @param questionIds - Array of question IDs for this session
- * @param userId - User ID who started the session (null if not authenticated)
- */
-export async function createSession(sessionId: string, questionIds: string[], userId: string | null = null): Promise<void> {
-  console.log(`[createSession] Creating session ${sessionId} with userId=${userId}`);
-
-  const insertData = {
-    id: sessionId,
-    question_ids: questionIds,
-    answers: [],
-    user_id: userId,
-    created_at: new Date().toISOString(),
-  };
-  console.log(`[createSession] Insert data:`, JSON.stringify(insertData));
-
-  const { data, error } = await supabase
-    .from('game_sessions')
-    .insert(insertData)
-    .select();
-
-  if (error) {
-    // If table doesn't exist or column doesn't exist, we'll handle sessions in-memory via request body
-    console.error('[createSession] Session creation error:', error.message, error.details, error.hint);
-  } else {
-    console.log(`[createSession] Session created successfully:`, JSON.stringify(data));
-  }
-}
-
-/**
- * Get a session by ID
- */
-export async function getSession(sessionId: string): Promise<{
-  sessionId: string;
-  questionIds: string[];
-  answers: Answer[];
-  userId: string | null;
-} | null> {
-  console.log(`[getSession] Fetching session ${sessionId}`);
-
-  const { data, error } = await supabase
-    .from('game_sessions')
-    .select('*')
-    .eq('id', sessionId)
-    .single();
-
-  if (error) {
-    console.error(`[getSession] Error fetching session:`, error.message, error.details);
-    return null;
-  }
-
-  if (!data) {
-    console.log(`[getSession] No session found for ${sessionId}`);
-    return null;
-  }
-
-  console.log(`[getSession] Raw session data:`, JSON.stringify(data));
-  console.log(`[getSession] user_id field value:`, data.user_id, `type:`, typeof data.user_id);
-
-  return {
-    sessionId: data.id,
-    questionIds: data.question_ids,
-    answers: (data.answers || []).map((a: any) => ({
-      questionId: a.questionId,
-      lower: a.lower,
-      upper: a.upper,
-      submittedAt: new Date(a.submittedAt),
-    })),
-    userId: data.user_id || null,
-  };
-}
-
-/**
- * Add an answer to a session using Postgres array append (single DB call)
- */
-export async function addAnswer(sessionId: string, answer: Answer): Promise<boolean> {
-  const newAnswer = {
-    questionId: answer.questionId,
-    lower: answer.lower,
-    upper: answer.upper,
-    submittedAt: answer.submittedAt.toISOString(),
-  };
-
-  // Use raw SQL to append to JSONB array in a single operation
-  const { error } = await supabase.rpc('append_session_answer', {
-    p_session_id: sessionId,
-    p_answer: newAnswer,
+import { transaction, query } from "./db.js";
+import type { PoolClient, QueryResultRow } from "pg";
+import type { Question, Judgement } from "./types.js";
+import { HttpError } from "./http.js";
+import { Score } from "./scoring.js";
+const isUuid = (s: unknown): s is string =>
+  typeof s === "string" &&
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+export async function startGame(
+  userId: string,
+  edition: string,
+  questions: Question[],
+  practice = false,
+) {
+  return transaction(async (client) => {
+    await client.query("SELECT id FROM users WHERE id=$1 FOR UPDATE", [userId]);
+    if (!practice) {
+      const { rows } = await client.query(
+        "SELECT id FROM game_sessions WHERE user_id=$1 AND edition=$2 AND is_ranked",
+        [userId, edition],
+      );
+      if (rows[0]) return readGame(rows[0].id, userId, client);
+    }
+    const { rows } = await client.query(
+      "INSERT INTO game_sessions(user_id,edition,is_ranked) VALUES($1,$2,$3) RETURNING id",
+      [userId, edition, !practice],
+    );
+    const id = rows[0].id;
+    for (let i = 0; i < questions.length; i++)
+      await client.query(
+        "INSERT INTO game_questions(session_id,question_id,position,snapshot) VALUES($1,$2,$3,$4)",
+        [id, questions[i].id, i, JSON.stringify(questions[i])],
+      );
+    return readGame(id, userId, client);
   });
-
-  if (error) {
-    // Fallback to read-modify-write if RPC doesn't exist
-    console.warn('RPC not available, using fallback:', error.message);
-    return addAnswerFallback(sessionId, answer);
-  }
-
-  return true;
 }
-
-/**
- * Fallback for adding answer (used if RPC not available)
- */
-async function addAnswerFallback(sessionId: string, answer: Answer): Promise<boolean> {
-  const session = await getSession(sessionId);
-  if (!session) {
-    return false;
-  }
-
-  const updatedAnswers = [...session.answers, {
-    questionId: answer.questionId,
-    lower: answer.lower,
-    upper: answer.upper,
-    submittedAt: answer.submittedAt.toISOString(),
-  }];
-
-  const { error } = await supabase
-    .from('game_sessions')
-    .update({ answers: updatedAnswers })
-    .eq('id', sessionId);
-
-  return !error;
-}
-
-/**
- * Check if a question belongs to a session
- */
-export async function isQuestionInSession(sessionId: string, questionId: string): Promise<boolean> {
-  const session = await getSession(sessionId);
-  return session ? session.questionIds.includes(questionId) : false;
-}
-
-// In-memory fallback for question stats (resets on each function invocation but works for demo)
-const questionStatsCache = new Map<string, { scores: number[] }>();
-
-/**
- * Record a score for a question (in-memory cache - will reset between invocations)
- */
-export function recordQuestionScore(questionId: string, score: number): void {
-  const stats = questionStatsCache.get(questionId) || { scores: [] };
-  stats.scores.push(score);
-  questionStatsCache.set(questionId, stats);
-}
-
-/**
- * Get statistics for a question
- */
-export function getQuestionStats(questionId: string): { averageScore: number; highestScore: number } | null {
-  const stats = questionStatsCache.get(questionId);
-
-  if (!stats || stats.scores.length === 0) {
-    return null;
-  }
-
-  const averageScore = stats.scores.reduce((sum, score) => sum + score, 0) / stats.scores.length;
-  const highestScore = Math.max(...stats.scores);
-
+function judgement(row: QueryResultRow): Judgement {
+  const q: Question = row.snapshot;
   return {
-    averageScore: Math.round(averageScore * 100) / 100,
-    highestScore: Math.round(highestScore * 100) / 100,
+    questionId: row.question_id,
+    prompt: q.prompt,
+    unit: q.unit,
+    trueValue: q.trueValue,
+    source: q.source,
+    sourceUrl: q.sourceUrl,
+    answerContext: q.answerContext,
+    lower: Number(row.lower_bound),
+    upper: Number(row.upper_bound),
+    hit: row.captured,
+    score: Number(row.score),
   };
+}
+export async function readGame(
+  id: unknown,
+  userId: string,
+  client?: PoolClient,
+) {
+  if (!isUuid(id)) throw new HttpError(404, "Game not found.");
+  const run = client ? client.query.bind(client) : query;
+  const { rows } = await run(
+    "SELECT id,edition::text,completed_at,is_ranked FROM game_sessions WHERE id=$1 AND user_id=$2",
+    [id, userId],
+  );
+  if (!rows[0]) throw new HttpError(404, "Game not found.");
+  const { rows: items } = await run(
+    `SELECT q.question_id,q.snapshot,a.lower_bound,a.upper_bound,a.captured,a.score FROM game_questions q
+    LEFT JOIN game_answers a ON (q.session_id,q.question_id)=(a.session_id,a.question_id)
+    WHERE q.session_id=$1 ORDER BY q.position`,
+    [id],
+  );
+  return {
+    sessionId: id,
+    edition: rows[0].edition,
+    isRanked: rows[0].is_ranked,
+    completed: !!rows[0].completed_at,
+    questions: items.map((r) => ({
+      id: r.question_id,
+      prompt: r.snapshot.prompt,
+      unit: r.snapshot.unit,
+    })),
+    judgements: items.filter((r) => r.lower_bound !== null).map(judgement),
+  };
+}
+export async function saveAnswer(
+  userId: string,
+  sessionId: unknown,
+  questionId: unknown,
+  lower: unknown,
+  upper: unknown,
+) {
+  if (
+    !isUuid(sessionId) ||
+    !isUuid(questionId) ||
+    typeof lower !== "number" ||
+    typeof upper !== "number" ||
+    ![lower, upper].every((n) => Number.isFinite(n) && Math.abs(n) <= 1e100) ||
+    lower > upper
+  )
+    throw new HttpError(400, "Enter finite, ordered bounds.");
+  return transaction(async (client) => {
+    const { rows } = await client.query(
+      "SELECT completed_at FROM game_sessions WHERE id=$1 AND user_id=$2 FOR UPDATE",
+      [sessionId, userId],
+    );
+    if (!rows[0]) throw new HttpError(404, "Game not found.");
+    const { rows: items } = await client.query(
+      `SELECT q.*,a.lower_bound,a.upper_bound,a.score,a.captured FROM game_questions q
+      LEFT JOIN game_answers a ON (q.session_id,q.question_id)=(a.session_id,a.question_id)
+      WHERE q.session_id=$1 ORDER BY q.position`,
+      [sessionId],
+    );
+    const item = items.find((r) => r.question_id === questionId);
+    if (!item) throw new HttpError(400, "Question is not part of this game.");
+    if (item.lower_bound !== null) {
+      if (
+        Number(item.lower_bound) !== lower ||
+        Number(item.upper_bound) !== upper
+      )
+        throw new HttpError(409, "This range is already locked.");
+      return judgement(item);
+    }
+    if (rows[0].completed_at)
+      throw new HttpError(409, "Game is already complete.");
+    if (items.find((r) => r.lower_bound === null)?.question_id !== questionId)
+      throw new HttpError(409, "Answer the current question first.");
+    const q: Question = item.snapshot;
+    const score = Score.calculateScore(
+        lower,
+        upper,
+        q.trueValue,
+        q.scoringReference ?? 1,
+      ),
+      hit = Score.inBounds(lower, upper, q.trueValue);
+    await client.query(
+      "INSERT INTO game_answers(session_id,question_id,lower_bound,upper_bound,score,captured) VALUES($1,$2,$3,$4,$5,$6)",
+      [sessionId, questionId, lower, upper, score, hit],
+    );
+    return judgement({
+      ...item,
+      lower_bound: lower,
+      upper_bound: upper,
+      score,
+      captured: hit,
+    });
+  });
+}
+export async function finishGame(userId: string, id: unknown) {
+  if (!isUuid(id)) throw new HttpError(404, "Game not found.");
+  return transaction(async (client) => {
+    const { rows } = await client.query(
+      "SELECT id FROM game_sessions WHERE id=$1 AND user_id=$2 FOR UPDATE",
+      [id, userId],
+    );
+    if (!rows[0]) throw new HttpError(404, "Game not found.");
+    const game = await readGame(id, userId, client);
+    if (game.judgements.length !== game.questions.length)
+      throw new HttpError(409, "Answer every question before finishing.");
+    await client.query(
+      "UPDATE game_sessions SET completed_at=COALESCE(completed_at,now()) WHERE id=$1",
+      [id],
+    );
+    return {
+      judgements: game.judgements,
+      score: Score.calculateTotalScore(game.judgements.map((j) => j.score)),
+      totalQuestions: game.questions.length,
+      edition: game.edition,
+      isRanked: game.isRanked,
+    };
+  });
 }

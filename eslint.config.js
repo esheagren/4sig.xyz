@@ -6,7 +6,7 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  globalIgnores(['dist','.vercel']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
@@ -15,6 +15,7 @@ export default defineConfig([
       reactHooks.configs['recommended-latest'],
       reactRefresh.configs.vite,
     ],
+    rules: {'react-refresh/only-export-components':['error',{allowConstantExport:true,allowExportNames:['useAuth','useAnalytics']}]},
     languageOptions: {
       ecmaVersion: 2020,
       globals: globals.browser,

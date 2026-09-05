@@ -3,25 +3,15 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#22c55e" />
-    <title>four-sigma</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#151817" />
+    <meta name="description" content="A daily estimation game. Capture the answer in your range, then share your score. Room to be wrong." />
+    <meta property="og:title" content="Four Sigma — Room to be wrong" />
+    <meta property="og:description" content="Three numbers. How much room do you need? Play today's estimation game." />
+    <meta property="og:url" content="https://4sig.xyz/" />
+    <title>Four Sigma — Room to be wrong</title>
   </head>
-  <body class="no-transition">
-    <script>
-      // FOUC prevention: Apply saved theme immediately before React hydrates
-      (function() {
-        var theme = localStorage.getItem('four_sigma_theme') || 'default';
-        document.body.classList.add('theme-' + theme);
-
-        // Remove no-transition class after a brief delay to enable transitions
-        requestAnimationFrame(function() {
-          requestAnimationFrame(function() {
-            document.body.classList.remove('no-transition');
-          });
-        });
-      })();
-    </script>
+  <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

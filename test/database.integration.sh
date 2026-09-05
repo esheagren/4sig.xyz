@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+repo_dir="$(cd "$(dirname "$0")/.." && pwd)"
+test_db_dir="$(mktemp -d /private/tmp/4sig-database.XXXXXX)"
+initdb -D "$test_db_dir/data" -A trust --no-locale > "$test_db_dir/init.log"
+pg_ctl -D "$test_db_dir/data" -l "$test_db_dir/server.log" -o "-k $test_db_dir -c listen_addresses=''" start >/dev/null
+trap 'pg_ctl -D "$test_db_dir/data" stop -m fast >/dev/null' EXIT
+export PGHOST="$test_db_dir" PGDATABASE=postgres DATABASE_URL=''
+cd "$repo_dir"
+if [ -n "${1:-}" ]; then
+  npx tsx scripts/postgres/migrate.ts "$1"
+else
+  psql -v ON_ERROR_STOP=1 -f scripts/postgres/001_schema.sql > "$test_db_dir/schema.log"
+  psql -v ON_ERROR_STOP=1 -c "INSERT INTO questions(question_text,answer_value) VALUES ('Test one',123),('Test two',-196),('Test three',0.005);" >/dev/null
+fi
+npx tsx --test test/postgres.test.ts

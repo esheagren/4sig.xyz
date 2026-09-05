@@ -1,4 +1,4 @@
-import { PostHog } from 'posthog-node';
+import { PostHog } from "posthog-node";
 
 let posthogClient: PostHog | null = null;
 
@@ -9,7 +9,7 @@ function getPostHogClient(): PostHog | null {
 
   if (!posthogClient) {
     posthogClient = new PostHog(process.env.POSTHOG_API_KEY, {
-      host: process.env.POSTHOG_HOST || 'https://us.i.posthog.com',
+      host: process.env.POSTHOG_HOST || "https://us.i.posthog.com",
       flushAt: 1, // Flush immediately for serverless
       flushInterval: 0, // Disable interval flushing for serverless
     });
@@ -20,7 +20,7 @@ function getPostHogClient(): PostHog | null {
 export function trackServerEvent(
   distinctId: string,
   event: string,
-  properties?: Record<string, unknown>
+  properties?: Record<string, unknown>,
 ) {
   const client = getPostHogClient();
   if (!client) return;
@@ -30,8 +30,8 @@ export function trackServerEvent(
     event,
     properties: {
       ...properties,
-      $lib: 'posthog-node',
-      source: 'server',
+      $lib: "posthog-node",
+      source: "server",
     },
   });
 }

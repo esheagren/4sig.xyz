@@ -3,12 +3,40 @@
   "outputDirectory": "dist",
   "framework": "vite",
   "rewrites": [
-    { "source": "/ingest/static/:path(.*)", "destination": "https://us-assets.i.posthog.com/static/:path" },
-    { "source": "/ingest/:path(.*)", "destination": "https://us.i.posthog.com/:path" },
-    { "source": "/api/auth/:path*", "destination": "/api/auth" },
-    { "source": "/api/session/:path*", "destination": "/api/session" },
-    { "source": "/api/user/:path*", "destination": "/api/user" },
-    { "source": "/api/feedback", "destination": "/api/feedback" },
-    { "source": "/api/health", "destination": "/api/health" }
+    {
+      "source": "/ingest/static/:path(.*)",
+      "destination": "https://us-assets.i.posthog.com/static/:path"
+    },
+    {
+      "source": "/ingest/:path(.*)",
+      "destination": "https://us.i.posthog.com/:path"
+    },
+    {
+      "source": "/api/auth/:path*",
+      "destination": "/api/auth"
+    },
+    {
+      "source": "/api/session/:path*",
+      "destination": "/api/session"
+    },
+    {
+      "source": "/api/user/:path*",
+      "destination": "/api/user"
+    },
+    {
+      "source": "/api/feedback",
+      "destination": "/api/feedback"
+    },
+    {
+      "source": "/api/health",
+      "destination": "/api/health"
+    },
+    {
+      "source": "/profile",
+      "destination": "/index.html"
+    }
+  ],
+  "regions": [
+    "iad1"
   ]
 }

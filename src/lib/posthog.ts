@@ -1,13 +1,13 @@
-import posthog from 'posthog-js';
+import posthog from "posthog-js";
 
 const POSTHOG_KEY = import.meta.env.VITE_POSTHOG_KEY;
 // Use reverse proxy to bypass ad blockers - requests go through our domain via Vercel rewrites
-const POSTHOG_HOST = '/ingest';
+const POSTHOG_HOST = "/ingest";
 
 export function initPostHog() {
-  if (typeof window !== 'undefined' && POSTHOG_KEY) {
+  if (typeof window !== "undefined" && POSTHOG_KEY) {
     // Get existing device ID for consistent identification
-    const existingDeviceId = localStorage.getItem('four_sigma_device_id');
+    const existingDeviceId = localStorage.getItem("four_sigma_device_id");
 
     posthog.init(POSTHOG_KEY, {
       api_host: POSTHOG_HOST,
@@ -22,11 +22,11 @@ export function initPostHog() {
       respect_dnt: false,
 
       // Persistence for anonymous users
-      persistence: 'localStorage+cookie',
+      persistence: "localStorage+cookie",
 
       // Bootstrap with existing device ID for consistency with our auth system
       bootstrap: {
-        distinctId: existingDeviceId || undefined,
+        distinctID: existingDeviceId || undefined,
       },
 
       // Session recording privacy settings
