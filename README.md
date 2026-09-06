@@ -47,6 +47,16 @@ Profiles use server-generated random session cookies (HttpOnly, SameSite, Secure
 
 ## Deployment
 
+### Private design previews
+
+`/designspace` serves three interactive visual directions, with welcome, estimate, range and score screens. It is a separate server-rendered page; the preview content is not included in the public game bundle. Its sample scores do not create accounts or write game results.
+
+Set `DESIGNSPACE_PASSWORD_HASH` (the existing `scrypt-v1` password format) and `DESIGNSPACE_SESSION_SECRET` (at least 32 random characters) as server-only environment variables. Access fails closed when either is missing. A successful password check sets a signed, HttpOnly cookie for 24 hours; changing the session secret invalidates existing access. Login uses the existing shared rate limiter. Responses disable caching, indexing and framing. Keep these values out of git and never prefix them with `VITE_`.
+
+The dedicated access checks can run without a database using `npx tsx --test test/designspace.test.ts`; they are also included in `npm test`. Local Vite requests to `/designspace` proxy to the Express server. The protected page source is `api/_lib/designspace.html`, included only in the server function deployment.
+
+### Hosting
+
 The repository is linked to Vercel's `4-sigma` project, serving `4sig.xyz`. Run a preview deployment and check `/api/health`, the full play flow, sharing, and profile before deploying production. Vercel injects the environment-specific `DATABASE_URL`. Keep `.env*`, `.vercel`, exports, and database credentials out of git.
 
 See [migration review](docs/postgres-migration.md) for the model changes and migration record.

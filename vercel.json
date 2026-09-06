@@ -2,7 +2,18 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
+  "functions": {
+    "api/designspace.ts": { "includeFiles": "api/_lib/designspace.html" }
+  },
   "rewrites": [
+    {
+      "source": "/designspace",
+      "destination": "/api/designspace"
+    },
+    {
+      "source": "/designspace/",
+      "destination": "/api/designspace"
+    },
     {
       "source": "/ingest/static/:path(.*)",
       "destination": "https://us-assets.i.posthog.com/static/:path"

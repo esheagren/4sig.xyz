@@ -6,14 +6,20 @@ import session from "../api/session.js";
 import user from "../api/user.js";
 import feedback from "../api/feedback.js";
 import health from "../api/health.js";
+import designspace from "../api/designspace.js";
 const app = express();
 app.use(express.json({ limit: "32kb" }));
+app.use(express.urlencoded({ extended: false, limit: "4kb" }));
+app.all(["/designspace", "/designspace/"], (req, res) => {
+  void designspace(req as unknown as VercelRequest, res as unknown as VercelResponse);
+});
 for (const [path, handler] of Object.entries({
   auth,
   session,
   user,
   feedback,
   health,
+  designspace,
 })) {
   app.use("/api/" + path, (req, res) => {
     req.url = req.originalUrl;
