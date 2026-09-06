@@ -18,7 +18,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Vercel-CDN-Cache-Control", "no-store");
   res.setHeader("X-Robots-Tag", "noindex, nofollow, noarchive");
   res.setHeader("X-Content-Type-Options", "nosniff");
-  res.setHeader("Referrer-Policy", "no-referrer");
+  // Keep the Origin on same-site form posts so the CSRF check can validate them.
+  res.setHeader("Referrer-Policy", "same-origin");
   res.setHeader("Content-Security-Policy", `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`);
   try {
     if (!prepare(req, res)) return;
