@@ -6,7 +6,7 @@ export async function getDailyStats(
   edition = pacificDate(),
 ): Promise<DailyStats> {
   const { rows } = await query(
-    `SELECT g.user_id,u.username,u.avatar_icon,g.score,
+    `SELECT g.user_id,u.username,u.avatar_icon,u.avatar_color,g.score,
     rank() OVER(ORDER BY g.score DESC)::int rank FROM completed_games g JOIN users u ON u.id=g.user_id
     WHERE g.is_ranked AND g.edition=$1 ORDER BY g.score DESC,u.username`,
     [edition],
@@ -25,15 +25,14 @@ export async function getDailyStats(
     userScoreToday: own?.score ?? null,
     calibrationToday: hit[0]?.rate ?? null,
     totalParticipantsToday: rows.length,
-    todayLeaderboard: rows
-      .slice(0, 10)
-      .map((r) => ({
-        rank: r.rank,
-        username: r.username,
-        avatarIcon: r.avatar_icon,
-        score: r.score,
-        isCurrentUser: r.user_id === userId,
-      })),
+    todayLeaderboard: rows.slice(0, 10).map((r) => ({
+      rank: r.rank,
+      username: r.username,
+      avatarIcon: r.avatar_icon,
+      avatarColor: r.avatar_color,
+      score: r.score,
+      isCurrentUser: r.user_id === userId,
+    })),
   };
 }
 export async function getPerformanceHistory(
@@ -61,7 +60,7 @@ export async function getPerformanceHistory(
 }
 export async function getOverallLeaderboard(userId = "", limit = 10) {
   const { rows } = await query(
-    `SELECT u.id,u.username,sum(g.score)::float8 score,count(*)::int games,
+    `SELECT u.id,u.username,u.avatar_icon,u.avatar_color,sum(g.score)::float8 score,count(*)::int games,
     rank() OVER(ORDER BY sum(g.score) DESC)::int rank FROM completed_games g JOIN users u ON u.id=g.user_id
     WHERE g.is_ranked GROUP BY u.id ORDER BY score DESC,u.username LIMIT $1`,
     [limit],
@@ -69,6 +68,8 @@ export async function getOverallLeaderboard(userId = "", limit = 10) {
   return rows.map((r) => ({
     rank: r.rank,
     displayName: r.username,
+    avatarIcon: r.avatar_icon,
+    avatarColor: r.avatar_color,
     totalScore: r.score,
     gamesPlayed: r.games,
     isCurrentUser: r.id === userId,

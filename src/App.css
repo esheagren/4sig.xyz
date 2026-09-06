@@ -9,8 +9,8 @@ body,
   width: 100%;
 }
 body {
-  background: #111811;
-  color: #e7eedf;
+  background: #f6f0e6;
+  color: #352a25;
 }
 button,
 input,
@@ -23,9 +23,9 @@ input {
   touch-action: manipulation;
 }
 .auth-modal {
-  color: #e7eedf;
-  background: #182019;
-  border: 1px solid #343d36;
+  color: #352a25;
+  background: #f6f0e6;
+  border: 1px solid #d9cbbb;
   border-radius: 18px;
   width: calc(100% - 40px);
   max-width: 440px;
@@ -54,7 +54,7 @@ input {
 .auth-dialog-head button {
   background: transparent;
   border: 0;
-  color: #b5c0af;
+  color: #786b60;
   font-size: 28px;
   width: 44px;
   height: 44px;
@@ -68,19 +68,19 @@ input {
   display: grid;
   gap: 8px;
   font-size: 13px;
-  color: #b5c0af;
+  color: #786b60;
 }
 .auth-form input {
   padding: 13px;
-  color: #e7eedf;
-  background: #111811;
-  border: 1px solid #343d36;
+  color: #352a25;
+  background: #f6f0e6;
+  border: 1px solid #d9cbbb;
   border-radius: 8px;
   width: 100%;
   font-size: 16px;
 }
 .auth-form input:focus {
-  outline: 2px solid #c2e98c;
+  outline: 2px solid #ad4128;
   outline-offset: 2px;
 }
 .auth-form small {
@@ -88,13 +88,13 @@ input {
 }
 .auth-error {
   font-size: 13px;
-  color: #e7a797;
+  color: #ad4128;
   min-height: 18px;
   margin: 0;
 }
 .auth-submit {
-  background: #c2e98c;
-  color: #162111;
+  background: #ad4128;
+  color: #fff9ee;
   border: 0;
   border-radius: 8px;
   padding: 15px;
@@ -109,13 +109,13 @@ input {
   display: block;
   background: transparent;
   border: 0;
-  color: #b5c0af;
+  color: #786b60;
   padding: 14px 0 0;
   margin: 12px auto 0;
   font-size: 13px;
   cursor: pointer;
 }
 .auth-modal button:focus-visible {
-  outline: 2px solid #c2e98c;
+  outline: 2px solid #ad4128;
   outline-offset: 3px;
 }

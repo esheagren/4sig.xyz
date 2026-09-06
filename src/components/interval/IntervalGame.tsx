@@ -13,8 +13,14 @@ import { AuthModal } from "../nav/AuthModal";
 import type { Question, Result } from "./game";
 import "./style.css";
 import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
-import { validPlayerIcon } from "./player";
-import type { Player } from "./player";
+import {
+  validPlayerIcon,
+  normalizeColor,
+  normalizeIcon,
+  playerLabel,
+  colorName,
+} from "./player";
+import type { Player, SharedScore } from "./player";
 import { NumberPad } from "./NumberPad";
 import {
   compact,
@@ -33,6 +39,16 @@ import {
 } from "./game";
 import type { Bounds } from "./game";
 
+function activeGame(id?: string | null) {
+  try {
+    if (id === undefined) return localStorage.getItem("four_sigma_active_game");
+    if (id === null) localStorage.removeItem("four_sigma_active_game");
+    else localStorage.setItem("four_sigma_active_game", id);
+  } catch {
+    /* Play also works when browser storage is disabled. */
+  }
+  return null;
+}
 type Stage =
   | "identity"
   | "loading"
@@ -43,7 +59,7 @@ type Stage =
   | "revealed"
   | "finalizing"
   | "complete";
-const shareUrl = "https://4sig.xyz/";
+
 type ServerJudgement = {
   questionId: string;
   prompt: string;
@@ -84,7 +100,13 @@ type Standings = {
   dailyRank?: number | null;
   todaysAverage?: number | null;
   totalParticipantsToday?: number;
-  todayLeaderboard?: Array<{ rank: number; username: string; score: number }>;
+  todayLeaderboard?: Array<{
+    rank: number;
+    username: string;
+    score: number;
+    avatarIcon?: string;
+    avatarColor?: string;
+  }>;
 };
 export default function IntervalGame() {
   const {
@@ -123,7 +145,7 @@ export default function IntervalGame() {
     return data;
   }
   const [index, setIndex] = useState(0),
-    [stage, setStage] = useState<Stage>("identity");
+    [stage, setStage] = useState<Stage>("loading");
   const [text, setText] = useState(""),
     [bounds, setBounds] = useState<Bounds>({ lower: 0, estimate: 0, upper: 1 });
   const [domain, setDomain] = useState<[number, number]>([0, 1]),
@@ -134,9 +156,15 @@ export default function IntervalGame() {
   const [editing, setEditing] = useState<"lower" | "upper" | null>(null),
     [editText, setEditText] = useState("");
   const [player, setPlayer] = useState<Player | null>(null);
+  const [share, setShare] = useState<SharedScore | null>(null);
+  const [motionPaused, setMotionPaused] = useState(false);
+  const shareUrl = share
+    ? `https://4sig.xyz/share/${share.id}`
+    : "https://4sig.xyz/";
   const initialPlayer: Partial<Player> = {
     ...(!user?.isAnonymous && user ? { username: user.displayName } : {}),
-    ...(validPlayerIcon(user?.avatarIcon) ? { icon: user.avatarIcon } : {}),
+    icon: normalizeIcon(user?.avatarIcon),
+    color: normalizeColor(user?.avatarColor),
   };
   const [copyToast, setCopyToast] = useState<{
     x: number;
@@ -336,14 +364,26 @@ export default function IntervalGame() {
     lock.current = false;
     focusHeading();
   }
-  async function finish() {
+  function finish() {
+    if (!user || user.isAnonymous || !user.hasPersonality) {
+      setStage("identity");
+      focusHeading();
+      return;
+    }
+    void finalizeScore();
+  }
+  async function finalizeScore() {
     setStage("finalizing");
     setError("");
     try {
       const data = await request("session/finalize", { sessionId });
       setResults(data.judgements.map(toResult));
+      setShare(data.share);
+      setRanked(data.isRanked);
+      setPlayer(data.share.player);
       setStandings(data.dailyStats ?? null);
       setStage("complete");
+      activeGame(null);
       focusHeading();
       capture("game_session_completed", {
         sessionId,
@@ -371,7 +411,10 @@ export default function IntervalGame() {
     setStage("loading");
     setError("");
     try {
-      const data = await request("session/start", { practice });
+      const data = await request("session/start", {
+        practice,
+        resumeId: practice ? undefined : activeGame(),
+      });
       if (!data.questions?.length)
         throw new Error("Today’s numbers are not ready yet.");
       setQuestions(
@@ -392,19 +435,29 @@ export default function IntervalGame() {
         ),
       );
       setSessionId(data.sessionId);
+      activeGame(data.sessionId);
       setEdition(data.edition);
       setRanked(data.isRanked);
+      setShare(null);
       setStandings(null);
       const saved: Result[] = (data.judgements ?? []).map(toResult);
       setResults(saved);
       setIndex(Math.min(saved.length, data.questions.length - 1));
       if (data.completed || saved.length === data.questions.length) {
+        if (!user || user.isAnonymous || !user.hasPersonality) {
+          setStage("identity");
+          return;
+        }
         const completed = await request("session/finalize", {
           sessionId: data.sessionId,
         });
         setResults(completed.judgements.map(toResult));
+        setShare(completed.share);
+        setRanked(completed.isRanked);
+        setPlayer(completed.share.player);
         setStandings(completed.dailyStats ?? null);
         setStage("complete");
+        activeGame(null);
         void refreshUser();
       } else resetRound();
       capture("game_session_started", {
@@ -419,6 +472,36 @@ export default function IntervalGame() {
       starting.current = false;
     }
   }
+  const automaticStart = useRef(false),
+    automaticFinish = useRef("");
+  const lifecycleActions = useRef({ startSession, finalizeScore });
+  useEffect(() => {
+    lifecycleActions.current = { startSession, finalizeScore };
+  });
+  useEffect(() => {
+    if (!authLoading && !automaticStart.current) {
+      automaticStart.current = true;
+      if (user && !user.isAnonymous)
+        setPlayer({
+          username: user.displayName,
+          icon: normalizeIcon(user.avatarIcon),
+          color: normalizeColor(user.avatarColor),
+        });
+      void lifecycleActions.current.startSession();
+    }
+    // Signing in at the final step attaches this browser's completed guest game.
+    if (
+      stage === "identity" &&
+      user &&
+      !user.isAnonymous &&
+      user.hasPersonality &&
+      sessionId &&
+      automaticFinish.current !== sessionId + user.id
+    ) {
+      automaticFinish.current = sessionId + user.id;
+      void lifecycleActions.current.finalizeScore();
+    }
+  }, [authLoading, user, stage, sessionId]);
   function restart() {
     if (copyTimer.current) clearTimeout(copyTimer.current);
     setCopyToast(null);
@@ -439,12 +522,19 @@ export default function IntervalGame() {
       if (!result.success)
         throw new Error(result.error || "Username unavailable.");
     }
-    const data = await request("auth/profile", { avatarIcon: chosen.icon });
+    const data = await request("auth/profile", {
+      avatarIcon: chosen.icon,
+      avatarColor: chosen.color,
+    });
     if (!validPlayerIcon(data.user?.avatarIcon))
-      throw new Error("Your symbol could not be saved.");
-    setPlayer({ username: data.user.displayName, icon: data.user.avatarIcon });
+      throw new Error("Your personality could not be saved.");
+    setPlayer({
+      username: data.user.displayName,
+      icon: data.user.avatarIcon,
+      color: normalizeColor(data.user.avatarColor),
+    });
     void refreshUser();
-    await startSession();
+    await finalizeScore();
   }
   async function copy(e: React.MouseEvent<HTMLButtonElement>) {
     if (!player) return;
@@ -590,7 +680,15 @@ export default function IntervalGame() {
   }, []);
   return (
     <div className="interval-page">
-      <div className="interval-app">
+      <div
+        className="interval-app"
+        style={
+          {
+            "--player-color":
+              player?.color ?? normalizeColor(user?.avatarColor),
+          } as CSSProperties
+        }
+      >
         {["estimate", "range", "saving", "sweeping", "revealed"].includes(
           stage,
         ) && (
@@ -624,12 +722,14 @@ export default function IntervalGame() {
                   initial={initialPlayer}
                   onStart={startPlayer}
                 />
-                <button
-                  className="text-button identity-signin"
-                  onClick={() => setAuthOpen(true)}
-                >
-                  Sign in to an existing account
-                </button>
+                {user.isAnonymous && (
+                  <button
+                    className="text-button identity-signin"
+                    onClick={() => setAuthOpen(true)}
+                  >
+                    Sign in to an existing account
+                  </button>
+                )}
               </>
             ) : (
               <section className="identity-screen account-loading">
@@ -841,7 +941,9 @@ export default function IntervalGame() {
                         >
                           − Narrower
                         </button>
-                        <span>Drag the ends</span>
+                        <span aria-label="Range width">
+                          Δ {compact(bounds.upper - bounds.lower)}
+                        </span>
                         <button
                           onClick={() =>
                             updateBounds(resizeBounds(bounds, 2, question.max))
@@ -945,11 +1047,32 @@ export default function IntervalGame() {
               <div className="result-person">
                 {player && (
                   <>
-                    <PlayerMark icon={player.icon} />
+                    <PlayerMark
+                      icon={player.icon}
+                      color={player.color}
+                      paused={motionPaused}
+                    />
                     <span>{player.username}</span>
+                    <button
+                      className="text-button motion-toggle"
+                      aria-label={
+                        motionPaused
+                          ? "Play identity animation"
+                          : "Pause identity animation"
+                      }
+                      aria-pressed={motionPaused}
+                      onClick={() => setMotionPaused(!motionPaused)}
+                    >
+                      {motionPaused ? "▷" : "Ⅱ"}
+                    </button>
                   </>
                 )}
               </div>
+              {player && (
+                <p className="personality-signature">
+                  {playerLabel(player.icon)} · {colorName(player.color)}
+                </p>
+              )}
               <h1 ref={heading} tabIndex={-1}>
                 {isRanked ? "Your score" : "Practice score"}
               </h1>
@@ -993,7 +1116,9 @@ export default function IntervalGame() {
                   style={{ left: copyToast.x, top: copyToast.y }}
                   aria-hidden="true"
                 >
-                  {player && <PlayerMark icon={player.icon} />}
+                  {player && (
+                    <PlayerMark icon={player.icon} color={player.color} />
+                  )}
                   <span>Score copied</span>
                   <span>✓</span>
                 </div>
@@ -1067,8 +1192,13 @@ export default function IntervalGame() {
                   {standings.todayLeaderboard?.length ? (
                     <ol>
                       {standings.todayLeaderboard.map((row) => (
-                        <li key={row.rank}>
-                          <span>
+                        <li key={row.username}>
+                          <span className="standings-person">
+                            <PlayerMark
+                              icon={normalizeIcon(row.avatarIcon)}
+                              color={normalizeColor(row.avatarColor)}
+                              paused
+                            />
                             {row.rank}. {row.username}
                           </span>
                           <strong>{scoreText(row.score)} pts</strong>

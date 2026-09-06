@@ -13,6 +13,8 @@ interface User {
   displayName: string;
   isAnonymous: boolean;
   avatarIcon?: string | null;
+  avatarColor?: string | null;
+  hasPersonality?: boolean;
   sessionCount: number;
   totalScore: number;
   averageScore: number;

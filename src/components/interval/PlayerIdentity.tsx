@@ -1,44 +1,165 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { FormEvent } from "react";
-import { playerIcons, validUsername } from "./player";
+import {
+  playerIcons,
+  playerColors,
+  validUsername,
+  normalizeColor,
+  normalizeIcon,
+  colorName,
+  DEFAULT_COLOR,
+} from "./player";
 import type { Player, PlayerIcon } from "./player";
+import { patternFrame } from "./patterns";
 
-export function PlayerMark({ icon }: { icon: PlayerIcon }) {
+export function PlayerMark({
+  icon,
+  color = DEFAULT_COLOR,
+  paused = false,
+}: {
+  icon: PlayerIcon;
+  color?: string;
+  paused?: boolean;
+}) {
+  const svg = useRef<SVGSVGElement>(null);
+  const safeColor = normalizeColor(color);
+  const rgb = [1, 3, 5].map(
+    (i) => parseInt(safeColor.slice(i, i + 2), 16) / 255,
+  );
+  const light = rgb[0] * 0.2126 + rgb[1] * 0.7152 + rgb[2] * 0.0722 > 0.68;
+  useEffect(() => {
+    const node = svg.current;
+    if (!node) return;
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    let frame = 0,
+      last = 0,
+      start = performance.now(),
+      visible = true;
+    const tick = (now: number) => {
+      if (now - last > 32) {
+        node.innerHTML = patternFrame(icon, (now - start) / 8000);
+        last = now;
+      }
+      frame = requestAnimationFrame(tick);
+    };
+    const sync = () => {
+      cancelAnimationFrame(frame);
+      if (!paused && !motion.matches && !document.hidden && visible) {
+        start = performance.now();
+        frame = requestAnimationFrame(tick);
+      } else node.innerHTML = patternFrame(icon, 0.125);
+    };
+    const observer = new IntersectionObserver(([entry]) => {
+      visible = entry.isIntersecting;
+      sync();
+    });
+    observer.observe(node);
+    motion.addEventListener("change", sync);
+    document.addEventListener("visibilitychange", sync);
+    sync();
+    return () => {
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      motion.removeEventListener("change", sync);
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, [icon, paused]);
   return (
     <svg
-      className={`player-mark mark-${icon}`}
-      viewBox="0 0 40 40"
+      ref={svg}
+      className="player-mark mathematical-mark"
+      viewBox="0 0 64 64"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.6"
+      strokeWidth="1.15"
       strokeLinecap="round"
       strokeLinejoin="round"
       aria-hidden="true"
-    >
-      {icon === "orbit" && (
-        <>
-          <circle cx="20" cy="20" r="12" />
-          <circle cx="20" cy="20" r="3" fill="currentColor" stroke="none" />
-          <circle cx="20" cy="8" r="3" fill="currentColor" stroke="none" />
-        </>
-      )}
-      {icon === "spark" && (
-        <path d="m20 5 4 11 11 4-11 4-4 11-4-11-11-4 11-4Z" />
-      )}
-      {icon === "wave" && <path d="M5 20c5-19 10-19 15 0s10 19 15 0" />}
-      {icon === "diamond" && (
-        <>
-          <path d="m20 5 15 15-15 15L5 20Z" />
-          <path d="m20 14 6 6-6 6-6-6Z" />
-        </>
-      )}
-      {icon === "crosshair" && (
-        <>
-          <circle cx="20" cy="20" r="10" />
-          <path d="M20 4v9m0 14v9M4 20h9m14 0h9" />
-        </>
-      )}
-    </svg>
+      style={{
+        color: safeColor,
+        background: light ? "#352a25" : undefined,
+        borderRadius: light ? 8 : undefined,
+      }}
+      dangerouslySetInnerHTML={{ __html: patternFrame(icon, 0.125) }}
+    />
+  );
+}
+
+export function PersonalityPicker({
+  icon,
+  color,
+  onChange,
+  disabled = false,
+}: {
+  icon: PlayerIcon;
+  color: string;
+  onChange: (icon: PlayerIcon, color: string) => void;
+  disabled?: boolean;
+}) {
+  const [paused, setPaused] = useState(false);
+  return (
+    <div className="personality-picker">
+      <fieldset className="motion-picker" disabled={disabled}>
+        <legend>Your pattern</legend>
+        <div className="motion-options">
+          {playerIcons.map((item) => (
+            <label key={item.id}>
+              <input
+                type="radio"
+                name="player-pattern"
+                checked={icon === item.id}
+                onChange={() => onChange(item.id, color)}
+              />
+              <span>
+                <PlayerMark icon={item.id} color={color} paused={paused} />
+                <strong>{item.label}</strong>
+              </span>
+            </label>
+          ))}
+        </div>
+      </fieldset>
+      <div className="pattern-caption">
+        <p>{playerIcons.find((p) => p.id === icon)!.description}</p>
+        <button
+          className="text-button"
+          type="button"
+          onClick={() => setPaused(!paused)}
+          aria-pressed={paused}
+        >
+          {paused ? "Play motion" : "Pause motion"}
+        </button>
+      </div>
+      <fieldset className="color-picker" disabled={disabled}>
+        <legend>
+          Your color <span>{colorName(color)}</span>
+        </legend>
+        <div>
+          {playerColors.map((c) => (
+            <label key={c.value} title={c.label}>
+              <input
+                type="radio"
+                name="player-color"
+                checked={color === c.value}
+                onChange={() => onChange(icon, c.value)}
+                aria-label={c.label}
+              />
+              <span style={{ background: c.value }}>
+                <span aria-hidden="true">{color === c.value ? "✓" : ""}</span>
+              </span>
+            </label>
+          ))}
+          <label className="custom-color" title="Choose your own color">
+            <input
+              type="color"
+              value={color}
+              aria-label="Choose your own color"
+              onChange={(e) => onChange(icon, e.target.value)}
+            />
+            <span aria-hidden="true">+</span>
+          </label>
+        </div>
+      </fieldset>
+    </div>
   );
 }
 
@@ -50,7 +171,8 @@ export function PlayerIdentity({
   onStart: (player: Player) => Promise<void>;
 }) {
   const [username, setUsername] = useState(initial.username ?? ""),
-    [icon, setIcon] = useState<PlayerIcon>(initial.icon ?? "spark");
+    [icon, setIcon] = useState<PlayerIcon>(normalizeIcon(initial.icon)),
+    [color, setColor] = useState(normalizeColor(initial.color));
   const [error, setError] = useState(""),
     [pending, setPending] = useState(false);
   async function start(e: FormEvent<HTMLFormElement>) {
@@ -64,7 +186,7 @@ export function PlayerIdentity({
     setPending(true);
     setError("");
     try {
-      await onStart({ username: name, icon });
+      await onStart({ username: name, icon, color });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not start. Try again.");
     } finally {
@@ -73,10 +195,19 @@ export function PlayerIdentity({
   }
   return (
     <section className="identity-screen">
-      <div className="identity-preview" key={icon}>
-        <PlayerMark icon={icon} />
+      <div className="identity-intro">
+        <div className="identity-preview">
+          <PlayerMark icon={icon} color={color} paused />
+        </div>
+        <div>
+          <h1>
+            Make it
+            <br />
+            <em>yours.</em>
+          </h1>
+          <p className="identity-ritual">Give your score a signature.</p>
+        </div>
       </div>
-      <h1>{initial.username ? "Your next round." : "Make your mark."}</h1>
       <form onSubmit={start}>
         <label className="identity-label" htmlFor="player-name">
           Username
@@ -97,7 +228,9 @@ export function PlayerIdentity({
           minLength={3}
           maxLength={20}
           pattern="[a-zA-Z0-9_]{3,20}"
-          aria-describedby="username-help identity-error"
+          aria-describedby={
+            initial.username ? "identity-error" : "username-help identity-error"
+          }
           placeholder="Your name"
           disabled={pending}
           readOnly={!!initial.username}
@@ -107,26 +240,15 @@ export function PlayerIdentity({
             3–20 letters, numbers or underscores.
           </p>
         )}
-        <fieldset disabled={pending} className="icon-picker">
-          <legend>Your symbol</legend>
-          <div>
-            {playerIcons.map((item) => (
-              <label key={item.id} title={item.label}>
-                <input
-                  type="radio"
-                  name="player-icon"
-                  value={item.id}
-                  checked={icon === item.id}
-                  onChange={() => setIcon(item.id)}
-                  aria-label={item.label}
-                />
-                <span>
-                  <PlayerMark icon={item.id} />
-                </span>
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <PersonalityPicker
+          icon={icon}
+          color={color}
+          disabled={pending}
+          onChange={(i, c) => {
+            setIcon(i);
+            setColor(c);
+          }}
+        />
         <p id="identity-error" className="identity-error" role="status">
           {error}
         </p>
@@ -135,7 +257,7 @@ export function PlayerIdentity({
           className="primary"
           disabled={pending || !validUsername(username.trim())}
         >
-          {pending ? "Starting…" : "Play"}
+          {pending ? "Saving…" : "See my score"}
           <span aria-hidden="true">→</span>
         </button>
       </form>

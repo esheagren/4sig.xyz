@@ -1,3 +1,5 @@
+import { validIcon } from "./player-profile.js";
+import { validPlayerColor } from "../../shared/player-profile.js";
 import { query } from "./db.js";
 import { HttpError } from "./http.js";
 import type { User } from "./types.js";
@@ -42,6 +44,8 @@ export async function getUserById(id: string): Promise<User | null> {
   return {
     id: row.id,
     avatarIcon: row.avatar_icon,
+    avatarColor: row.avatar_color,
+    hasPersonality: row.identity_chosen,
     deviceId: null,
     authId: null,
     email: row.email,
@@ -76,6 +80,8 @@ export async function updateUserProfile(
   id: string,
   updates: {
     displayName?: unknown;
+    avatarIcon?: unknown;
+    avatarColor?: unknown;
     timezone?: unknown;
     themePreference?: unknown;
   },
@@ -98,13 +104,24 @@ export async function updateUserProfile(
       updates.themePreference.length > 50)
   )
     throw new HttpError(400, "Invalid theme.");
+  if (updates.avatarIcon !== undefined && !validIcon(updates.avatarIcon))
+    throw new HttpError(400, "Choose an available pattern.");
+  if (
+    updates.avatarColor !== undefined &&
+    !validPlayerColor(updates.avatarColor)
+  )
+    throw new HttpError(400, "Choose a valid color.");
   await query(
-    `UPDATE users SET username=COALESCE($2,username), timezone=COALESCE($3,timezone),theme_preference=COALESCE($4,theme_preference) WHERE id=$1`,
+    `UPDATE users SET username=COALESCE($2,username), timezone=COALESCE($3,timezone),theme_preference=COALESCE($4,theme_preference),avatar_icon=COALESCE($5,avatar_icon),avatar_color=COALESCE($6,avatar_color),identity_chosen=identity_chosen OR $5 IS NOT NULL OR $6 IS NOT NULL WHERE id=$1`,
     [
       id,
       updates.displayName ?? null,
       updates.timezone ?? null,
       updates.themePreference ?? null,
+      updates.avatarIcon ?? null,
+      typeof updates.avatarColor === "string"
+        ? updates.avatarColor.toLowerCase()
+        : null,
     ],
   );
   return (await getUserById(id))!;

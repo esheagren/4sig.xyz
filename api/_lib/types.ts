@@ -2,6 +2,8 @@
 
 export interface User {
   avatarIcon?: string | null;
+  avatarColor?: string | null;
+  hasPersonality?: boolean;
   sessionCount?: number;
   id: string;
   deviceId: string | null;
@@ -90,6 +92,8 @@ export interface Judgement {
 }
 
 export interface TodayLeaderboardEntry {
+  avatarIcon?: string;
+  avatarColor?: string;
   rank: number;
   username: string;
   score: number;

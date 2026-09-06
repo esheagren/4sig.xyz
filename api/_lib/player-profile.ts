@@ -1,14 +1,16 @@
+import { playerIcons, validPlayerIcon } from "../../shared/player-profile.js";
 export const PLAYER_ICONS = [
-  "orbit",
+  ...playerIcons.map((p) => p.id),
   "spark",
-  "wave",
   "diamond",
   "crosshair",
-] as const;
-export function validIcon(
-  value: unknown,
-): value is (typeof PLAYER_ICONS)[number] {
+];
+// Keep old clients/profiles compatible while offering only the six new patterns.
+export function validIcon(value: unknown): value is string {
   return (
-    typeof value === "string" && PLAYER_ICONS.some((icon) => icon === value)
+    validPlayerIcon(value) ||
+    value === "spark" ||
+    value === "diamond" ||
+    value === "crosshair"
   );
 }

@@ -28,7 +28,7 @@ export async function getAuthUser(req: VercelRequest) {
 }
 export async function requireUser(req: VercelRequest) {
   const user = await getAuthUser(req);
-  if (!user) throw new HttpError(401, "Choose a username before playing.");
+  if (!user) throw new HttpError(401, "Choose a username to save your score.");
   return user;
 }
 export async function createAuthSession(client: PoolClient, userId: string) {

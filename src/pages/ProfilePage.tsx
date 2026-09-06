@@ -2,14 +2,20 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AuthModal } from "../components/nav/AuthModal";
-import { PlayerMark } from "../components/interval/PlayerIdentity";
-import { validPlayerIcon } from "../components/interval/player";
+import {
+  PlayerMark,
+  PersonalityPicker,
+} from "../components/interval/PlayerIdentity";
+import { normalizeColor, normalizeIcon } from "../components/interval/player";
 import { scoreText } from "../components/interval/game";
+import type { PlayerIcon } from "../components/interval/player";
 export function ProfilePage() {
   const { user, isLoading, refreshUser, logout } = useAuth();
   const [history, setHistory] = useState<
     Array<{ date: string; userScore: number; avgScore: number }>
   >([]);
+  const [icon, setIcon] = useState<PlayerIcon>("orbit"),
+    [color, setColor] = useState(normalizeColor(null));
   const [authOpen, setAuthOpen] = useState(false),
     [editing, setEditing] = useState(false),
     [username, setUsername] = useState(""),
@@ -36,7 +42,11 @@ export function ProfilePage() {
       const r = await fetch("/api/user/profile", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ displayName: username }),
+        body: JSON.stringify({
+          displayName: username,
+          avatarIcon: icon,
+          avatarColor: color,
+        }),
       });
       const data = await r.json();
       if (!r.ok) throw new Error(data.error);
@@ -71,9 +81,8 @@ export function ProfilePage() {
             <>
               <div className="result-person">
                 <PlayerMark
-                  icon={
-                    validPlayerIcon(user.avatarIcon) ? user.avatarIcon : "orbit"
-                  }
+                  color={normalizeColor(user.avatarColor)}
+                  icon={normalizeIcon(user.avatarIcon)}
                 />
                 <h1>{user.displayName}</h1>
               </div>
@@ -89,6 +98,14 @@ export function ProfilePage() {
                     maxLength={20}
                     required
                   />
+                  <PersonalityPicker
+                    icon={icon}
+                    color={color}
+                    onChange={(i, c) => {
+                      setIcon(i);
+                      setColor(c);
+                    }}
+                  />
                   <button className="primary">Save</button>
                   <button
                     type="button"
@@ -103,10 +120,12 @@ export function ProfilePage() {
                   className="text-button"
                   onClick={() => {
                     setUsername(user.displayName);
+                    setIcon(normalizeIcon(user.avatarIcon));
+                    setColor(normalizeColor(user.avatarColor));
                     setEditing(true);
                   }}
                 >
-                  Edit username
+                  Edit personality
                 </button>
               )}
               <dl className="profile-stats-grid">

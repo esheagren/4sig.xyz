@@ -6,6 +6,11 @@ import { Score } from "./scoring.js";
 const isUuid = (s: unknown): s is string =>
   typeof s === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
+// Owner values are created only by authenticated user lookup or guest-token validation.
+const ownerColumn = (owner: string) =>
+  owner.startsWith("guest:") ? "guest_session_hash" : "user_id";
+const ownerKey = (owner: string) =>
+  owner.startsWith("guest:") ? owner.slice(6) : owner;
 export async function startGame(
   userId: string,
   edition: string,
@@ -13,17 +18,22 @@ export async function startGame(
   practice = false,
 ) {
   return transaction(async (client) => {
-    await client.query("SELECT id FROM users WHERE id=$1 FOR UPDATE", [userId]);
+    await client.query(
+      userId.startsWith("guest:")
+        ? "SELECT token_hash FROM guest_sessions WHERE token_hash=$1 FOR UPDATE"
+        : "SELECT id FROM users WHERE id=$1 FOR UPDATE",
+      [ownerKey(userId)],
+    );
     if (!practice) {
       const { rows } = await client.query(
-        "SELECT id FROM game_sessions WHERE user_id=$1 AND edition=$2 AND is_ranked",
-        [userId, edition],
+        `SELECT id FROM game_sessions WHERE ${ownerColumn(userId)}=$1 AND edition=$2 AND is_ranked`,
+        [ownerKey(userId), edition],
       );
       if (rows[0]) return readGame(rows[0].id, userId, client);
     }
     const { rows } = await client.query(
-      "INSERT INTO game_sessions(user_id,edition,is_ranked) VALUES($1,$2,$3) RETURNING id",
-      [userId, edition, !practice],
+      `INSERT INTO game_sessions(${ownerColumn(userId)},edition,is_ranked) VALUES($1,$2,$3) RETURNING id`,
+      [ownerKey(userId), edition, !practice],
     );
     const id = rows[0].id;
     for (let i = 0; i < questions.length; i++)
@@ -58,8 +68,8 @@ export async function readGame(
   if (!isUuid(id)) throw new HttpError(404, "Game not found.");
   const run = client ? client.query.bind(client) : query;
   const { rows } = await run(
-    "SELECT id,edition::text,completed_at,is_ranked FROM game_sessions WHERE id=$1 AND user_id=$2",
-    [id, userId],
+    `SELECT id,edition::text,completed_at,is_ranked FROM game_sessions WHERE id=$1 AND ${ownerColumn(userId)}=$2`,
+    [id, ownerKey(userId)],
   );
   if (!rows[0]) throw new HttpError(404, "Game not found.");
   const { rows: items } = await run(
@@ -99,8 +109,8 @@ export async function saveAnswer(
     throw new HttpError(400, "Enter finite, ordered bounds.");
   return transaction(async (client) => {
     const { rows } = await client.query(
-      "SELECT completed_at FROM game_sessions WHERE id=$1 AND user_id=$2 FOR UPDATE",
-      [sessionId, userId],
+      `SELECT completed_at FROM game_sessions WHERE id=$1 AND ${ownerColumn(userId)}=$2 FOR UPDATE`,
+      [sessionId, ownerKey(userId)],
     );
     if (!rows[0]) throw new HttpError(404, "Game not found.");
     const { rows: items } = await client.query(

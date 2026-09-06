@@ -16,6 +16,7 @@ import {
   isUsernameAvailable,
   publicUser,
 } from "./_lib/users.js";
+import { validPlayerColor } from "../shared/player-profile.js";
 import { validIcon } from "./_lib/player-profile.js";
 import { HttpError, prepare, fail, requireMethod } from "./_lib/http.js";
 const guest = {
@@ -61,11 +62,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (action === "profile") {
       const identity = await requireUser(req);
       if (!validIcon(body.avatarIcon))
-        throw new HttpError(400, "Choose one of the available symbols.");
-      await query("UPDATE users SET avatar_icon=$2 WHERE id=$1", [
-        identity.userId,
-        body.avatarIcon,
-      ]);
+        throw new HttpError(400, "Choose one of the available patterns.");
+      if (body.avatarColor !== undefined && !validPlayerColor(body.avatarColor))
+        throw new HttpError(400, "Choose a valid color.");
+      await query(
+        "UPDATE users SET avatar_icon=$2,avatar_color=COALESCE($3,avatar_color),identity_chosen=true WHERE id=$1",
+        [
+          identity.userId,
+          body.avatarIcon,
+          body.avatarColor?.toLowerCase() ?? null,
+        ],
+      );
       return res.json({
         user: publicUser((await getUserById(identity.userId))!),
       });

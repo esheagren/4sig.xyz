@@ -59,6 +59,8 @@ async function handleProfile(
         createdAt: stats.user.createdAt,
         lastPlayedAt: stats.user.lastPlayedAt,
         themePreference: stats.user.themePreference,
+        avatarIcon: stats.user.avatarIcon,
+        avatarColor: stats.user.avatarColor,
       },
       stats: {
         totalScore: stats.user.totalScore,
@@ -83,12 +85,15 @@ async function handleProfile(
   }
 
   if (req.method === "PATCH") {
-    const { displayName, timezone, themePreference } = req.body ?? {};
+    const { displayName, timezone, themePreference, avatarIcon, avatarColor } =
+      req.body ?? {};
 
     const user = await updateUserProfile(userId, {
       displayName: displayName?.trim(),
       timezone,
       themePreference,
+      avatarIcon,
+      avatarColor,
     });
 
     return res.json({

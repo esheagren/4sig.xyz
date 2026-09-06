@@ -1,16 +1,16 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&family=Fraunces:opsz,wght@9..144,500&display=swap");
 .interval-app {
   font-family: "DM Sans", sans-serif;
-  color: #e9eae2;
-  background: #151817;
+  color: #352a25;
+  background: #f6f0e6;
   font-synthesis: none;
   font-weight: 400;
-  --lime: #d0f58b;
-  --blue: #a7aafa;
-  --muted: #9caaa0;
-  --line: #343d36;
+  --lime: #ad4128;
+  --blue: #276c66;
+  --muted: #786b60;
+  --line: #d9cbbb;
   --mono: "IBM Plex Mono", monospace;
-  color-scheme: dark;
+  color-scheme: light;
 }
 .interval-app * {
   box-sizing: border-box;
@@ -163,7 +163,7 @@
   min-width: 0;
 }
 .interval-app .number-entry input::placeholder {
-  color: #4c594d;
+  color: #a18c79;
 }
 .interval-app .number-caption {
   font-size: 11px;
@@ -173,7 +173,7 @@
   line-height: 1.4;
 }
 .interval-app .number-caption.error {
-  color: #f4b7a6;
+  color: #ad4128;
 }
 .interval-app .keypad {
   display: grid;
@@ -187,15 +187,15 @@
   min-height: 58px;
   border-radius: 9px;
   font: 500 22px var(--mono);
-  background: #252d27;
+  background: #efe5d7;
   transition: background 0.12s;
 }
 .interval-app .keypad button:hover:not(:disabled) {
-  background: #374132;
+  background: #e8dac9;
 }
 .interval-app .keypad .function-key {
   font-size: 18px;
-  background: #1c221e;
+  background: #f6f0e6;
   color: var(--muted);
 }
 .interval-app .keypad .clear-key {
@@ -205,11 +205,11 @@
   grid-column: 4;
   grid-row: 3 / 5;
   background: var(--lime);
-  color: #1a2818;
+  color: #fff9ee;
   font-size: 27px;
 }
 .interval-app .keypad .enter-key:hover {
-  background: #e0ffab;
+  background: #96371f;
 }
 .interval-app .keypad button:disabled {
   opacity: 0.3;
@@ -235,7 +235,7 @@
   padding: 10px 0;
   min-height: 44px;
   text-decoration: underline;
-  text-decoration-color: #586255;
+  text-decoration-color: #bbaa96;
   text-underline-offset: 4px;
 }
 .interval-app .text-button:hover {
@@ -245,7 +245,7 @@
   border: 1px solid var(--line);
   border-radius: 14px;
   padding: 12px 24px 7px;
-  background: #1a201c;
+  background: #f6f0e6;
 }
 .interval-app .instrument-top {
   display: flex;
@@ -289,7 +289,7 @@
 }
 .interval-app .reading i {
   font-style: normal;
-  color: #74846e;
+  color: #9a8877;
 }
 .interval-app .reading strong {
   display: block;
@@ -326,12 +326,12 @@
   display: block;
   width: 1px;
   height: 26px;
-  background: #39463b;
+  background: #ded2c2;
   align-self: center;
 }
 .interval-app .grid-lines i.major {
   height: 66px;
-  background: #465744;
+  background: #bbaa96;
 }
 .interval-app .axis {
   position: absolute;
@@ -339,15 +339,15 @@
   right: 0;
   top: 71px;
   height: 1px;
-  background: #60725a;
+  background: #9a8877;
 }
 .interval-app .belief-band {
   position: absolute;
   top: 48px;
   height: 47px;
-  background: #d0f58b17;
-  border-top: 1px solid #d0f58b66;
-  border-bottom: 1px solid #d0f58b66;
+  background: #ad412814;
+  border-top: 1px solid #ad412866;
+  border-bottom: 1px solid #ad412866;
   pointer-events: none;
 }
 .interval-app .anchor-mark {
@@ -389,8 +389,8 @@
   left: 10px;
   width: 25px;
   height: 25px;
-  border: 1px solid #7b985c;
-  background: #2f3d26;
+  border: 1px solid #bbaa96;
+  background: #eddfce;
   border-radius: 6px;
   font: 11px/23px var(--mono);
   color: var(--lime);
@@ -422,16 +422,16 @@
   font-size: 12px;
   min-height: 48px;
   padding: 0;
-  color: #c7d2c2;
+  color: #675347;
 }
 .interval-app .range-tools > span {
   font-size: 10px;
-  color: #91a089;
+  color: #786b60;
 }
 .interval-app .primary {
   width: 100%;
   background: var(--lime);
-  color: #182217;
+  color: #fff9ee;
   border-radius: 9px;
   padding: 0 20px;
   min-height: 56px;
@@ -446,7 +446,7 @@
   font-size: 21px;
 }
 .interval-app .primary:hover {
-  background: #defba9;
+  background: #96371f;
 }
 .interval-app .truth {
   position: absolute;
@@ -556,7 +556,7 @@
 .interval-app .source-detail a {
   display: inline-block;
   margin: 4px 0 12px;
-  color: #c4cdc0;
+  color: #675347;
 }
 .interval-app .progress {
   padding: 0;
@@ -569,14 +569,14 @@
 .interval-app .progress li {
   width: 35px;
   height: 5px;
-  border-top: 3px solid #333e35;
+  border-top: 3px solid #d9cbbb;
   color: var(--muted);
 }
 .interval-app .progress li > span:first-child {
   display: none;
 }
 .interval-app .progress .current {
-  border-color: #9dab91;
+  border-color: #786b60;
 }
 .interval-app .progress .hit {
   border-color: var(--lime);
@@ -636,12 +636,12 @@
   display: grid;
   place-items: center;
   border-radius: 6px;
-  background: #343641;
+  background: #e4e9e3;
   color: var(--blue);
   font: 17px var(--mono);
 }
 .interval-app .share-tiles > span.hit {
-  background: #34442a;
+  background: #eddfce;
   color: var(--lime);
 }
 .interval-app .share-actions {
@@ -654,7 +654,7 @@
   margin: 0;
 }
 .interval-app .secondary {
-  background: #2a342b;
+  background: #efe5d7;
   border: 1px solid var(--line);
   border-radius: 9px;
   min-width: 84px;
@@ -671,7 +671,7 @@
   width: 100%;
   height: 146px;
   font: 13px/1.5 var(--mono);
-  background: #212923;
+  background: #fff9ee;
   color: var(--lime);
   border: 1px solid var(--line);
   padding: 12px;
@@ -698,7 +698,7 @@
 .interval-app .result-dot {
   display: grid;
   place-items: center;
-  border: 1px solid #565574;
+  border: 1px solid #8aaca5;
   color: var(--blue);
   border-radius: 50%;
   width: 26px;
@@ -707,7 +707,7 @@
   font: 10px var(--mono);
 }
 .interval-app .result-dot.hit {
-  border-color: #4b6340;
+  border-color: #bbaa96;
   color: var(--lime);
 }
 .interval-app .result-list summary small {
@@ -736,9 +736,9 @@
   margin: 20px auto 0;
 }
 .interval-app dialog {
-  background: #1b231e;
-  color: #e9eae2;
-  border: 1px solid #465340;
+  background: #f6f0e6;
+  color: #352a25;
+  border: 1px solid #bbaa96;
   border-radius: 16px;
   padding: 25px;
   width: min(510px, calc(100% - 28px));
@@ -773,7 +773,7 @@
   font-size: 14px;
   line-height: 1.7;
   margin: 14px 0;
-  color: #c5d0c0;
+  color: #675347;
 }
 .interval-app .help-dialog h3 {
   font-size: 18px;
@@ -1020,7 +1020,7 @@
   color: var(--lime);
 }
 .interval-app .identity-screen input::placeholder {
-  color: #738173;
+  color: #9a8877;
 }
 .interval-app .identity-help {
   font-size: 12px;
@@ -1058,7 +1058,7 @@
   border: 1px solid var(--line);
   border-radius: 10px;
   color: var(--muted);
-  background: #1c231e;
+  background: #f6f0e6;
   transition:
     border-color 0.15s,
     color 0.15s,
@@ -1067,7 +1067,7 @@
 .interval-app .icon-picker input:checked + span {
   border-color: var(--lime);
   color: var(--lime);
-  background: #2b3525;
+  background: #eddfce;
 }
 .interval-app .icon-picker input:focus-visible + span {
   outline: 2px solid var(--lime);
@@ -1080,7 +1080,7 @@
 .interval-app .identity-error {
   min-height: 20px;
   margin-top: 16px;
-  color: #f4b7a6;
+  color: #ad4128;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -1136,7 +1136,7 @@
   max-width: 170px;
   padding: 10px 12px;
   background: var(--lime);
-  color: #182217;
+  color: #fff9ee;
   border-radius: 8px;
   font-size: 13px;
   box-shadow: 0 6px 25px #0005;
@@ -1229,7 +1229,7 @@
 
 .interval-page {
   min-height: 100dvh;
-  background: #151817;
+  background: #f6f0e6;
   padding-bottom: 20px;
 }
 .interval-app .identity-signin {
@@ -1243,7 +1243,7 @@
 }
 .interval-app .entry-error {
   font-size: 14px;
-  color: #f4b7a6;
+  color: #ad4128;
   margin-top: 12px;
 }
 .interval-app .standings-detail {
@@ -1325,4 +1325,513 @@
   border: 1px solid var(--line);
   padding: 12px;
   font: inherit;
+}
+
+/* Mathematical Espresso: warm paper, editorial questions, exact numbers. */
+.interval-app {
+  --ink: #352a25;
+  --paper: #f6f0e6;
+  --player-color: #ad4128;
+  width: min(100%, 580px);
+}
+.interval-app h1,
+.interval-app h2 {
+  font-family: "Newsreader", Georgia, serif;
+  font-weight: 400;
+}
+.interval-app h1 {
+  font-size: 42px;
+  line-height: 1.12;
+  letter-spacing: -0.9px;
+}
+.interval-app .topbar {
+  border-bottom: 1px solid var(--line);
+  height: 69px;
+}
+.interval-app .topbar + main {
+  padding-top: 29px;
+}
+.interval-app .help-button {
+  font-family: "Newsreader", serif;
+  font-style: italic;
+}
+.interval-app .question-block {
+  margin-bottom: 30px;
+}
+.interval-app .eyebrow {
+  font-size: 10px;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.interval-app .eyebrow > span:first-child {
+  color: var(--muted);
+}
+.interval-app .eyebrow > span:last-child {
+  color: var(--lime);
+}
+.interval-app .primary {
+  background: var(--ink);
+  color: #fff9ee;
+  border-radius: 4px;
+  min-height: 53px;
+  font-size: 14px;
+  font-weight: 400;
+}
+.interval-app .primary > span {
+  color: #e4ad83;
+}
+.interval-app .primary:hover {
+  background: #4d382f;
+}
+.interval-app .number-entry input,
+.interval-app .reading strong {
+  color: var(--ink);
+}
+.interval-app .keypad button {
+  background: #efe5d7;
+  border: 1px solid #e4d6c6;
+  border-radius: 4px;
+  font-size: 20px;
+  font-weight: 400;
+  min-height: 54px;
+}
+.interval-app .keypad .function-key {
+  background: transparent;
+  font-size: 15px;
+}
+.interval-app .keypad .clear-key {
+  font-size: 13px;
+}
+.interval-app .keypad .enter-key {
+  background: var(--ink);
+  color: #fff9ee;
+  border-color: var(--ink);
+  font-size: 25px;
+}
+.interval-app .keypad .enter-key:hover {
+  background: #4d382f;
+}
+.interval-app .estimate-panel {
+  padding: 0;
+}
+.interval-app .instrument {
+  border: 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+  background: transparent;
+  padding: 6px 0 13px;
+}
+.interval-app .instrument-top {
+  font-size: 9px;
+}
+.interval-app .reading strong {
+  font-size: 34px;
+}
+.interval-app .reading > span {
+  font-size: 10px;
+}
+.interval-app .grid-lines i {
+  height: 8px;
+}
+.interval-app .grid-lines i.major {
+  height: 25px;
+}
+.interval-app .selection {
+  border-radius: 0;
+}
+.interval-app .handle::before {
+  width: 12px;
+  height: 40px;
+  top: 27px;
+  left: 20px;
+  border: 0;
+  border-top: 2px solid var(--lime);
+  border-bottom: 2px solid var(--lime);
+  border-left: 2px solid var(--lime);
+  border-radius: 0;
+  background: transparent;
+}
+.interval-app .handle.upper::before {
+  left: 10px;
+  border-left: 0;
+  border-right: 2px solid var(--lime);
+}
+.interval-app .handle span {
+  display: none;
+}
+.interval-app .progress li {
+  width: 23px;
+}
+.interval-app .range-tools > span {
+  font: 10px var(--mono);
+}
+.interval-app .brand {
+  font:
+    400 44px "Newsreader",
+    Georgia,
+    serif;
+  letter-spacing: -4px;
+}
+.interval-app .result-brand {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 24px;
+  margin-top: 15px;
+}
+.interval-app .result-person {
+  font-size: 15px;
+  color: var(--ink);
+}
+.interval-app .result-person .player-mark {
+  width: 52px;
+  height: 52px;
+  animation: none;
+}
+.interval-app .summary h1 {
+  font:
+    10px "DM Sans",
+    sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 26px;
+}
+.interval-app .final-score {
+  font:
+    500 clamp(60px, 16vw, 100px) / 1.04 "Fraunces",
+    Georgia,
+    serif;
+  color: var(--ink);
+  letter-spacing: -4px;
+  margin-top: 14px;
+}
+.interval-app .final-score > span {
+  font:
+    italic 16px "Newsreader",
+    serif;
+  margin-top: 12px;
+}
+.interval-app .summary-caption {
+  font: 11px var(--mono);
+  margin-top: 25px;
+}
+.interval-app .share-tiles > span {
+  border-radius: 0;
+  background: transparent;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  width: 31px;
+  height: 30px;
+  font-size: 13px;
+}
+.interval-app .share-tiles > span.hit {
+  background: transparent;
+  border-color: var(--player-color);
+  color: var(--ink);
+}
+.interval-app .copy-toast {
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  box-shadow: 0 6px 25px #49332d20;
+}
+.interval-app .copy-toast .player-mark {
+  width: 30px;
+  height: 30px;
+}
+.interval-app .identity-screen {
+  max-width: 440px;
+  margin: 22px auto 0;
+}
+.interval-app .identity-intro {
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  margin-bottom: 31px;
+}
+.interval-app .identity-preview {
+  height: 90px;
+  flex: 0 0 80px;
+}
+.interval-app .identity-preview .player-mark {
+  width: 80px;
+  height: 80px;
+  animation: none;
+}
+.interval-app .identity-screen h1 {
+  font:
+    400 38px/1.02 "Newsreader",
+    Georgia,
+    serif;
+  text-align: left;
+  letter-spacing: -0.8px;
+  margin: 0 0 11px;
+}
+.interval-app .identity-screen h1 em {
+  font-weight: 400;
+  color: var(--lime);
+}
+.interval-app .identity-ritual {
+  font-size: 11px;
+  color: var(--muted);
+}
+.interval-app .identity-label {
+  font-size: 11px;
+  margin-bottom: 5px;
+}
+.interval-app .identity-screen input[name="username"] {
+  font-size: 20px;
+  color: var(--ink);
+  padding: 8px 0 11px;
+}
+.interval-app .identity-help {
+  font-size: 11px;
+  margin-top: 7px;
+}
+.interval-app .personality-picker {
+  margin-top: 25px;
+}
+.interval-app .motion-picker,
+.interval-app .color-picker {
+  border: 0;
+  padding: 0;
+  margin: 0;
+  min-width: 0;
+}
+.interval-app .motion-picker legend,
+.interval-app .color-picker legend {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 11px;
+  padding: 0;
+}
+.interval-app .motion-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+.interval-app .motion-options label,
+.interval-app .color-picker label {
+  position: relative;
+  cursor: pointer;
+  min-width: 0;
+}
+.interval-app .motion-options input,
+.interval-app .color-picker input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+}
+.interval-app .motion-options label > span {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 6px 8px 11px;
+  background: #f9f4ec;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+}
+.interval-app .motion-options .player-mark {
+  width: 60px;
+  height: 60px;
+}
+.interval-app .motion-options strong {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink);
+}
+.interval-app .motion-options input:checked + span {
+  background: #eddfce;
+  border-color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.interval-app .motion-options input:focus-visible + span,
+.interval-app .color-picker input:focus-visible + span {
+  outline: 2px solid var(--lime);
+  outline-offset: 4px;
+}
+.interval-app .pattern-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 5px 0 12px;
+}
+.interval-app .pattern-caption p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+.interval-app .pattern-caption button {
+  font-size: 10px;
+  white-space: nowrap;
+}
+.interval-app .color-picker legend {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.interval-app .color-picker legend > span {
+  font: 10px var(--mono);
+}
+.interval-app .color-picker > div {
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+.interval-app .color-picker label {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+}
+.interval-app .color-picker label > span {
+  width: 29px;
+  height: 29px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: white;
+  font-size: 13px;
+}
+.interval-app .color-picker input:checked + span {
+  outline: 1px solid var(--ink);
+  outline-offset: 4px;
+}
+.interval-app .color-picker .custom-color > span {
+  background: var(--wash, #eddfce);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-size: 20px;
+}
+.interval-app .custom-color input[type="color"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  cursor: pointer;
+  z-index: 1;
+}
+.interval-app .identity-error {
+  font-size: 12px;
+  margin-top: 12px;
+  min-height: 18px;
+}
+.interval-app .identity-signin {
+  margin: 10px auto;
+}
+.interval-app .standings-person {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.interval-app .standings-person .player-mark {
+  width: 27px;
+  height: 27px;
+}
+.interval-app .shared-personality {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 15px auto;
+}
+.interval-app .shared-personality .player-mark {
+  width: 110px;
+  height: 110px;
+}
+.interval-app .motion-toggle {
+  font-size: 14px;
+  text-decoration: none;
+  width: 32px;
+  min-height: 32px;
+}
+.interval-app .personality-signature {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  margin-top: 8px;
+}
+.interval-app .reshare {
+  display: block;
+  margin: 14px auto 0;
+}
+.interval-app.shared-score-page {
+  max-width: 480px;
+  padding-top: 18px;
+}
+.interval-app .profile-name {
+  display: block;
+}
+.interval-app .profile-name > input {
+  width: 100%;
+  margin-top: 9px;
+}
+@media (max-width: 480px) {
+  .interval-app {
+    padding: 0 24px 28px;
+  }
+  .interval-app h1 {
+    font-size: 35px;
+  }
+  .interval-app .topbar {
+    height: 61px;
+  }
+  .interval-app .topbar + main {
+    padding-top: 24px;
+  }
+  .interval-app .identity-screen {
+    margin-top: 12px;
+  }
+  .interval-app .identity-intro {
+    gap: 12px;
+    margin-bottom: 26px;
+  }
+  .interval-app .identity-preview {
+    flex-basis: 65px;
+    height: 75px;
+  }
+  .interval-app .identity-preview .player-mark {
+    width: 65px;
+    height: 65px;
+  }
+  .interval-app .identity-screen h1 {
+    font-size: 34px;
+  }
+  .interval-app .identity-ritual {
+    font-size: 10px;
+  }
+  .interval-app .motion-options {
+    gap: 7px;
+  }
+  .interval-app .motion-options .player-mark {
+    width: 53px;
+    height: 53px;
+  }
+  .interval-app .keypad button {
+    min-height: 51px;
+  }
+  .interval-app .reading strong {
+    font-size: 29px;
+  }
+  .interval-app .color-picker > div {
+    gap: 2px;
+  }
+  .interval-app .pattern-caption {
+    gap: 6px;
+  }
+  .interval-app .pattern-caption p {
+    font-size: 10px;
+  }
+  .interval-app .final-score {
+    font-size: 84px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .interval-app .mathematical-mark {
+    animation: none !important;
+  }
 }

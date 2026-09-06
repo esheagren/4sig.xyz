@@ -1,4 +1,4 @@
-import { playerSymbol } from "./player";
+import { playerSymbol, playerLabel, colorName } from "./player";
 import type { Player } from "./player";
 export type Question = {
   id: string;
@@ -142,5 +142,5 @@ export function makeShareText(
   player?: Player,
   edition = "Daily",
 ) {
-  return `4σ · ${edition}\n${player ? `${playerSymbol(player.icon)} ${player.username}\n` : ""}${scoreText(totalPoints(results))} pts · ${results.filter((r) => r.hit).length}/${results.length} in range\n${results.map((r) => (r.hit ? "🟩" : "⬜")).join("")}\n${url}`;
+  return `4σ · ${edition}\n${player ? `${playerSymbol(player.icon)} ${player.username} · ${playerLabel(player.icon)} / ${colorName(player.color)}\n` : ""}${scoreText(totalPoints(results))} pts · ${results.filter((r) => r.hit).length}/${results.length} in range\n${results.map((r) => (r.hit ? "■" : "□")).join("")}\n${url}`;
 }
