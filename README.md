@@ -39,7 +39,7 @@ npm run db:check
 
 The migration checks hashes, imports in one transaction, and refuses to overwrite an existing schema. All source rows are retained in `legacy.supabase_exports`; only editorial data enters the active game. Old test accounts and scores do not affect new rankings. Ten unfinished zero-valued questions are inactive; any scheduled occurrences are replaced. Review and verify them before reactivating. Historical Supabase SQL remains in `scripts/migrations/` for reference and must not be applied to Neon.
 
-Questions belong to units and optionally multiple subcategories. Daily schedules have unique positions and question IDs per date. When the imported schedule runs out, a transaction creates a shared three-question edition from active daily questions, preferring those not used in the previous week. The bank eventually repeats; add verified questions regularly.
+Questions belong to units and optionally multiple subcategories. Daily schedules have unique positions and question IDs per date. Each edition holds four questions: a transaction tops up any date short of that (including the imported schedule) from active daily questions, preferring those not used in the previous week. The bank eventually repeats; add verified questions regularly.
 
 A game snapshots question text, truth, units and citations at start. Each locked answer is stored once, with a composite foreign key to that game's questions. The server computes the score and only reveals a truth after saving a range. Completion is idempotent. Totals, hit rates and leaderboards are derived from completed ranked games, without mutable duplicate counters. Practice games are saved but excluded from rankings and profile totals.
 
