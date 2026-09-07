@@ -13,6 +13,7 @@ import {
 import { patternFrame } from "../src/components/interval/patterns.ts";
 import userApi from "../api/user.ts";
 import { pool, query } from "../api/_lib/db.ts";
+import { getDailyQuestions } from "../api/_lib/questions.js";
 import { Score } from "../api/_lib/scoring.ts";
 import {
   quantity,
@@ -224,7 +225,7 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     "concurrent starts resume the same ranked attempt",
   );
   const game = starts[0].data;
-  assert.ok(game.questions.length >= 3);
+  assert.equal(game.questions.length, 4);
   assert.ok(
     !JSON.stringify(game).includes("trueValue"),
     "no answers exposed by start",
@@ -688,6 +689,42 @@ test("play first: anonymous resume, ownership, final identity, and existing-acco
       .gamesPlayed,
     1,
   );
+});
+
+test("daily schedule fills imported three-question editions and stays stable at four", async () => {
+  const date = "2099-01-01";
+  const { rows: bank } = await query(
+    "SELECT id FROM questions WHERE is_active ORDER BY id LIMIT 4",
+  );
+  for (let i = 0; i < 3; i++)
+    await query(
+      "INSERT INTO daily_questions(question_id,date,display_order) VALUES($1,$2,$3)",
+      [bank[i].id, date, i],
+    );
+  const editions = await Promise.all([
+    getDailyQuestions(date),
+    getDailyQuestions(date),
+  ]);
+  for (const edition of editions) {
+    assert.equal(edition.length, 4);
+    assert.deepEqual(
+      edition.slice(0, 3).map((q) => q.id),
+      bank.slice(0, 3).map((q) => q.id),
+    );
+  }
+  assert.deepEqual(
+    editions[0].map((q) => q.id),
+    editions[1].map((q) => q.id),
+  );
+  assert.equal(
+    (
+      await query("SELECT count(*)::int n FROM daily_questions WHERE date=$1", [
+        date,
+      ])
+    ).rows[0].n,
+    4,
+  );
+  assert.equal((await getDailyQuestions("2099-01-02")).length, 4);
 });
 
 test.after(async () => {

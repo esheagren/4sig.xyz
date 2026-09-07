@@ -36,6 +36,8 @@ import {
   validBounds,
 } from "./game";
 import type { Bounds } from "./game";
+import { HoldToConfirm } from "./HoldToConfirm";
+import { rulerScale } from "./ruler-scale";
 import { startDrag, stepDrag } from "./range-drag";
 import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
 
@@ -232,6 +234,7 @@ export default function IntervalGame() {
       window.scrollTo({ top: 0, behavior: "auto" });
       heading.current?.focus({ preventScroll: true });
     });
+  const scale = rulerScale(domain);
   const position = (n: number) =>
     ((n - domain[0]) / (domain[1] - domain[0])) * 100;
   const clipped = (n: number) => Math.max(0, Math.min(100, position(n)));
@@ -926,8 +929,12 @@ export default function IntervalGame() {
                     <div className="ruler-wrap">
                       <div className="ruler" ref={ruler}>
                         <div className="grid-lines">
-                          {Array.from({ length: 31 }, (_, i) => (
-                            <i key={i} className={i % 5 === 0 ? "major" : ""} />
+                          {scale.ticks.map((tick) => (
+                            <i
+                              key={tick.value}
+                              className={tick.major ? "major" : ""}
+                              style={{ left: `${tick.position * 100}%` }}
+                            />
                           ))}
                         </div>
                         <div className="axis" />
@@ -993,13 +1000,16 @@ export default function IntervalGame() {
                           </div>
                         )}
                         <div className="tick-labels">
-                          {Array.from({ length: 3 }, (_, i) => (
-                            <span key={i}>
-                              {compact(
-                                domain[0] + ((domain[1] - domain[0]) * i) / 2,
-                              )}
-                            </span>
-                          ))}
+                          {scale.ticks
+                            .filter((tick) => tick.major)
+                            .map((tick) => (
+                              <span
+                                key={tick.value}
+                                style={{ left: `${tick.position * 100}%` }}
+                              >
+                                {compact(tick.value)}
+                              </span>
+                            ))}
                         </div>
                       </div>
                     </div>
@@ -1016,9 +1026,11 @@ export default function IntervalGame() {
                       <p className="entry-error" role="status">
                         {error}
                       </p>
-                      <button className="primary" onClick={() => void submit()}>
-                        Lock range <span>↗</span>
-                      </button>
+                      <HoldToConfirm
+                        onConfirm={() => void submit()}
+                        revision={`${index}:${bounds.lower}:${bounds.upper}`}
+                        disabled={help || editing !== null}
+                      />
                     </>
                   ) : stage === "saving" ? (
                     <p className="scan-message" role="status">
@@ -1043,12 +1055,7 @@ export default function IntervalGame() {
                           <span>pts</span>
                         </div>
                       </div>
-                      <p className={`outcome ${result.hit ? "hit" : ""}`}>
-                        {result.hit
-                          ? "✓ In your range"
-                          : "↗ Outside your range"}
-                        {assisted ? " · Hint used" : ""}
-                      </p>
+                      {assisted && <p className="outcome">Hint used</p>}
                       <details className="source-detail">
                         <summary>Behind the number</summary>
                         <p>{question.context}</p>

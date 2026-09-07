@@ -7,33 +7,33 @@ import {
 
 test("ticks distinguish minor and major markings in both directions without snapping", () => {
   const gate = new RulerTickGate();
-  gate.begin(9, [0, 300]);
-  assert.equal(gate.sample(11, [0, 300], 100), "minor");
-  gate.begin(49, [0, 300]);
-  assert.equal(gate.sample(51, [0, 300], 200), "major");
-  gate.begin(51, [0, 300]);
-  assert.equal(gate.sample(49, [0, 300], 300), "major");
-  assert.equal(gate.sample(9, [0, 300], 400), "minor");
+  gate.begin(9, [0, 150]);
+  assert.equal(gate.sample(11, [0, 150], 100), "minor");
+  gate.begin(49, [0, 150]);
+  assert.equal(gate.sample(51, [0, 150], 200), "major");
+  gate.begin(51, [0, 150]);
+  assert.equal(gate.sample(49, [0, 150], 300), "major");
+  assert.equal(gate.sample(9, [0, 150], 400), "minor");
 });
 
 test("stationary handles, jitter, and rescaling do not produce repeated ticks", () => {
   const gate = new RulerTickGate();
-  gate.begin(9.9, [0, 300]);
-  assert.equal(gate.sample(10.1, [0, 300], 100), "minor");
-  assert.equal(gate.sample(9.9, [0, 300], 200), null);
-  assert.equal(gate.sample(10.1, [0, 300], 300), null);
-  assert.equal(gate.sample(10.1, [0, 300], 400), null);
+  gate.begin(9.9, [0, 150]);
+  assert.equal(gate.sample(10.1, [0, 150], 100), "minor");
+  assert.equal(gate.sample(9.9, [0, 150], 200), null);
+  assert.equal(gate.sample(10.1, [0, 150], 300), null);
+  assert.equal(gate.sample(10.1, [0, 150], 400), null);
   assert.equal(gate.sample(50, [0, 400], 500), null);
   assert.equal(gate.sample(50, [0, 400], 600), null);
 });
 
 test("fast movement drops excess ticks, never queues a burst after stopping", () => {
   const gate = new RulerTickGate();
-  gate.begin(9, [0, 300]);
-  assert.equal(gate.sample(11, [0, 300], 100), "minor");
-  assert.equal(gate.sample(190, [0, 300], 120), null);
-  assert.equal(gate.sample(190, [0, 300], 250), null);
-  assert.equal(gate.sample(299, [0, 300], 300), "major");
+  gate.begin(9, [0, 150]);
+  assert.equal(gate.sample(11, [0, 150], 100), "minor");
+  assert.equal(gate.sample(90, [0, 150], 120), null);
+  assert.equal(gate.sample(90, [0, 150], 250), null);
+  assert.equal(gate.sample(149, [0, 150], 300), "major");
 });
 
 test("feedback stays optional, generates short quiet audio, and stops sound and vibration", () => {

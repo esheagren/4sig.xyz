@@ -1,7 +1,8 @@
+import { rulerScale } from "./ruler-scale";
 export type TickKind = "minor" | "major";
 export const FEEDBACK_KEY = "four_sigma_ruler_feedback";
 
-// Match the ruler's 30 divisions. Drop excess ticks instead of queuing them.
+// Use the same round-number markings as the visible ruler; never queue ticks.
 export class RulerTickGate {
   private position = 0;
   private domain: [number, number] = [0, 1];
@@ -15,10 +16,8 @@ export class RulerTickGate {
   }
 
   private locate(value: number, domain: [number, number]) {
-    return Math.max(
-      0,
-      Math.min(30, ((value - domain[0]) / (domain[1] - domain[0])) * 30),
-    );
+    const { minorStep } = rulerScale(domain);
+    return Math.max(domain[0], Math.min(domain[1], value)) / minorStep;
   }
 
   sample(

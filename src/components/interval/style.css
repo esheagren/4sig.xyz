@@ -301,11 +301,13 @@
 }
 .interval-app .grid-lines {
   position: absolute;
-  inset: 35px 0 32px;
-  display: flex;
-  justify-content: space-between;
+  inset: 0;
+  pointer-events: none;
 }
 .interval-app .grid-lines i {
+  position: absolute;
+  top: 71px;
+  transform: translate(-50%, -50%);
   display: block;
   width: 1px;
   height: 26px;
@@ -1902,4 +1904,92 @@
   cursor: pointer;
   min-height: 32px;
   color: var(--ink);
+}
+
+.interval-app .tick-labels {
+  height: 14px;
+  display: block;
+  pointer-events: none;
+}
+.interval-app .tick-labels span {
+  top: 0;
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
+}
+.interval-app .commit-control {
+  display: flex;
+  justify-content: center;
+  margin: 12px 0 18px;
+}
+.interval-app .hold-commit {
+  --hold: 0;
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 80px;
+  height: 80px;
+  flex: 0 0 80px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #fff9ee;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.interval-app .hold-commit::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+.interval-app .commit-ring {
+  position: absolute;
+  inset: 0;
+  width: 80px;
+  height: 80px;
+  fill: none;
+  stroke-width: 1.4;
+  transform: rotate(-90deg);
+  pointer-events: none;
+}
+.interval-app .commit-track {
+  stroke: var(--line);
+}
+.interval-app .commit-progress {
+  stroke: var(--lime);
+  stroke-width: 3;
+  stroke-dasharray: 100;
+  stroke-dashoffset: calc(100 * (1 - var(--hold)));
+  stroke-linecap: round;
+}
+.interval-app .commit-arrow {
+  position: relative;
+  width: 29px;
+  height: 29px;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  pointer-events: none;
+  transition: transform 0.12s;
+}
+.interval-app .hold-commit.committed .commit-arrow {
+  transform: translateX(2px);
+}
+.interval-app .hold-commit:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 5px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .interval-app .commit-arrow {
+    transition: none;
+  }
+  .interval-app .hold-commit.committed .commit-arrow {
+    transform: none;
+  }
 }

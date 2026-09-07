@@ -1,6 +1,6 @@
 # Four Sigma
 
-A daily estimation game. Choose a username and symbol, enter an estimate (including `4E5` or `-196`), then draw your range. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
+A daily estimation game with four questions. Play immediately: enter an estimate (including `4E5`), then draw your range. Hold the circular ink arrow for half a second to confirm; release early to cancel. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
 
 ## Development
 
@@ -39,7 +39,7 @@ npm run db:check
 
 The migration checks hashes, imports in one transaction, and refuses to overwrite an existing schema. All source rows are retained in `legacy.supabase_exports`; only editorial data enters the active game. Old test accounts and scores do not affect new rankings. Ten unfinished zero-valued questions are inactive; any scheduled occurrences are replaced. Review and verify them before reactivating. Historical Supabase SQL remains in `scripts/migrations/` for reference and must not be applied to Neon.
 
-Questions belong to units and optionally multiple subcategories. Daily schedules have unique positions and question IDs per date. When the imported schedule runs out, a transaction creates a shared three-question edition from active daily questions, preferring those not used in the previous week. The bank eventually repeats; add verified questions regularly.
+Questions belong to units and optionally multiple subcategories. Daily schedules have unique positions and question IDs per date. When the imported schedule runs out, a transaction creates a shared four-question edition from active daily questions, preferring those not used in the previous week. Short imported editions are filled to four without reordering existing questions. `scripts/postgres/ensure-four-questions.ts` takes an explicit environment file and upgrades upcoming schedules and unfinished games while preserving completed scores. The bank eventually repeats; add verified questions regularly.
 
 A game snapshots question text, truth, units and citations at start. Each locked answer is stored once, with a composite foreign key to that game's questions. The server computes the score and only reveals a truth after saving a range. Completion is idempotent. Totals, hit rates and leaderboards are derived from completed ranked games, without mutable duplicate counters. Practice games are saved but excluded from rankings and profile totals.
 
@@ -47,7 +47,7 @@ Profiles use server-generated random session cookies (HttpOnly, SameSite, Secure
 
 ## Mathematical identity
 
-The game opens directly on the first question. Only after the last answer do new players choose a username and personality; returning players with a saved personality skip this step. The game uses the Mathematical Espresso design. Players choose Orbit, Wave, Spiral, Pendulum, Bloom or Braid, plus a palette color or a custom six-digit hex color. Original mathematical SVG loops pause offscreen, in hidden tabs, and under reduced-motion preferences. The picker and score pages also provide pause controls.
+The game opens directly on the first question. Only after the last answer do new players choose a username and personality; returning players with a saved personality skip this step. The game uses the Mathematical Espresso design. Players choose Orbit, Wave, Spiral, Pendulum, Bloom or Braid, plus one of six preset colors. Original mathematical SVG loops pause offscreen, in hidden tabs, and under reduced-motion preferences. The picker and score pages also provide pause controls.
 
 Apply the additive upgrade to an existing Neon target before deploying this version:
 
