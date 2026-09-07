@@ -29,7 +29,6 @@ import {
   makeShareText,
   parseAmount,
   points,
-  precise,
   quantity,
   scoreText,
   totalPoints,
@@ -39,6 +38,7 @@ import type { Bounds } from "./game";
 import { HoldToConfirm } from "./HoldToConfirm";
 import { rulerScale } from "./ruler-scale";
 import { startDrag, stepDrag } from "./range-drag";
+import { nextBound, roundBounds } from "./bound-precision";
 import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
 
 // The current question bank is curated for nonnegative quantities.
@@ -239,8 +239,9 @@ export default function IntervalGame() {
     ((n - domain[0]) / (domain[1] - domain[0])) * 100;
   const clipped = (n: number) => Math.max(0, Math.min(100, position(n)));
   const updateBounds = (b: Bounds, fit = true) => {
-    setBounds(b);
-    if (fit) setDomain(fitDomain(b, question.max, RANGE_MIN));
+    const rounded = roundBounds(b, RANGE_MIN, question.max);
+    setBounds(rounded);
+    if (fit) setDomain(fitDomain(rounded, question.max, RANGE_MIN));
     setError("");
   };
   useEffect(() => {
@@ -327,7 +328,14 @@ export default function IntervalGame() {
         RANGE_MIN,
         question.max,
       );
-      if (next.bounds[part] !== current.bounds[part]) setBounds(next.bounds);
+      if (next.bounds[part] !== current.bounds[part])
+        setBounds(
+          roundBounds(
+            next.bounds,
+            Math.max(RANGE_MIN, next.domain[0]),
+            Math.min(question.max ?? 1e100, next.domain[1]),
+          ),
+        );
       const tick = ticks.sample(
         next.bounds[part],
         next.domain,
@@ -384,15 +392,14 @@ export default function IntervalGame() {
     )
       return;
     e.preventDefault();
-    const delta =
-      ((["ArrowRight", "ArrowUp"].includes(e.key) ? 1 : -1) *
-        (domain[1] - domain[0])) /
-      50;
+    const next = nextBound(
+      bounds[part],
+      ["ArrowRight", "ArrowUp"].includes(e.key) ? 1 : -1,
+      domain[1] - domain[0],
+    );
     const b = {
       ...bounds,
-      [part]: precise(
-        Math.max(domain[0], Math.min(domain[1], bounds[part] + delta)),
-      ),
+      [part]: next,
     };
     b.estimate = Math.max(b.lower, Math.min(b.upper, b.estimate));
     if (validBounds(b, question.max, RANGE_MIN)) {
@@ -405,7 +412,7 @@ export default function IntervalGame() {
         performance.now(),
       );
       if (tick) feedback.play(tick, false);
-      updateBounds(b, false);
+      updateBounds(b, next < domain[0] || next > domain[1]);
     }
   }
   async function submit() {
@@ -748,13 +755,14 @@ export default function IntervalGame() {
           b.upper > 1e100
         )
           throw new Error("Invalid bounds or locked.");
+        const rounded = roundBounds(b, RANGE_MIN, q.max);
         flushSync(() => {
-          setBounds(b);
-          setDomain(fitDomain(b, q.max, RANGE_MIN));
+          setBounds(rounded);
+          setDomain(fitDomain(rounded, q.max, RANGE_MIN));
           setStage("range");
           setError("");
         });
-        return { staged: b, unit: q.unit };
+        return { staged: rounded, unit: q.unit };
       },
     });
     return () => lifecycle.abort();
