@@ -780,10 +780,26 @@ export default function IntervalGame() {
             </span>
             <button
               className="help-button"
-              onClick={() => setHelp(true)}
-              aria-label="How to play"
+              onClick={() => {
+                dragCleanup.current?.();
+                feedback.stop();
+                setHelp(true);
+              }}
+              aria-label="Open menu"
+              aria-haspopup="dialog"
             >
-              ?
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                aria-hidden="true"
+              >
+                <path d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
             </button>
           </header>
         )}
@@ -989,38 +1005,8 @@ export default function IntervalGame() {
                     </div>
                     {editable && (
                       <>
-                        <div className="ruler-footer">
-                          <div className="range-cue" role="status">
-                            {dragCue}
-                          </div>
-                          <button
-                            className="ruler-sound"
-                            type="button"
-                            aria-pressed={soundOn}
-                            aria-label="Ruler sound and vibration"
-                            title="Sound and vibration where supported"
-                            onClick={toggleSound}
-                          >
-                            <svg
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="1.5"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              aria-hidden="true"
-                            >
-                              <path d="M11 5 6 9H3v6h3l5 4z" />
-                              {soundOn ? (
-                                <path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" />
-                              ) : (
-                                <path d="m16 9 6 6m0-6-6 6" />
-                              )}
-                            </svg>
-                            Sound {soundOn ? "on" : "off"}
-                          </button>
+                        <div className="range-cue" role="status">
+                          {dragCue}
                         </div>
                       </>
                     )}
@@ -1292,43 +1278,66 @@ export default function IntervalGame() {
         </main>
         <dialog
           ref={helpDialog}
-          className="help-dialog"
+          className="help-dialog game-menu"
+          aria-labelledby="game-menu-title"
           onCancel={() => setHelp(false)}
           onClick={(e) => {
             if (e.target === helpDialog.current) setHelp(false);
           }}
         >
           <div className="dialog-head">
-            <h2>Room to be wrong.</h2>
-            <button aria-label="Close help" onClick={() => setHelp(false)}>
+            <h2 id="game-menu-title">Menu</h2>
+            <button aria-label="Close menu" onClick={() => setHelp(false)}>
               ×
             </button>
           </div>
-          <p>Capture the answer. The tighter your range, the more you score.</p>
-          <p>
-            Use <b>E</b> for big numbers and decimals for small ones.{" "}
-            <b>4E5 = 400,000.</b> The ruler follows your estimate. Hold an end
-            near the edge to keep extending, or tap either bound to type it.
-          </p>
-          <h3>Scoring</h3>
-          <p>
-            Outside your range: 0 points. Inside: points for precision relative
-            to the answer’s size. Up to 10,000 per round.
-          </p>
+          <div className="menu-setting">
+            <div>
+              <span>Sound</span>
+              <p>Soft ruler ticks and touch feedback.</p>
+            </div>
+            <button
+              className="menu-switch"
+              type="button"
+              role="switch"
+              aria-checked={soundOn}
+              aria-label="Sound and vibration"
+              onClick={toggleSound}
+            >
+              <span aria-hidden="true">{soundOn ? "On" : "Off"}</span>
+              <i aria-hidden="true" />
+            </button>
+          </div>
           <details>
-            <summary>The formula</summary>
+            <summary>How to play</summary>
+            <p>
+              Give an estimate, then drag the brackets to choose your range. Tap
+              either number to edit it directly. Hold a bracket at the edge to
+              expand the ruler slowly.
+            </p>
+            <p>
+              Use the 000 key for thousands and millions, or E for scientific
+              notation: 4E5 = 400,000.
+            </p>
+          </details>
+          <details>
+            <summary>Scoring</summary>
+            <p>
+              Outside your range: 0 points. Inside: points for precision
+              relative to the answer’s size. Up to 10,000 per round.
+            </p>
             <p>
               For a hit: 50 × (|answer| ÷ range width)<sup>0.7</sup>, capped at
               10,000. Exact guesses earn 10,000. A zero answer uses the
-              question’s reference scale instead.
+              question’s reference scale.
             </p>
           </details>
           <p>
-            <Link to="/profile">Your profile & history</Link>
+            <Link to="/profile">Your profile & history ↗</Link>
           </p>
           <p className="muted">
-            A new set of numbers each day. Your first attempt each day counts
-            toward your score. Replays are practice.
+            A new set of numbers each day. Your first attempt counts toward your
+            score. Replays are practice.
           </p>
         </dialog>
         <dialog

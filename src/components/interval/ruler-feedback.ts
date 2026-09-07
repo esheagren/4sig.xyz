@@ -78,20 +78,22 @@ export class RulerFeedback {
         if (!buffer) {
           buffer = context.createBuffer(
             1,
-            Math.ceil(context.sampleRate * 0.024),
+            Math.ceil(context.sampleRate * 0.018),
             context.sampleRate,
           );
           const data = buffer.getChannelData(0);
           const major = kind === "major";
           for (let i = 0; i < data.length; i++) {
             const t = i / context.sampleRate;
-            const attack = Math.min(1, t / 0.0005);
-            const envelope = attack * Math.exp(-t / (major ? 0.0035 : 0.0025));
+            // A gently introduced, high, clean tone instead of a noisy impact.
+            const attack = 1 - Math.exp(-t / 0.0015);
+            const envelope =
+              attack * Math.exp(-t / 0.003) * Math.max(0, 1 - t / 0.018) ** 2;
             data[i] =
-              (Math.sin(2 * Math.PI * (major ? 1500 : 1900) * t) * 0.7 +
-                (Math.random() * 2 - 1) * 0.3) *
+              (Math.sin(2 * Math.PI * (major ? 2800 : 3200) * t) * 0.85 +
+                Math.sin(2 * Math.PI * 5200 * t) * 0.15) *
               envelope *
-              (major ? 0.14 : 0.09);
+              (major ? 0.075 : 0.055);
           }
           this.buffers[kind] = buffer;
         }

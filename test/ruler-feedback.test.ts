@@ -111,9 +111,9 @@ test("feedback stays optional, generates short quiet audio, and stops sound and 
     assert.equal(started, 2);
     assert.deepEqual(pulses, [8]);
     for (const data of samples) {
-      assert.equal(data.length, 1152);
-      assert.ok(data.every((n) => Number.isFinite(n) && Math.abs(n) <= 0.14));
-      assert.ok(data.some((n) => Math.abs(n) > 0.01));
+      assert.equal(data.length, 864);
+      assert.ok(data.every((n) => Number.isFinite(n) && Math.abs(n) <= 0.025));
+      assert.ok(data.some((n) => Math.abs(n) > 0.001));
     }
     feedback.stop();
     assert.equal(stopped, 2);
