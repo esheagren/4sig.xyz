@@ -24,7 +24,6 @@ import type { Player, SharedScore } from "./player";
 import { NumberPad } from "./NumberPad";
 import {
   compact,
-  extendUpper,
   fitDomain,
   initialBounds,
   makeShareText,
@@ -38,6 +37,10 @@ import {
   validBounds,
 } from "./game";
 import type { Bounds } from "./game";
+import { startDrag, stepDrag } from "./range-drag";
+
+// The current question bank is curated for nonnegative quantities.
+const RANGE_MIN = 0;
 
 function activeGame(id?: string | null) {
   try {
@@ -150,6 +153,8 @@ export default function IntervalGame() {
     [bounds, setBounds] = useState<Bounds>({ lower: 0, estimate: 0, upper: 1 });
   const [domain, setDomain] = useState<[number, number]>([0, 1]),
     [results, setResults] = useState<Result[]>([]);
+  const originalEstimate = useRef<number | null>(null);
+  const [dragCue, setDragCue] = useState("");
   const [assisted, setAssisted] = useState(false),
     [error, setError] = useState(""),
     [help, setHelp] = useState(false);
@@ -197,7 +202,7 @@ export default function IntervalGame() {
   const clipped = (n: number) => Math.max(0, Math.min(100, position(n)));
   const updateBounds = (b: Bounds, fit = true) => {
     setBounds(b);
-    if (fit) setDomain(fitDomain(b, question.max));
+    if (fit) setDomain(fitDomain(b, question.max, RANGE_MIN));
     setError("");
   };
   useEffect(() => {
@@ -219,15 +224,20 @@ export default function IntervalGame() {
   useEffect(() => () => dragCleanup.current?.(), []);
   function beginRange() {
     const value = parseAmount(text);
-    if (!Number.isFinite(value) || value > (question.max ?? 1e100)) {
+    if (
+      !Number.isFinite(value) ||
+      value < RANGE_MIN ||
+      value > (question.max ?? 1e100)
+    ) {
       setError(
         question.max
           ? `Enter a number from 0 to ${question.max}.`
-          : "Enter a number, such as 4E5.",
+          : "Enter a number at or above 0, such as 4E5.",
       );
       return;
     }
-    updateBounds(initialBounds(value, question.max));
+    originalEstimate.current = value;
+    updateBounds(initialBounds(value, question.max, RANGE_MIN));
     setStage("range");
     focusHeading();
   }
@@ -236,9 +246,9 @@ export default function IntervalGame() {
     const value = parseAmount(editText),
       b = { ...bounds, [editing]: value };
     b.estimate = Math.max(b.lower, Math.min(b.upper, b.estimate));
-    if (!validBounds(b, question.max)) {
+    if (!validBounds(b, question.max, RANGE_MIN)) {
       setError(
-        `Lower cannot exceed upper${question.max ? `, at or below ${question.max}` : ""}.`,
+        `Bounds must be at or above 0, with lower no greater than upper${question.max ? `, at or below ${question.max}` : ""}.`,
       );
       return;
     }
@@ -249,62 +259,68 @@ export default function IntervalGame() {
     e: ReactPointerEvent<HTMLButtonElement>,
     part: "lower" | "upper",
   ) {
-    if (!editable || !ruler.current) return;
+    if (!editable || !ruler.current || !e.isPrimary || e.button !== 0) return;
     e.preventDefault();
     dragCleanup.current?.();
     const target = e.currentTarget,
       rect = ruler.current.getBoundingClientRect();
-    let b = { ...bounds },
-      d: [number, number] = [...domain],
+    let current = startDrag(bounds, domain, part),
       x = e.clientX,
       last = performance.now(),
-      frame = 0;
-    // Preserve where inside the generous touch target the player grabbed the handle.
+      frame = 0,
+      moved = false;
+    const initialX = x;
+    // Keep the handle anchored where it was grabbed within its touch target.
     const offset =
-      x - (rect.left + ((b[part] - d[0]) / (d[1] - d[0])) * rect.width);
+      x -
+      (rect.left +
+        ((bounds[part] - domain[0]) / (domain[1] - domain[0])) * rect.width);
     target.setPointerCapture(e.pointerId);
+    const paint = (seconds: number) => {
+      const next = stepDrag(
+        current,
+        (x - offset - rect.left) / rect.width,
+        seconds,
+        moved,
+        RANGE_MIN,
+        question.max,
+      );
+      if (next.bounds[part] !== current.bounds[part]) setBounds(next.bounds);
+      if (
+        next.domain[0] !== current.domain[0] ||
+        next.domain[1] !== current.domain[1]
+      )
+        setDomain(next.domain);
+      if (next.cue !== current.cue) setDragCue(next.cue);
+      current = next;
+    };
     const move = (event: PointerEvent) => {
       x = event.clientX;
-      const value =
-        d[0] + ((x - offset - rect.left) / rect.width) * (d[1] - d[0]);
-      b = {
-        ...b,
-        [part]: precise(
-          part === "lower"
-            ? Math.max(-1e100, Math.min(b.upper, value))
-            : Math.min(question.max ?? 1e100, Math.max(b.lower, value)),
-        ),
-      };
-      b.estimate = Math.max(b.lower, Math.min(b.upper, b.estimate));
-      if (validBounds(b, question.max)) setBounds({ ...b });
+      moved ||= Math.abs(x - initialX) >= 6;
+      paint(0);
     };
     const tick = (now: number) => {
-      const seconds = Math.min((now - last) / 1000, 0.05);
+      if (document.hidden) {
+        end();
+        return;
+      }
+      paint(Math.min((now - last) / 1000, 0.05));
       last = now;
-      if (part === "upper" && x - offset > rect.right - 28) {
-        const extended = extendUpper(b, d, seconds, question.max);
-        b = extended.bounds;
-        d = extended.domain;
-        setBounds({ ...b });
-        setDomain([...d]);
-      }
-      if (part === "lower" && x - offset < rect.left + 28 && d[0] > -1e100) {
-        const shift = (d[1] - d[0]) * seconds * 0.85;
-        d = [Math.max(-1e100, d[0] - shift), d[1]];
-        b.lower = Math.max(-1e100, b.lower - shift);
-        setBounds({ ...b });
-        setDomain([...d]);
-      }
       frame = requestAnimationFrame(tick);
     };
     const end = () => {
       cancelAnimationFrame(frame);
+      setDragCue("");
+      window.removeEventListener("blur", end);
       target.removeEventListener("pointermove", move);
       target.removeEventListener("pointerup", end);
       target.removeEventListener("pointercancel", end);
       target.removeEventListener("lostpointercapture", end);
+      if (target.hasPointerCapture(e.pointerId))
+        target.releasePointerCapture(e.pointerId);
       dragCleanup.current = null;
     };
+    window.addEventListener("blur", end);
     target.addEventListener("pointermove", move);
     target.addEventListener("pointerup", end);
     target.addEventListener("pointercancel", end);
@@ -323,9 +339,14 @@ export default function IntervalGame() {
       ((["ArrowRight", "ArrowUp"].includes(e.key) ? 1 : -1) *
         (domain[1] - domain[0])) /
       50;
-    const b = { ...bounds, [part]: bounds[part] + delta };
+    const b = {
+      ...bounds,
+      [part]: precise(
+        Math.max(domain[0], Math.min(domain[1], bounds[part] + delta)),
+      ),
+    };
     b.estimate = Math.max(b.lower, Math.min(b.upper, b.estimate));
-    if (validBounds(b, question.max)) updateBounds(b);
+    if (validBounds(b, question.max, RANGE_MIN)) updateBounds(b, false);
   }
   async function submit() {
     if (lock.current || !editable) return;
@@ -356,7 +377,14 @@ export default function IntervalGame() {
       lock.current = false;
     }
   }
+  function resetRange() {
+    dragCleanup.current?.();
+    const estimate =
+      originalEstimate.current ?? Math.max(RANGE_MIN, bounds.estimate);
+    updateBounds(initialBounds(estimate, question.max, RANGE_MIN));
+  }
   function resetRound() {
+    originalEstimate.current = null;
     setStage("estimate");
     setText("");
     setAssisted(false);
@@ -663,13 +691,14 @@ export default function IntervalGame() {
         if (
           !q ||
           !["estimate", "range"].includes(s.stage) ||
-          !validBounds(b, q.max) ||
+          !validBounds(b, q.max, RANGE_MIN) ||
           b.upper > 1e100
         )
           throw new Error("Invalid bounds or locked.");
         flushSync(() => {
+          originalEstimate.current ??= b.estimate;
           setBounds(b);
-          setDomain(fitDomain(b, q.max));
+          setDomain(fitDomain(b, q.max, RANGE_MIN));
           setStage("range");
           setError("");
         });
@@ -817,7 +846,11 @@ export default function IntervalGame() {
                         <button
                           className="text-button"
                           onClick={() => {
-                            setText(String(bounds.estimate));
+                            setText(
+                              String(
+                                originalEstimate.current ?? bounds.estimate,
+                              ),
+                            );
                             setStage("estimate");
                             focusHeading();
                           }}
@@ -931,27 +964,47 @@ export default function IntervalGame() {
                       </div>
                     </div>
                     {editable && (
-                      <div className="range-tools">
-                        <button
-                          onClick={() =>
-                            updateBounds(
-                              resizeBounds(bounds, 0.5, question.max),
-                            )
-                          }
-                        >
-                          − Narrower
-                        </button>
-                        <span aria-label="Range width">
-                          Δ {compact(bounds.upper - bounds.lower)}
-                        </span>
-                        <button
-                          onClick={() =>
-                            updateBounds(resizeBounds(bounds, 2, question.max))
-                          }
-                        >
-                          + Wider
-                        </button>
-                      </div>
+                      <>
+                        <div className="range-tools">
+                          <button
+                            onClick={() =>
+                              updateBounds(
+                                resizeBounds(
+                                  bounds,
+                                  0.5,
+                                  question.max,
+                                  RANGE_MIN,
+                                ),
+                              )
+                            }
+                          >
+                            − Narrower
+                          </button>
+                          <span aria-label="Range width">
+                            Δ {compact(bounds.upper - bounds.lower)}
+                          </span>
+                          <button
+                            onClick={() =>
+                              updateBounds(
+                                resizeBounds(
+                                  bounds,
+                                  2,
+                                  question.max,
+                                  RANGE_MIN,
+                                ),
+                              )
+                            }
+                          >
+                            + Wider
+                          </button>
+                        </div>
+                        <div className="range-recovery">
+                          <span role="status">{dragCue}</span>
+                          <button className="text-button" onClick={resetRange}>
+                            Reset range
+                          </button>
+                        </div>
+                      </>
                     )}
                   </section>
                   {editable ? (

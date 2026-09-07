@@ -26,10 +26,10 @@ export type Result = Bounds & {
 };
 export const format = (n: number) =>
   new Intl.NumberFormat("en-US", { maximumSignificantDigits: 6 }).format(n);
-export function validBounds(b: Bounds, max = 1e100) {
+export function validBounds(b: Bounds, max = 1e100, min = -1e100) {
   return (
     Object.values(b).every(Number.isFinite) &&
-    b.lower >= -1e100 &&
+    b.lower >= min &&
     b.lower <= b.upper &&
     b.lower <= b.estimate &&
     b.estimate <= b.upper &&
@@ -49,18 +49,26 @@ export function parseAmount(text: string, multiplier = 1): number {
     : NaN;
 }
 export const precise = (value: number) => Number(value.toPrecision(10));
-export function initialBounds(estimate: number, max = 1e100): Bounds {
-  if (!Number.isFinite(estimate) || estimate < -1e100 || estimate > max)
+export function initialBounds(
+  estimate: number,
+  max = 1e100,
+  min = -1e100,
+): Bounds {
+  if (!Number.isFinite(estimate) || estimate < min || estimate > max)
     throw new Error("Invalid estimate");
   const pad = Math.abs(estimate) * 0.5 || 0.5;
   return {
-    lower: precise(Math.max(-1e100, estimate - pad)),
+    lower: precise(Math.max(min, estimate - pad)),
     estimate,
     upper: precise(Math.min(max, estimate + pad)),
   };
 }
 // Uses only the player's interval and the natural domain; never the hidden answer.
-export function fitDomain(b: Bounds, max = 1e100): [number, number] {
+export function fitDomain(
+  b: Bounds,
+  max = 1e100,
+  min = -1e100,
+): [number, number] {
   const pad = Math.max(
     (b.upper - b.lower) * 0.35,
     Math.abs(b.estimate) * 0.05,
@@ -68,27 +76,32 @@ export function fitDomain(b: Bounds, max = 1e100): [number, number] {
   );
   const step = 10 ** Math.floor(Math.log10((b.upper - b.lower + 2 * pad) / 4));
   return [
-    precise(Math.max(-1e100, Math.floor((b.lower - pad) / step) * step)),
+    precise(Math.max(min, Math.floor((b.lower - pad) / step) * step)),
     precise(Math.min(max, Math.ceil((b.upper + pad) / step) * step)),
   ];
 }
-export function resizeBounds(b: Bounds, factor: number, max = 1e100): Bounds {
+export function resizeBounds(
+  b: Bounds,
+  factor: number,
+  max = 1e100,
+  min = -1e100,
+): Bounds {
   if (b.lower === b.upper && factor > 1) {
     const pad = b.estimate !== 0 ? Math.abs(b.estimate) * 0.05 : 0.5;
     return {
-      lower: precise(Math.max(-1e100, b.estimate - pad)),
+      lower: precise(Math.max(min, b.estimate - pad)),
       estimate: b.estimate,
       upper: precise(Math.min(max, b.estimate + pad)),
     };
   }
   const lower = precise(
-    Math.max(-1e100, b.estimate - (b.estimate - b.lower) * factor),
+    Math.max(min, b.estimate - (b.estimate - b.lower) * factor),
   );
   const upper = precise(
     Math.min(max, b.estimate + (b.upper - b.estimate) * factor),
   );
   const next = { lower, estimate: b.estimate, upper };
-  return validBounds(next, max) ? next : b;
+  return validBounds(next, max, min) ? next : b;
 }
 const multipliers = [
   { value: 1, label: "units" },
@@ -121,21 +134,6 @@ export const compact = (value: number) =>
         notation: "compact",
         maximumSignificantDigits: 4,
       }).format(value);
-export function extendUpper(
-  b: Bounds,
-  domain: [number, number],
-  seconds: number,
-  max = 1e100,
-): { bounds: Bounds; domain: [number, number] } {
-  const span = domain[1] - domain[0];
-  const upper = precise(
-    Math.min(max, b.upper + span * Math.max(0, seconds) * 0.85),
-  );
-  return {
-    bounds: { ...b, upper },
-    domain: [domain[0], Math.min(max, Math.max(domain[1], upper + span * 0.1))],
-  };
-}
 export function makeShareText(
   results: Result[],
   url: string,

@@ -15,4 +15,4 @@ else
 fi
 psql -v ON_ERROR_STOP=1 -f scripts/postgres/002_player_identity.sql > "$test_db_dir/identity.log"
 psql -v ON_ERROR_STOP=1 -f scripts/postgres/003_play_first.sql > "$test_db_dir/guest.log"
-npx tsx --test test/postgres.test.ts test/designspace.test.ts
+npx tsx --test test/postgres.test.ts test/designspace.test.ts test/number-entry.test.ts test/range-drag.test.ts
