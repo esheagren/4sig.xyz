@@ -37,6 +37,7 @@ import {
 } from "./game";
 import type { Bounds } from "./game";
 import { startDrag, stepDrag } from "./range-drag";
+import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
 
 // The current question bank is curated for nonnegative quantities.
 const RANGE_MIN = 0;
@@ -153,6 +154,42 @@ export default function IntervalGame() {
   const [domain, setDomain] = useState<[number, number]>([0, 1]),
     [results, setResults] = useState<Result[]>([]);
   const [dragCue, setDragCue] = useState("");
+  const [soundOn, setSoundOn] = useState(() => {
+    try {
+      return localStorage.getItem(FEEDBACK_KEY) === "on";
+    } catch {
+      return false;
+    }
+  });
+  const [feedback] = useState(() => new RulerFeedback());
+  const keyboardTicks = useRef(new RulerTickGate());
+  useEffect(() => {
+    const stop = () => {
+      if (document.hidden) feedback.stop();
+    };
+    document.addEventListener("visibilitychange", stop);
+    window.addEventListener("blur", feedbackStop);
+    function feedbackStop() {
+      feedback.stop();
+    }
+    return () => {
+      document.removeEventListener("visibilitychange", stop);
+      window.removeEventListener("blur", feedbackStop);
+      feedback.dispose();
+    };
+  }, [feedback]);
+  function toggleSound() {
+    const enabled = !soundOn;
+    feedback.enabled = enabled;
+    setSoundOn(enabled);
+    try {
+      localStorage.setItem(FEEDBACK_KEY, enabled ? "on" : "off");
+    } catch {
+      /* Optional preference storage. */
+    }
+    if (enabled) feedback.unlock();
+    else feedback.stop();
+  }
   const [assisted, setAssisted] = useState(false),
     [error, setError] = useState(""),
     [help, setHelp] = useState(false);
@@ -259,6 +296,11 @@ export default function IntervalGame() {
     if (!editable || !ruler.current || !e.isPrimary || e.button !== 0) return;
     e.preventDefault();
     dragCleanup.current?.();
+    feedback.enabled = soundOn;
+    feedback.unlock();
+    const ticks = new RulerTickGate();
+    ticks.begin(bounds[part], domain);
+    const touch = e.pointerType === "touch" || e.pointerType === "pen";
     const target = e.currentTarget,
       rect = ruler.current.getBoundingClientRect();
     let current = startDrag(bounds, domain, part),
@@ -283,6 +325,12 @@ export default function IntervalGame() {
         question.max,
       );
       if (next.bounds[part] !== current.bounds[part]) setBounds(next.bounds);
+      const tick = ticks.sample(
+        next.bounds[part],
+        next.domain,
+        performance.now(),
+      );
+      if (tick) feedback.play(tick, touch);
       if (
         next.domain[0] !== current.domain[0] ||
         next.domain[1] !== current.domain[1]
@@ -307,6 +355,7 @@ export default function IntervalGame() {
     };
     const end = () => {
       cancelAnimationFrame(frame);
+      feedback.stop();
       setDragCue("");
       window.removeEventListener("blur", end);
       target.removeEventListener("pointermove", move);
@@ -343,7 +392,18 @@ export default function IntervalGame() {
       ),
     };
     b.estimate = Math.max(b.lower, Math.min(b.upper, b.estimate));
-    if (validBounds(b, question.max, RANGE_MIN)) updateBounds(b, false);
+    if (validBounds(b, question.max, RANGE_MIN)) {
+      feedback.enabled = soundOn;
+      feedback.unlock();
+      keyboardTicks.current.begin(bounds[part], domain);
+      const tick = keyboardTicks.current.sample(
+        b[part],
+        domain,
+        performance.now(),
+      );
+      if (tick) feedback.play(tick, false);
+      updateBounds(b, false);
+    }
   }
   async function submit() {
     if (lock.current || !editable) return;
@@ -842,10 +902,6 @@ export default function IntervalGame() {
                           }}
                           aria-label={`Edit ${part} bound, ${quantity(bounds[part], question.unit)}`}
                         >
-                          <span>
-                            {part === "lower" ? "Lower" : "Upper"}
-                            {editable && <i>↗</i>}
-                          </span>
                           <strong>{compact(bounds[part])}</strong>
                         </button>
                       ))}
@@ -933,11 +989,38 @@ export default function IntervalGame() {
                     </div>
                     {editable && (
                       <>
-                        <div className="range-width" aria-label="Range width">
-                          Δ {compact(bounds.upper - bounds.lower)}
-                        </div>
-                        <div className="range-cue" role="status">
-                          {dragCue}
+                        <div className="ruler-footer">
+                          <div className="range-cue" role="status">
+                            {dragCue}
+                          </div>
+                          <button
+                            className="ruler-sound"
+                            type="button"
+                            aria-pressed={soundOn}
+                            aria-label="Ruler sound and vibration"
+                            title="Sound and vibration where supported"
+                            onClick={toggleSound}
+                          >
+                            <svg
+                              width="16"
+                              height="16"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              aria-hidden="true"
+                            >
+                              <path d="M11 5 6 9H3v6h3l5 4z" />
+                              {soundOn ? (
+                                <path d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14" />
+                              ) : (
+                                <path d="m16 9 6 6m0-6-6 6" />
+                              )}
+                            </svg>
+                            Sound {soundOn ? "on" : "off"}
+                          </button>
                         </div>
                       </>
                     )}
