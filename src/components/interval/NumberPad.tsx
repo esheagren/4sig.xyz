@@ -35,8 +35,7 @@ export function NumberPad({
       next = value.slice(0, start) + value.slice(end);
       cursor = start;
     } else {
-      next =
-        value.slice(0, start) + (key === "−" ? "-" : key) + value.slice(end);
+      next = value.slice(0, start) + key + value.slice(end);
       cursor = start + key.length;
     }
     onChange(next);
@@ -98,7 +97,6 @@ export function NumberPad({
           "→",
           ".",
           "0",
-          "−",
         ].map((key) => (
           <button
             key={key}
@@ -106,16 +104,17 @@ export function NumberPad({
             className={
               key === "→"
                 ? "enter-key"
-                : ["E", "Clear", "Delete", "−"].includes(key)
-                  ? `function-key ${key.toLowerCase()}-key`
-                  : ""
+                : key === "0"
+                  ? "zero-key"
+                  : ["E", "Clear", "Delete"].includes(key)
+                    ? `function-key ${key.toLowerCase()}-key`
+                    : ""
             }
             aria-label={
               (
                 {
                   Delete: "Delete digit",
                   E: "Exponent",
-                  "−": "Minus",
                   "→": submitLabel,
                 } as Record<string, string>
               )[key] ?? key

@@ -201,6 +201,9 @@
 .interval-app .keypad .clear-key {
   font-size: 14px;
 }
+.interval-app .keypad .zero-key {
+  grid-column: span 2;
+}
 .interval-app .keypad .enter-key {
   grid-column: 4;
   grid-row: 3 / 5;
