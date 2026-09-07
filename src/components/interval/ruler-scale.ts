@@ -1,3 +1,5 @@
+export const MINOR_DIVISIONS = 15;
+
 export function rulerScale(domain: [number, number]) {
   const span = domain[1] - domain[0];
   const target = span / 5;
@@ -6,12 +8,12 @@ export function rulerScale(domain: [number, number]) {
   const multiple =
     [1, 2, 5, 10].find((n) => normalized <= n * (1 + 1e-12)) ?? 10;
   const majorStep = multiple * power;
-  const minorStep = majorStep / 5;
+  const minorStep = majorStep / MINOR_DIVISIONS;
   const ticks: { value: number; position: number; major: boolean }[] = [];
   if (!Number.isFinite(span) || span <= 0 || minorStep <= 0)
     return { majorStep, minorStep, ticks };
   const first = Math.ceil(domain[0] / minorStep - 1e-10);
-  for (let i = 0; i < 32; i++) {
+  for (let i = 0; i < 5 * MINOR_DIVISIONS + 2; i++) {
     const index = first + i;
     const value = Number((index * minorStep).toPrecision(12));
     const position = (value - domain[0]) / span;
@@ -20,7 +22,7 @@ export function rulerScale(domain: [number, number]) {
       ticks.push({
         value,
         position: Math.max(0, Math.min(1, position)),
-        major: index % 5 === 0,
+        major: index % MINOR_DIVISIONS === 0,
       });
   }
   return { majorStep, minorStep, ticks };

@@ -35,7 +35,7 @@ test("tick positions and sounds agree across orders of magnitude", () => {
     const domain: [number, number] = [0, 100 * magnitude];
     const scale = rulerScale(domain);
     assert.ok(
-      scale.ticks.length <= 32 &&
+      scale.ticks.length <= 76 &&
         scale.ticks.filter((t) => t.major).length <= 6,
     );
     for (const tick of scale.ticks) {
@@ -52,4 +52,14 @@ test("tick positions and sounds agree across orders of magnitude", () => {
       );
     }
   }
+});
+
+test("ruler has three times as many subdivisions while keeping round major labels", () => {
+  const scale = rulerScale([0, 100]);
+  assert.equal(scale.ticks.length, 76);
+  assert.equal(scale.minorStep, 20 / 15);
+  assert.deepEqual(
+    scale.ticks.filter((t) => t.major).map((t) => t.value),
+    [0, 20, 40, 60, 80, 100],
+  );
 });

@@ -1,4 +1,4 @@
-import { rulerScale } from "./ruler-scale";
+import { MINOR_DIVISIONS, rulerScale } from "./ruler-scale";
 export type TickKind = "minor" | "major";
 export const FEEDBACK_KEY = "four_sigma_ruler_feedback";
 
@@ -45,7 +45,9 @@ export class RulerTickGate {
     this.lastTime = now;
     const low = Math.min(first, last),
       high = Math.max(first, last);
-    return Math.ceil(low / 5) * 5 <= high ? "major" : "minor";
+    return Math.ceil(low / MINOR_DIVISIONS) * MINOR_DIVISIONS <= high
+      ? "major"
+      : "minor";
   }
 }
 

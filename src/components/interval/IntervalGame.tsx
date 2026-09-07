@@ -158,9 +158,9 @@ export default function IntervalGame() {
   const [dragCue, setDragCue] = useState("");
   const [soundOn, setSoundOn] = useState(() => {
     try {
-      return localStorage.getItem(FEEDBACK_KEY) === "on";
+      return localStorage.getItem(FEEDBACK_KEY) !== "off";
     } catch {
-      return false;
+      return true;
     }
   });
   const [feedback] = useState(() => new RulerFeedback());
@@ -858,13 +858,6 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               <section className="question-block" key={question.id}>
-                <div className="eyebrow">
-                  <span>{question.category}</span>
-                  <span>
-                    {String(index + 1).padStart(2, "0")} /{" "}
-                    {String(orderedQuestions.length).padStart(2, "0")}
-                  </span>
-                </div>
                 <h1 ref={heading} tabIndex={-1}>
                   {question.title}
                 </h1>
