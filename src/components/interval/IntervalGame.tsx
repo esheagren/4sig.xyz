@@ -31,7 +31,6 @@ import {
   points,
   precise,
   quantity,
-  resizeBounds,
   scoreText,
   totalPoints,
   validBounds,
@@ -965,38 +964,8 @@ export default function IntervalGame() {
                     </div>
                     {editable && (
                       <>
-                        <div className="range-tools">
-                          <button
-                            onClick={() =>
-                              updateBounds(
-                                resizeBounds(
-                                  bounds,
-                                  0.5,
-                                  question.max,
-                                  RANGE_MIN,
-                                ),
-                              )
-                            }
-                          >
-                            − Narrower
-                          </button>
-                          <span aria-label="Range width">
-                            Δ {compact(bounds.upper - bounds.lower)}
-                          </span>
-                          <button
-                            onClick={() =>
-                              updateBounds(
-                                resizeBounds(
-                                  bounds,
-                                  2,
-                                  question.max,
-                                  RANGE_MIN,
-                                ),
-                              )
-                            }
-                          >
-                            + Wider
-                          </button>
+                        <div className="range-width" aria-label="Range width">
+                          Δ {compact(bounds.upper - bounds.lower)}
                         </div>
                         <div className="range-recovery">
                           <span role="status">{dragCue}</span>

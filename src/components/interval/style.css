@@ -416,12 +416,7 @@
   font: 10px var(--mono);
   color: var(--muted);
 }
-.interval-app .range-tools {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
-}
+
 .interval-app .range-recovery {
   display: flex;
   justify-content: space-between;
@@ -436,17 +431,7 @@
   min-height: 36px;
   padding: 6px 0 6px 10px;
 }
-.interval-app .range-tools button {
-  background: transparent;
-  font-size: 12px;
-  min-height: 48px;
-  padding: 0;
-  color: #675347;
-}
-.interval-app .range-tools > span {
-  font-size: 10px;
-  color: #786b60;
-}
+
 .interval-app .primary {
   width: 100%;
   background: var(--lime);
@@ -910,12 +895,7 @@
   .interval-app .ruler {
     height: 137px;
   }
-  .interval-app .range-tools > span {
-    font-size: 9px;
-  }
-  .interval-app .range-tools button {
-    font-size: 11px;
-  }
+
   .interval-app .reveal {
     margin-top: 20px;
   }
@@ -1482,9 +1462,7 @@
 .interval-app .progress li {
   width: 23px;
 }
-.interval-app .range-tools > span {
-  font: 10px var(--mono);
-}
+
 .interval-app .brand {
   font:
     400 44px "Newsreader",
@@ -1895,4 +1873,11 @@
   .interval-app .mathematical-mark {
     animation: none !important;
   }
+}
+
+.interval-app .range-width {
+  margin-top: 8px;
+  text-align: center;
+  font: 11px var(--mono);
+  color: var(--muted);
 }
