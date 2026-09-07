@@ -1609,6 +1609,64 @@
 .interval-app .personality-picker {
   margin-top: 25px;
 }
+.interval-app .compact-personality {
+  margin-top: 0;
+}
+.interval-app .identity-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.interval-app .identity-controls input[name="username"] {
+  flex: 1;
+  min-width: 0;
+  width: 0;
+  height: 56px;
+}
+.interval-app .identity-controls input:focus {
+  outline: none;
+  border-bottom-color: var(--ink);
+  box-shadow: 0 1px 0 var(--ink);
+}
+.interval-app .identity-controls button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 56px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  background: #f9f4ec;
+  color: var(--muted);
+  font-size: 12px;
+}
+.interval-app .identity-controls button[aria-expanded="true"] {
+  border-color: var(--ink);
+  background: #eddfce;
+}
+.interval-app .identity-pattern-button {
+  width: 66px;
+  padding: 0 5px 0 0;
+}
+.interval-app .identity-pattern-button .player-mark {
+  width: 48px;
+  height: 48px;
+  animation: none;
+}
+.interval-app .identity-color-button {
+  width: 48px;
+  gap: 5px;
+}
+.interval-app .identity-color-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+.interval-app .compact-personality .identity-options-panel:not([hidden]) {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+}
 .interval-app .motion-picker,
 .interval-app .color-picker {
   border: 0;
@@ -1717,22 +1775,6 @@
 .interval-app .color-picker input:checked + span {
   outline: 1px solid var(--ink);
   outline-offset: 4px;
-}
-.interval-app .color-picker .custom-color > span {
-  background: var(--wash, #eddfce);
-  border: 1px solid var(--line);
-  color: var(--ink);
-  font-size: 20px;
-}
-.interval-app .custom-color input[type="color"] {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  width: 100%;
-  height: 100%;
-  padding: 0;
-  cursor: pointer;
-  z-index: 1;
 }
 .interval-app .identity-error {
   font-size: 12px;

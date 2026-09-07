@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState } from "react";
-import type { FormEvent } from "react";
+import { useEffect, useId, useRef, useState } from "react";
+import type { FormEvent, ReactNode } from "react";
 import {
   playerIcons,
   playerColors,
@@ -90,75 +90,146 @@ export function PersonalityPicker({
   color,
   onChange,
   disabled = false,
+  children,
 }: {
   icon: PlayerIcon;
   color: string;
   onChange: (icon: PlayerIcon, color: string) => void;
   disabled?: boolean;
+  children?: ReactNode;
 }) {
   const [paused, setPaused] = useState(false);
+  const [open, setOpen] = useState<"pattern" | "color" | null>(null);
+  const id = useId();
+  const patternButton = useRef<HTMLButtonElement>(null);
+  const colorButton = useRef<HTMLButtonElement>(null);
+  const compact = children !== undefined;
+  function close(panel: "pattern" | "color") {
+    if (!compact) return;
+    setOpen(null);
+    (panel === "pattern" ? patternButton : colorButton).current?.focus();
+  }
   return (
-    <div className="personality-picker">
-      <fieldset className="motion-picker" disabled={disabled}>
-        <legend>Your pattern</legend>
-        <div className="motion-options">
-          {playerIcons.map((item) => (
-            <label key={item.id}>
-              <input
-                type="radio"
-                name="player-pattern"
-                checked={icon === item.id}
-                onChange={() => onChange(item.id, color)}
-              />
-              <span>
-                <PlayerMark icon={item.id} color={color} paused={paused} />
-                <strong>{item.label}</strong>
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <div className="pattern-caption">
-        <p>{playerIcons.find((p) => p.id === icon)!.description}</p>
-        <button
-          className="text-button"
-          type="button"
-          onClick={() => setPaused(!paused)}
-          aria-pressed={paused}
-        >
-          {paused ? "Play motion" : "Pause motion"}
-        </button>
-      </div>
-      <fieldset className="color-picker" disabled={disabled}>
-        <legend>
-          Your color <span>{colorName(color)}</span>
-        </legend>
-        <div>
-          {playerColors.map((c) => (
-            <label key={c.value} title={c.label}>
-              <input
-                type="radio"
-                name="player-color"
-                checked={color === c.value}
-                onChange={() => onChange(icon, c.value)}
-                aria-label={c.label}
-              />
-              <span style={{ background: c.value }}>
-                <span aria-hidden="true">{color === c.value ? "✓" : ""}</span>
-              </span>
-            </label>
-          ))}
-          <label className="custom-color" title="Choose your own color">
-            <input
-              type="color"
-              value={color}
-              aria-label="Choose your own color"
-              onChange={(e) => onChange(icon, e.target.value)}
+    <div
+      className={`personality-picker ${compact ? "compact-personality" : ""}`}
+      onKeyDown={(e) => {
+        if (e.key === "Escape" && open) {
+          e.preventDefault();
+          close(open);
+        }
+      }}
+    >
+      {compact && (
+        <div className="identity-controls">
+          {children}
+          <button
+            ref={patternButton}
+            type="button"
+            className="identity-pattern-button"
+            disabled={disabled}
+            aria-expanded={open === "pattern"}
+            aria-controls={`${id}-patterns`}
+            aria-label={`Change pattern: ${playerIcons.find((p) => p.id === icon)!.label}`}
+            title="Change pattern"
+            onClick={() => setOpen(open === "pattern" ? null : "pattern")}
+          >
+            <PlayerMark icon={icon} color={color} paused={paused} />
+            <span aria-hidden="true">⌄</span>
+          </button>
+          <button
+            ref={colorButton}
+            type="button"
+            className="identity-color-button"
+            disabled={disabled}
+            aria-expanded={open === "color"}
+            aria-controls={`${id}-colors`}
+            aria-label={`Change color: ${colorName(color)}`}
+            title="Change color"
+            onClick={() => setOpen(open === "color" ? null : "color")}
+          >
+            <span
+              className="identity-color-dot"
+              style={{ background: color }}
             />
-            <span aria-hidden="true">+</span>
-          </label>
+            <span aria-hidden="true">⌄</span>
+          </button>
         </div>
-      </fieldset>
+      )}
+      <div
+        id={`${id}-patterns`}
+        className="identity-options-panel"
+        hidden={compact && open !== "pattern"}
+      >
+        <fieldset className="motion-picker" disabled={disabled}>
+          <legend>Your pattern</legend>
+          <div className="motion-options">
+            {playerIcons.map((item) => (
+              <label key={item.id}>
+                <input
+                  type="radio"
+                  name={`${id}-pattern`}
+                  checked={icon === item.id}
+                  onChange={() => {
+                    onChange(item.id, color);
+                    close("pattern");
+                  }}
+                  onClick={() => {
+                    if (icon === item.id) close("pattern");
+                  }}
+                />
+                <span>
+                  <PlayerMark icon={item.id} color={color} paused={paused} />
+                  <strong>{item.label}</strong>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+        <div className="pattern-caption">
+          <p>{playerIcons.find((p) => p.id === icon)!.description}</p>
+          <button
+            className="text-button"
+            type="button"
+            onClick={() => setPaused(!paused)}
+            aria-pressed={paused}
+          >
+            {paused ? "Play motion" : "Pause motion"}
+          </button>
+        </div>
+      </div>
+      <div
+        id={`${id}-colors`}
+        className="identity-options-panel"
+        hidden={compact && open !== "color"}
+      >
+        <fieldset className="color-picker" disabled={disabled}>
+          <legend>
+            Your color <span>{colorName(color)}</span>
+          </legend>
+          <div>
+            {playerColors.map((c) => (
+              <label key={c.value} title={c.label}>
+                <input
+                  type="radio"
+                  name={`${id}-color`}
+                  checked={color === c.value}
+                  onChange={() => {
+                    onChange(icon, c.value);
+                    close("color");
+                  }}
+                  onClick={() => {
+                    if (color === c.value) close("color");
+                  }}
+                  aria-label={c.label}
+                />
+                <span style={{ background: c.value }}>
+                  <span aria-hidden="true">{color === c.value ? "✓" : ""}</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+      </div>
     </div>
   );
 }
@@ -196,14 +267,9 @@ export function PlayerIdentity({
   return (
     <section className="identity-screen">
       <div className="identity-intro">
-        <div className="identity-preview">
-          <PlayerMark icon={icon} color={color} paused />
-        </div>
         <div>
           <h1>
-            Make it
-            <br />
-            <em>yours.</em>
+            Make it <em>yours.</em>
           </h1>
           <p className="identity-ritual">Give your score a signature.</p>
         </div>
@@ -212,34 +278,6 @@ export function PlayerIdentity({
         <label className="identity-label" htmlFor="player-name">
           Username
         </label>
-        <input
-          id="player-name"
-          name="username"
-          value={username}
-          onChange={(e) => {
-            setUsername(e.target.value);
-            setError("");
-          }}
-          autoComplete="username"
-          autoCapitalize="none"
-          autoCorrect="off"
-          spellCheck={false}
-          required
-          minLength={3}
-          maxLength={20}
-          pattern="[a-zA-Z0-9_]{3,20}"
-          aria-describedby={
-            initial.username ? "identity-error" : "username-help identity-error"
-          }
-          placeholder="Your name"
-          disabled={pending}
-          readOnly={!!initial.username}
-        />
-        {!initial.username && (
-          <p id="username-help" className="identity-help">
-            3–20 letters, numbers or underscores.
-          </p>
-        )}
         <PersonalityPicker
           icon={icon}
           color={color}
@@ -248,7 +286,38 @@ export function PlayerIdentity({
             setIcon(i);
             setColor(c);
           }}
-        />
+        >
+          <input
+            id="player-name"
+            name="username"
+            value={username}
+            onChange={(e) => {
+              setUsername(e.target.value);
+              setError("");
+            }}
+            autoComplete="username"
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            required
+            minLength={3}
+            maxLength={20}
+            pattern="[a-zA-Z0-9_]{3,20}"
+            aria-describedby={
+              initial.username
+                ? "identity-error"
+                : "username-help identity-error"
+            }
+            placeholder="Your name"
+            disabled={pending}
+            readOnly={!!initial.username}
+          />
+        </PersonalityPicker>
+        {!initial.username && (
+          <p id="username-help" className="identity-help">
+            3–20 letters, numbers or underscores.
+          </p>
+        )}
         <p id="identity-error" className="identity-error" role="status">
           {error}
         </p>
