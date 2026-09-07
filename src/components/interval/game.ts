@@ -24,8 +24,20 @@ export type Result = Bounds & {
   score: number;
   assisted: boolean;
 };
+const decimalOptions = (value: number) => ({
+  maximumFractionDigits: 1,
+  minimumFractionDigits: Number.isInteger(value) ? 0 : 1,
+});
+const scientific = (value: number) =>
+  value
+    .toExponential(1)
+    .replace(/\.0e/, "e")
+    .replace("e+", "E")
+    .replace("e", "E");
 export const format = (n: number) =>
-  new Intl.NumberFormat("en-US", { maximumSignificantDigits: 6 }).format(n);
+  Math.abs(n) > 0 && Math.abs(n) < 0.1
+    ? scientific(n)
+    : new Intl.NumberFormat("en-US", decimalOptions(n)).format(n);
 export function validBounds(b: Bounds, max = 1e100, min = -1e100) {
   return (
     Object.values(b).every(Number.isFinite) &&
@@ -123,17 +135,17 @@ export const totalPoints = (results: Result[]) =>
   Math.round(results.reduce((sum, r) => sum + points(r), 0) * 10) / 10;
 export const scoreText = (value: number) =>
   new Intl.NumberFormat("en-US", { maximumFractionDigits: 1 }).format(value);
-export const compact = (value: number) =>
-  Math.abs(value) >= 1e15 || (Math.abs(value) > 0 && Math.abs(value) < 0.001)
-    ? value
-        .toExponential(2)
-        .replace(/\.?0+e/, "e")
-        .replace("e+", "E")
-        .replace("e", "E")
-    : new Intl.NumberFormat("en-US", {
-        notation: "compact",
-        maximumSignificantDigits: 4,
-      }).format(value);
+export const compact = (value: number) => {
+  const magnitude = Math.abs(value);
+  if (magnitude >= 1e15 || (magnitude > 0 && magnitude < 0.1))
+    return scientific(value);
+  const divisor =
+    1000 ** Math.max(0, Math.min(4, Math.floor(Math.log10(magnitude) / 3)));
+  return new Intl.NumberFormat("en-US", {
+    notation: "compact",
+    ...decimalOptions(value / divisor),
+  }).format(value);
+};
 export function makeShareText(
   results: Result[],
   url: string,
