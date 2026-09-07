@@ -1,5 +1,11 @@
 import { useId, useRef } from "react";
 import { compact, parseAmount } from "./game";
+import {
+  displayCursor,
+  editEntry,
+  formatEntry,
+  rawCursor,
+} from "./number-entry";
 
 type Props = {
   value: string;
@@ -22,27 +28,22 @@ export function NumberPad({
   const input = useRef<HTMLInputElement>(null);
   const inputId = useId(),
     captionId = `${inputId}-caption`;
-  function press(key: string) {
-    let start = input.current?.selectionStart ?? value.length;
-    const end = input.current?.selectionEnd ?? value.length;
-    let next = value,
-      cursor = start;
-    if (key === "Clear") {
-      next = "";
-      cursor = 0;
-    } else if (key === "Delete") {
-      if (start === end) start = Math.max(0, start - 1);
-      next = value.slice(0, start) + value.slice(end);
-      cursor = start;
-    } else {
-      next = value.slice(0, start) + key + value.slice(end);
-      cursor = start + key.length;
-    }
+  const display = formatEntry(value);
+  function update(next: string, cursor: number) {
     onChange(next);
     requestAnimationFrame(() => {
       input.current?.focus({ preventScroll: true });
       input.current?.setSelectionRange(cursor, cursor);
     });
+  }
+  function press(key: string) {
+    const next = editEntry(
+      display,
+      input.current?.selectionStart ?? display.length,
+      input.current?.selectionEnd ?? display.length,
+      key,
+    );
+    update(next.value, next.cursor);
   }
   const amount = parseAmount(value);
   return (
@@ -67,9 +68,28 @@ export function NumberPad({
         spellCheck={false}
         aria-label={label}
         aria-describedby={captionId}
-        value={value}
+        value={display}
         placeholder="0"
-        onChange={(e) => onChange(e.target.value)}
+        onChange={(e) => {
+          const next = e.target.value.replaceAll(",", "");
+          const cursor = rawCursor(
+            e.target.value,
+            e.target.selectionStart ?? e.target.value.length,
+          );
+          update(next, displayCursor(next, cursor));
+        }}
+        onKeyDown={(e) => {
+          if (
+            !e.ctrlKey &&
+            !e.metaKey &&
+            !e.altKey &&
+            !e.nativeEvent.isComposing &&
+            (e.key === "Backspace" || e.key === "Delete")
+          ) {
+            e.preventDefault();
+            press(e.key === "Backspace" ? "Delete" : "DeleteForward");
+          }
+        }}
       />
       <div
         id={captionId}
@@ -97,6 +117,7 @@ export function NumberPad({
           "→",
           ".",
           "0",
+          "000",
         ].map((key) => (
           <button
             key={key}
@@ -104,17 +125,16 @@ export function NumberPad({
             className={
               key === "→"
                 ? "enter-key"
-                : key === "0"
-                  ? "zero-key"
-                  : ["E", "Clear", "Delete"].includes(key)
-                    ? `function-key ${key.toLowerCase()}-key`
-                    : ""
+                : ["E", "Delete", "000"].includes(key)
+                  ? `function-key ${key.toLowerCase()}-key`
+                  : ""
             }
             aria-label={
               (
                 {
                   Delete: "Delete digit",
                   E: "Exponent",
+                  "000": "Insert three zeros",
                   "→": submitLabel,
                 } as Record<string, string>
               )[key] ?? key
