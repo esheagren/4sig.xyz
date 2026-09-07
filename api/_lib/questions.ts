@@ -1,6 +1,7 @@
 import { query, transaction } from "./db.js";
 import type { QueryResultRow } from "pg";
 import type { Question } from "./types.js";
+export const DAILY_QUESTION_COUNT = 4;
 export const pacificDate = () =>
   new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
 const questionSelect = `SELECT q.*,u.name unit FROM questions q LEFT JOIN units u ON u.id=q.unit_id`;
@@ -28,18 +29,21 @@ export async function getDailyQuestions(
     await client.query("SELECT pg_advisory_xact_lock(hashtext($1))", [
       "daily:" + edition,
     ]);
-    const existing = await client.query(
-      "SELECT 1 FROM daily_questions WHERE date=$1",
+    // Top up any date short of the target, including dates from the imported calendar.
+    const scheduled = await client.query(
+      "SELECT count(*)::int n, coalesce(max(display_order)+1,0)::int next FROM daily_questions WHERE date=$1",
       [edition],
     );
-    if (!existing.rowCount) {
+    const missing = DAILY_QUESTION_COUNT - scheduled.rows[0].n;
+    if (missing > 0) {
       await client.query(
         `INSERT INTO daily_questions(question_id,date,display_order)
-        SELECT id,$1::date,(row_number() OVER(ORDER BY recently_used,md5(id::text||$1)) - 1)::int FROM (
+        SELECT id,$1::date,$2::int + (row_number() OVER(ORDER BY recently_used,md5(id::text||$1)) - 1)::int FROM (
           SELECT q.id,EXISTS(SELECT 1 FROM daily_questions d WHERE d.question_id=q.id AND d.date BETWEEN $1::date-7 AND $1::date-1) recently_used
           FROM questions q WHERE q.is_active AND q.usage_type='daily'
-        ) candidates ORDER BY recently_used,md5(id::text||$1) LIMIT 3`,
-        [edition],
+          AND NOT EXISTS(SELECT 1 FROM daily_questions d WHERE d.date=$1::date AND d.question_id=q.id)
+        ) candidates ORDER BY recently_used,md5(id::text||$1) LIMIT $3`,
+        [edition, scheduled.rows[0].next, missing],
       );
     }
     const { rows } = await client.query(

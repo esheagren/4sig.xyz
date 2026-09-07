@@ -224,7 +224,7 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     "concurrent starts resume the same ranked attempt",
   );
   const game = starts[0].data;
-  assert.ok(game.questions.length >= 3);
+  assert.equal(game.questions.length, 4, "four daily questions");
   assert.ok(
     !JSON.stringify(game).includes("trueValue"),
     "no answers exposed by start",
