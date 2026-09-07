@@ -152,7 +152,6 @@ export default function IntervalGame() {
     [bounds, setBounds] = useState<Bounds>({ lower: 0, estimate: 0, upper: 1 });
   const [domain, setDomain] = useState<[number, number]>([0, 1]),
     [results, setResults] = useState<Result[]>([]);
-  const originalEstimate = useRef<number | null>(null);
   const [dragCue, setDragCue] = useState("");
   const [assisted, setAssisted] = useState(false),
     [error, setError] = useState(""),
@@ -235,7 +234,6 @@ export default function IntervalGame() {
       );
       return;
     }
-    originalEstimate.current = value;
     updateBounds(initialBounds(value, question.max, RANGE_MIN));
     setStage("range");
     focusHeading();
@@ -376,14 +374,7 @@ export default function IntervalGame() {
       lock.current = false;
     }
   }
-  function resetRange() {
-    dragCleanup.current?.();
-    const estimate =
-      originalEstimate.current ?? Math.max(RANGE_MIN, bounds.estimate);
-    updateBounds(initialBounds(estimate, question.max, RANGE_MIN));
-  }
   function resetRound() {
-    originalEstimate.current = null;
     setStage("estimate");
     setText("");
     setAssisted(false);
@@ -695,7 +686,6 @@ export default function IntervalGame() {
         )
           throw new Error("Invalid bounds or locked.");
         flushSync(() => {
-          originalEstimate.current ??= b.estimate;
           setBounds(b);
           setDomain(fitDomain(b, q.max, RANGE_MIN));
           setStage("range");
@@ -839,27 +829,6 @@ export default function IntervalGame() {
                     className={`instrument ${showAnswer ? "locked" : ""}`}
                     aria-label="Your range"
                   >
-                    <div className="instrument-top">
-                      <span>YOUR RANGE</span>
-                      {editable ? (
-                        <button
-                          className="text-button"
-                          onClick={() => {
-                            setText(
-                              String(
-                                originalEstimate.current ?? bounds.estimate,
-                              ),
-                            );
-                            setStage("estimate");
-                            focusHeading();
-                          }}
-                        >
-                          Edit estimate
-                        </button>
-                      ) : (
-                        <span>LOCKED</span>
-                      )}
-                    </div>
                     <div className="readings">
                       {(["lower", "upper"] as const).map((part) => (
                         <button
@@ -967,11 +936,8 @@ export default function IntervalGame() {
                         <div className="range-width" aria-label="Range width">
                           Δ {compact(bounds.upper - bounds.lower)}
                         </div>
-                        <div className="range-recovery">
-                          <span role="status">{dragCue}</span>
-                          <button className="text-button" onClick={resetRange}>
-                            Reset range
-                          </button>
+                        <div className="range-cue" role="status">
+                          {dragCue}
                         </div>
                       </>
                     )}

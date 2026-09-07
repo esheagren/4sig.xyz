@@ -252,22 +252,6 @@
   padding: 12px 24px 7px;
   background: #f6f0e6;
 }
-.interval-app .instrument-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  min-height: 40px;
-  color: var(--muted);
-  font: 10px var(--mono);
-  letter-spacing: 0.08em;
-}
-.interval-app .instrument-top .text-button {
-  font:
-    11px "DM Sans",
-    sans-serif;
-  letter-spacing: 0;
-  min-height: 38px;
-}
 .interval-app .readings {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -415,21 +399,6 @@
   justify-content: space-between;
   font: 10px var(--mono);
   color: var(--muted);
-}
-
-.interval-app .range-recovery {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  min-height: 36px;
-  color: var(--muted);
-  font-size: 11px;
-}
-.interval-app .range-recovery button {
-  flex-shrink: 0;
-  min-height: 36px;
-  padding: 6px 0 6px 10px;
 }
 
 .interval-app .primary {
@@ -1421,9 +1390,6 @@
   background: transparent;
   padding: 6px 0 13px;
 }
-.interval-app .instrument-top {
-  font-size: 9px;
-}
 .interval-app .reading strong {
   font-size: 34px;
 }
@@ -1880,4 +1846,12 @@
   text-align: center;
   font: 11px var(--mono);
   color: var(--muted);
+}
+
+.interval-app .range-cue {
+  min-height: 18px;
+  margin-top: 4px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 11px;
 }
