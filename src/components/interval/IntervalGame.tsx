@@ -220,9 +220,9 @@ export default function IntervalGame() {
   );
   const ruler = useRef<HTMLDivElement>(null),
     heading = useRef<HTMLHeadingElement>(null);
-  const [menuTab, setMenuTab] = useState<"play" | "profile" | "settings">(
-    "play",
-  );
+  const [menuTab, setMenuTab] = useState<
+    "play" | "profile" | "settings" | "about"
+  >("play");
   const helpDialog = useRef<HTMLDialogElement>(null),
     editDialog = useRef<HTMLDialogElement>(null);
   const lock = useRef(false),
@@ -1302,7 +1302,7 @@ export default function IntervalGame() {
             </button>
           </div>
           <p className="menu-value-prop">
-            Four daily questions to test what you know and how sure you are.
+            A better sense of the world, four numbers at a time.
           </p>
           <div
             className="menu-tabs"
@@ -1314,6 +1314,7 @@ export default function IntervalGame() {
                 ["play", "How to play"],
                 ["profile", "Your profile"],
                 ["settings", "Settings"],
+                ["about", "About"],
               ] as const
             ).map(([id, label], index) => (
               <button
@@ -1326,16 +1327,16 @@ export default function IntervalGame() {
                 tabIndex={menuTab === id ? 0 : -1}
                 onClick={() => setMenuTab(id)}
                 onKeyDown={(event) => {
-                  const ids = ["play", "profile", "settings"] as const;
+                  const ids = ["play", "profile", "settings", "about"] as const;
                   const next =
                     event.key === "Home"
                       ? 0
                       : event.key === "End"
-                        ? 2
+                        ? 3
                         : event.key === "ArrowRight"
-                          ? (index + 1) % 3
+                          ? (index + 1) % 4
                           : event.key === "ArrowLeft"
-                            ? (index + 2) % 3
+                            ? (index + 3) % 4
                             : null;
                   if (next === null) return;
                   event.preventDefault();
@@ -1383,8 +1384,32 @@ export default function IntervalGame() {
               reference scale.
             </p>
             <p className="muted menu-edition-note">
-              Four questions each day. Your first attempt counts toward your
-              score; replays are practice.
+              Four numbers to explore each day. Your first attempt counts toward
+              your score; replays are practice.
+            </p>
+          </section>
+          <section
+            className="menu-panel"
+            id="menu-panel-about"
+            role="tabpanel"
+            aria-labelledby="menu-tab-about"
+            hidden={menuTab !== "about"}
+            tabIndex={0}
+          >
+            <h3>Numbers that matter</h3>
+            <p>
+              Four Sigma is a daily game about the numbers that help you
+              understand the world.
+            </p>
+            <p>
+              Our focus is on the changing facts behind economics, technology,
+              cities, and health, with a few lasting yardsticks to give you a
+              sense of scale.
+            </p>
+            <p>
+              The aim is to leave you with something worth knowing. Make an
+              estimate, consider how sure you are, then explore the answer and
+              its source.
             </p>
           </section>
           <section

@@ -1881,7 +1881,7 @@
   background: var(--paper, #f6f0e6);
   z-index: 1;
   border-bottom: 1px solid var(--line);
-  gap: 16px;
+  gap: 8px;
 }
 .interval-app .menu-tabs button {
   flex: 1;
@@ -2090,5 +2090,23 @@
   }
   .interval-app .hold-commit.committed .commit-arrow {
     transform: none;
+  }
+}
+
+.interval-app .shared-promise {
+  max-width: 270px;
+  margin: 20px auto;
+  color: var(--muted);
+  font:
+    400 20px/1.35 "Newsreader",
+    Georgia,
+    serif;
+}
+@media (max-width: 380px) {
+  .interval-app .menu-tabs {
+    gap: 6px;
+  }
+  .interval-app .menu-tabs button {
+    font-size: 11px;
   }
 }

@@ -1,6 +1,6 @@
 # Four Sigma: brand and editorial brief
 
-Working brief, September 8, 2026. Records the founder’s direction and translates it into principles for future question selection, product copy, design, and other materials. Suggested language and editorial procedures below are working interpretations, not approved public copy.
+Working brief, September 8, 2026. Records the founder’s direction and translates it into principles for future question selection, product copy, design, and other materials. The short promise and public positioning below were adopted for the website on September 8, 2026; editorial procedures remain working recommendations.
 
 ## Purpose
 
@@ -56,11 +56,11 @@ Lead with what people gain: a better sense of the world and its proportions. Exp
 
 “Meta-facts” is a useful editorial term; players do not need to learn it to understand the product. Prefer plain language such as “numbers that matter,” “how the world is changing,” and “a sense of scale.” Use these concretely rather than as unsupported claims of importance.
 
-**Working positioning:** Four Sigma is a daily game of the numbers that matter for understanding the world.
+**Positioning:** Four Sigma is a daily game of the numbers that matter for understanding the world.
 
-**Working short promise:** A better sense of the world, four numbers at a time.
+**Short promise:** A better sense of the world, four numbers at a time.
 
-These lines are proposals for future copy work. The current interface has not been rewritten as part of this brief.
+The menu introduction, About tab, page metadata, and shared-score invitation use this direction. The private design gallery remains a historical record of earlier explorations.
 
 ## Implications for future work
 

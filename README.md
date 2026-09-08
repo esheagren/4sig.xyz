@@ -1,6 +1,6 @@
 # Four Sigma
 
-A daily estimation game with four questions. Play immediately: enter an estimate (including `4E5`), then draw your range. Hold the circular ink arrow for half a second to confirm; release early to cancel. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
+A daily game of the numbers that matter for understanding the world, with four questions. Play immediately: enter an estimate (including `4E5`), then draw your range. Hold the circular ink arrow for half a second to confirm; release early to cancel. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
 
 ## Brand and editorial direction
 

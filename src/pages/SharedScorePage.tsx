@@ -40,7 +40,7 @@ export function SharedScorePage() {
     if (score)
       document.title = `${score.player.username} · ${scoreText(score.score)} points · Four Sigma`;
     return () => {
-      document.title = "Four Sigma — Room to be wrong";
+      document.title = "Four Sigma — Numbers that matter";
     };
   }, [score]);
   const text = score
@@ -102,6 +102,9 @@ export function SharedScorePage() {
                   </span>
                 ))}
               </div>
+              <p className="shared-promise">
+                A better sense of the world, four numbers at a time.
+              </p>
               <Link className="primary" to="/">
                 Play Four Sigma<span>→</span>
               </Link>
