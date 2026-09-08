@@ -29,3 +29,7 @@ The script requires a new private backup directory, backs up question and schedu
 Today's published edition and all past published editions are frozen before any repair. Any future edition already associated with a game is protected too. New editions freeze when first requested on their date. Game snapshots, answers and scores are never rewritten; the release verifies fingerprints of existing question snapshots and answers. Old three-question schedules remain an archive; the public game schedules four questions a day.
 
 Validate with `npm run check`, `npm run lint`, `npm test`, and `npm run build`. Integration tests cover release idempotency, unchanged historical games, source parsing, eligibility, expiry, four-question editions and topic/reference balance.
+
+## Browsing the bank
+
+The password-protected [question library](https://4sig.xyz/designspace?view=questions) is linked from Designspace. Search by question, place, topic or audit number; filter by review status, topic, core/reference role and review timing. Answers and potentially revealing sources/notes are only fetched when an eye control is clicked. Reveal one question or the current page; changing filters, navigating pages or reopening the library hides them again. This view reads the live bank and does not edit questions or schedules.

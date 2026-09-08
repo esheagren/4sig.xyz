@@ -4,7 +4,7 @@
   "framework": "vite",
   "functions": {
     "api/designspace.ts": {
-      "includeFiles": "api/_lib/designspace.html"
+      "includeFiles": "api/_lib/*.html"
     }
   },
   "rewrites": [
