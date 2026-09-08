@@ -1404,9 +1404,8 @@ export default function IntervalGame() {
               understand the world.
             </p>
             <p>
-              Our focus is on the changing facts behind economics, technology,
-              cities, and health, with a few lasting yardsticks to give you a
-              sense of scale.
+              Our questions explore how the world works and how it’s changing,
+              with a few lasting yardsticks to give you a sense of scale.
             </p>
             <p>
               The aim is to leave you with something worth knowing. Make an
