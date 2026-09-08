@@ -1,3 +1,4 @@
+import { withGlossary } from "./glossary.js";
 import { transaction, query } from "./db.js";
 import type { PoolClient, QueryResultRow } from "pg";
 import type { Question, Judgement } from "./types.js";
@@ -83,11 +84,14 @@ export async function readGame(
     edition: rows[0].edition,
     isRanked: rows[0].is_ranked,
     completed: !!rows[0].completed_at,
-    questions: items.map((r) => ({
-      id: r.question_id,
-      prompt: r.snapshot.prompt,
-      unit: r.snapshot.unit,
-    })),
+    questions: await withGlossary(
+      items.map((r) => ({
+        id: r.question_id,
+        prompt: r.snapshot.prompt,
+        unit: r.snapshot.unit,
+      })),
+      client,
+    ),
     judgements: items.filter((r) => r.lower_bound !== null).map(judgement),
   };
 }

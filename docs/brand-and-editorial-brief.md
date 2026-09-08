@@ -75,3 +75,7 @@ The menu introduction, About tab, page metadata, and shared-score invitation use
 - Give answer reveals enough editorial care to teach something worth retaining. Keep the interface concise while making sources and context accessible.
 - Judge question quality partly by whether a player would want to remember or discuss the answer after the game.
 - Keep the broader collection coherent over time. The desired result is accumulating understanding, not merely accumulating scores.
+
+### Explain unfamiliar concepts in place
+
+An unfamiliar concept should not turn a useful question into a vocabulary test. Link it to the shared glossary and lightly underline the phrase in the question. A tap should reveal at most two short sentences, written for a middle-school reader, with a clearly made-up numerical example when useful. Explain the concept without supplying the question’s answer. See [Question glossary](glossary.md) for the editorial and maintenance rules.

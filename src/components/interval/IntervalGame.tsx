@@ -21,6 +21,8 @@ import {
   colorName,
 } from "./player";
 import type { Player, SharedScore } from "./player";
+import { QuestionText } from "./QuestionText";
+import type { GlossaryAnnotation } from "../../lib/glossary";
 import { NumberPad } from "./NumberPad";
 import { SourceLinks } from "./SourceLinks";
 import {
@@ -504,9 +506,15 @@ export default function IntervalGame() {
         throw new Error("Today’s numbers are not ready yet.");
       setQuestions(
         data.questions.map(
-          (q: { id: string; prompt: string; unit?: string }) => ({
+          (q: {
+            id: string;
+            prompt: string;
+            unit?: string;
+            glossary?: GlossaryAnnotation[];
+          }) => ({
             id: q.id,
             title: q.prompt,
+            glossary: q.glossary,
             short: q.prompt,
             unit: q.unit ?? "",
             answer: NaN,
@@ -864,7 +872,10 @@ export default function IntervalGame() {
             <>
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
-                  {question.title}
+                  <QuestionText
+                    text={question.title}
+                    glossary={orderedQuestions[index]?.glossary}
+                  />
                 </h1>
                 {question.date && <p className="date">{question.date}</p>}
               </section>

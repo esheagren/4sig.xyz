@@ -1,3 +1,4 @@
+import { withGlossary } from "./glossary.js";
 import { query } from "./db.js";
 import { HttpError } from "./http.js";
 
@@ -9,7 +10,14 @@ export async function questionLibrary() {
  q.observation_period AS period, q.geography, q.verified_at::text AS verified,
  q.review_due::text AS "reviewDue", q.is_active AS active
  FROM questions q LEFT JOIN units u ON u.id=q.unit_id ORDER BY q.created_at,q.id`);
-  return rows.map((row, index) => ({ ...row, number: index + 1 }));
+  return withGlossary(
+    rows.map((row, index) => ({
+      ...row,
+      id: row.id as string,
+      prompt: row.prompt as string,
+      number: index + 1,
+    })),
+  );
 }
 export async function questionAnswers(ids: string[]) {
   if (!ids.length || ids.length > 25 || new Set(ids).size !== ids.length)

@@ -1,0 +1,83 @@
+{
+  "verifiedAt": "2026-09-08",
+  "terms": [
+    {
+      "id": "gini-coefficient",
+      "title": "Gini coefficient",
+      "definition": "The Gini coefficient measures how unevenly income or spending is shared, from 0 (everyone has the same amount) to 1 (one person has it all). In a made-up example, 0.6 means more inequality than 0.2.",
+      "sourceUrl": "https://databank.worldbank.org/metadataglossary/lac-equity-lab-/series/3.0.Gini"
+    },
+    {
+      "id": "market-exchange-rate",
+      "title": "Market exchange rate",
+      "definition": "A market exchange rate is the price of one currency in another. For example, at a made-up rate of $1 for 5 pesos, 100 pesos is worth $20.",
+      "sourceUrl": "https://www.imf.org/external/pubs/ft/fandd/basics/44-purchasing-power-parity.htm"
+    },
+    {
+      "id": "crispr",
+      "title": "CRISPR",
+      "definition": "CRISPR is a tool scientists use to make targeted changes to DNA, the instruction code inside cells. Think of it as finding a chosen line in a long instruction book and editing it.",
+      "sourceUrl": "https://www.genome.gov/genetics-glossary/CRISPR"
+    },
+    {
+      "id": "genome",
+      "title": "Genome",
+      "definition": "A genome is a living thing’s complete set of DNA instructions. Sequencing a genome means reading the order of the letters in that code.",
+      "sourceUrl": "https://www.genome.gov/genetics-glossary/Genome"
+    },
+    {
+      "id": "gene-editing",
+      "title": "Gene editing",
+      "definition": "Gene editing means making a chosen change to DNA, the instruction code inside cells. Scientists can add, remove or replace parts of that code to study how it works or try to treat disease.",
+      "sourceUrl": "https://www.genome.gov/about-genomics/policy-issues/what-is-Genome-Editing"
+    },
+    {
+      "id": "genes",
+      "title": "Genes",
+      "definition": "Genes are sections of DNA that carry instructions for making molecules a cell uses. Some tell cells how to make proteins; others make RNA molecules that do jobs of their own.",
+      "sourceUrl": "https://www.genome.gov/genetics-glossary/Gene"
+    }
+  ],
+  "links": [
+    {
+      "questionId": "f913e918-ec5b-493c-a53a-3898d0d8c7c9",
+      "termId": "gini-coefficient",
+      "matchText": "Gini coefficient"
+    },
+    {
+      "questionId": "6597b4e9-424f-4d6c-a2b9-4e569265de6d",
+      "termId": "market-exchange-rate",
+      "matchText": "market exchange rates"
+    },
+    {
+      "questionId": "a7678325-444d-46b3-9843-12557494f22b",
+      "termId": "market-exchange-rate",
+      "matchText": "market exchange rates"
+    },
+    {
+      "questionId": "c8108aac-5ad4-421c-a8b8-1b6a9ded007f",
+      "termId": "crispr",
+      "matchText": "CRISPR"
+    },
+    {
+      "questionId": "c8108aac-5ad4-421c-a8b8-1b6a9ded007f",
+      "termId": "gene-editing",
+      "matchText": "gene-editing"
+    },
+    {
+      "questionId": "dfead12a-2751-4788-ab45-174f13cb67aa",
+      "termId": "genome",
+      "matchText": "genome"
+    },
+    {
+      "questionId": "490e4646-9fbe-42b6-9030-fb2eae2211e2",
+      "termId": "genome",
+      "matchText": "genome"
+    },
+    {
+      "questionId": "dfead12a-2751-4788-ab45-174f13cb67aa",
+      "termId": "genes",
+      "matchText": "genes"
+    }
+  ]
+}

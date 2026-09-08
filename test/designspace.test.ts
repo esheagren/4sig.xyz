@@ -182,6 +182,7 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
           "reviewDue",
           "active",
           "number",
+          "glossary",
         ].sort(),
       );
     const revealed = await request(

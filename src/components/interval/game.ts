@@ -1,6 +1,8 @@
 import { playerSymbol, playerLabel, colorName } from "./player";
 import type { Player } from "./player";
+import type { GlossaryAnnotation } from "../../lib/glossary";
 export type Question = {
+  glossary?: GlossaryAnnotation[];
   id: string;
   category: string;
   tags?: string[];

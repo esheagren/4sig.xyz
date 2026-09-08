@@ -6,6 +6,52 @@
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light;--paper:#f5f0e6;--ink:#352d27;--muted:#786e62;--line:#d9ccbc;--accent:#a54d35}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 'DM Sans',sans-serif}button,input,select{font:inherit;color:inherit}button,a,input,select{-webkit-tap-highlight-color:transparent}button,a{touch-action:manipulation}button{cursor:pointer}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:4px}a{color:inherit;text-underline-offset:3px}.shell{max-width:1120px;margin:auto;padding:28px 36px 60px}.site-head{display:flex;align-items:center;justify-content:space-between;gap:20px;padding-bottom:22px;border-bottom:1px solid var(--line)}.wordmark{font:36px/1 Georgia,serif;text-decoration:none;letter-spacing:-3px}.wordmark span{color:var(--accent)}.site-actions{display:flex;align-items:center;gap:22px;font-size:13px}.site-actions a{text-decoration:none;padding:10px 0}.site-actions [aria-current]{border-bottom:1px solid var(--accent);color:var(--accent)}.logout{border:0;background:none;padding:10px 0;color:var(--muted)}.hero{padding:42px 0 26px}.eyebrow{font:11px 'IBM Plex Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}h1{font:400 clamp(38px,6vw,58px)/1.1 'Newsreader',Georgia,serif;letter-spacing:-1px;margin:12px 0}p{margin:8px 0;color:var(--muted)}.filters{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;padding:22px;background:#fffcf5;border:1px solid var(--line);border-radius:12px}.search{grid-column:1/-1}label{display:flex;flex-direction:column;gap:7px;color:var(--muted);font-size:12px}input,select{width:100%;height:44px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--paper);min-width:0}input{font-size:16px}.results-bar{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:22px 0 12px}.results-bar p{margin:0}.result-actions{display:flex;align-items:center;gap:12px;flex-wrap:wrap}.sort{flex-direction:row;align-items:center;gap:8px}.sort select{width:auto}.button{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;border:1px solid var(--line);background:transparent;border-radius:7px;padding:9px 13px}.button:hover{background:#eae1d4}.button[aria-pressed=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}.eye{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round;flex:none}.clear{border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:3px;min-height:44px}.question-card{border-top:1px solid var(--line);padding:24px 0}.question-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}.question-main{min-width:0;flex:1}.meta{display:flex;align-items:center;flex-wrap:wrap;gap:8px 12px;font-size:11px;color:var(--muted)}.number{font-family:'IBM Plex Mono',monospace}.badge{padding:3px 8px;border:1px solid var(--line);border-radius:20px}.ready{color:#486254;background:#e9eee5;border-color:#cbd5c7}.needs_review{color:#865d24;background:#f2e7ce;border-color:#e1d0ae}.retired{background:#eae6df}.question-card h2{font:400 26px/1.23 'Newsreader',Georgia,serif;letter-spacing:-.25px;margin:12px 0 7px;max-width:850px;overflow-wrap:anywhere}.details{font-size:12px;display:flex;flex-wrap:wrap;gap:5px 18px}.row-eye{width:44px;padding:10px;flex:none;margin-top:4px}.answer{background:#ede4d7;border-radius:8px;padding:20px;margin-top:18px;overflow-wrap:anywhere}.answer-value{font:24px/1.3 'IBM Plex Mono',monospace;color:var(--ink);margin:6px 0 15px}.answer p{color:#675b4d}.answer dl{margin:15px 0 0;display:grid;gap:12px}.answer dt{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}.answer dd{margin:3px 0 0}.sources{display:flex;gap:10px 18px;flex-wrap:wrap;margin-top:14px}.empty{text-align:center;padding:55px 15px;border-top:1px solid var(--line)}.pager{display:flex;align-items:center;justify-content:space-between;gap:16px;border-top:1px solid var(--line);padding-top:20px}.pager span{color:var(--muted);font-size:12px}.error{border:1px solid #b76a52;padding:16px;border-radius:8px;margin:16px 0}.error p{color:var(--ink)}.error a{display:inline-block;margin-right:15px}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}@media(max-width:700px){.shell{padding:20px 20px 40px}.filters{grid-template-columns:1fr 1fr;padding:16px}.site-actions{gap:14px}.site-actions .game-link{display:none}.hero{padding-top:30px}.results-bar{align-items:flex-start;flex-direction:column}.result-actions{width:100%;justify-content:space-between}.question-card h2{font-size:24px}.question-head{gap:12px}.sort select{max-width:148px}}@media(prefers-reduced-motion:no-preference){.answer{animation:appear .15s ease-out}@keyframes appear{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}}
+/* Keep glossary language quiet in the question; the dotted line signals help. */
+.glossary-term {
+  display: inline;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-align: inherit;
+  text-transform: none;
+  text-decoration: underline dotted #a99b8b;
+  text-decoration-thickness: 1px;
+  text-underline-offset: .15em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.glossary-term:hover { text-decoration-color: #a54d35; }
+.glossary-term:focus-visible { outline: 2px solid #a54d35; outline-offset: 4px; }
+.glossary-popup {
+  box-sizing: border-box;
+  width: min(390px, calc(100% - 32px));
+  max-height: calc(100dvh - 32px);
+  margin: auto;
+  padding: 24px;
+  border: 1px solid #cabcaa;
+  border-radius: 12px;
+  background: #f6f0e6;
+  color: #352d27;
+  box-shadow: 0 18px 65px #352d2730;
+  font: 17px/1.55 'DM Sans', sans-serif;
+  text-align: left;
+}
+.glossary-popup::backdrop { background: #352d274d; }
+.glossary-popup header { display: flex; align-items: flex-start; gap: 12px; justify-content: space-between; }
+.glossary-popup h2 { margin: 7px 0 0; font: 400 28px/1.15 'Newsreader', Georgia, serif; letter-spacing: -.3px; }
+.glossary-popup header button { flex: none; width: 44px; height: 44px; margin: -4px -8px 0 0; border: 0; border-radius: 6px; background: transparent; color: #786e62; font: 26px/1 sans-serif; cursor: pointer; touch-action: manipulation; }
+.glossary-popup button:focus-visible { outline: 2px solid #a54d35; outline-offset: 2px; }
+.glossary-popup p { margin: 15px 0 0; color: #352d27; font: inherit; }
+@media (prefers-reduced-motion: no-preference) {
+  .glossary-popup[open] { animation: glossary-appear .14s ease-out; }
+  @keyframes glossary-appear { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+}
+
 </style>
 </head>
 <body><main class="shell">
@@ -25,6 +71,7 @@
 <p class="sr-only" id="announcement" role="status"></p>
 <noscript><p>Enable JavaScript to browse and filter the question library.</p></noscript>
 </main>
+<dialog class="glossary-popup" id="glossary" aria-labelledby="glossary-title" aria-describedby="glossary-definition"><header><h2 id="glossary-title"></h2><button type="button" id="glossary-close" aria-label="Close explanation">×</button></header><p id="glossary-definition"></p></dialog>
 <script nonce="__NONCE__">
 const $=id=>document.getElementById(id);
 const labels={ready:'Ready',needs_review:'Needs review',retired:'Retired'};
@@ -32,6 +79,19 @@ const icon=shown=>`<svg class="eye" viewBox="0 0 24 24" aria-hidden="true"><path
 let bank=[],page=0,visible=new Map(),allShown=false,revision=0,loaded=false;
 const size=20;
 function node(tag,text,className){const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(className)el.className=className;return el;}
+function questionTitle(q){
+ const title=node('h2');let cursor=0;
+ for(const term of q.glossary||[]){
+  if(term.start<cursor||term.end>q.prompt.length||term.end<=term.start)continue;
+  title.append(document.createTextNode(q.prompt.slice(cursor,term.start)));
+  const button=node('button',q.prompt.slice(term.start,term.end),'glossary-term');button.type='button';button.setAttribute('aria-description','Open a short explanation');button.setAttribute('aria-haspopup','dialog');button.setAttribute('aria-controls','glossary');
+  button.onclick=()=>{$('glossary-title').textContent=term.title;$('glossary-definition').textContent=term.definition;$('glossary').showModal();document.body.style.overflow='hidden';};title.append(button);cursor=term.end;
+ }
+ title.append(document.createTextNode(q.prompt.slice(cursor)));return title;
+}
+$('glossary').onclose=()=>{document.body.style.overflow='';};
+$('glossary-close').onclick=()=>$('glossary').close();
+$('glossary').onclick=event=>{if(event.target!==event.currentTarget)return;const box=event.currentTarget.getBoundingClientRect();if(event.clientX<box.left||event.clientX>box.right||event.clientY<box.top||event.clientY>box.bottom)event.currentTarget.close();};
 function number(q){return 'Q'+String(q.number).padStart(3,'0');}
 function today(){return new Date().toLocaleDateString('en-CA',{timeZone:'America/Los_Angeles'});}
 function filtered(){
@@ -54,11 +114,12 @@ function appendAnswer(card,data){
  box.append(links);card.append(box);
 }
 function render(focusId){
+ if($('glossary').open)$('glossary').close();
  const list=filtered(),max=Math.max(0,Math.ceil(list.length/size)-1);page=Math.min(page,max);const shown=list.slice(page*size,(page+1)*size);
  $('count').textContent=loaded?`${list.length} of ${bank.length} questions`:'Loading questions…';$('visibility').disabled=!loaded||!shown.length;syncEye();
  const fragment=document.createDocumentFragment();for(const q of shown){const card=node('article',undefined,'question-card'),head=node('div',undefined,'question-head'),main=node('div',undefined,'question-main'),meta=node('div',undefined,'meta');
  meta.append(node('span',number(q),'number'),node('span',labels[q.status]||q.status,'badge '+q.status),node('span',q.topic||'Unassigned'),node('span',q.role==='reference'?'Reference':'Core'));
- const title=node('h2',q.prompt);main.append(meta,title);const details=node('p',undefined,'details');for(const item of [q.unit?'Unit: '+q.unit:null,q.period,q.geography,q.verified?'Verified '+q.verified:'Not yet verified',q.reviewDue?'Review '+q.reviewDue:null])if(item)details.append(node('span',item));main.append(details);
+ const title=questionTitle(q);main.append(meta,title);const details=node('p',undefined,'details');for(const item of [q.unit?'Unit: '+q.unit:null,q.period,q.geography,q.verified?'Verified '+q.verified:'Not yet verified',q.reviewDue?'Review '+q.reviewDue:null])if(item)details.append(node('span',item));main.append(details);
  const eye=node('button',undefined,'button row-eye');eye.id='eye-'+q.id;eye.type='button';eye.innerHTML=icon(visible.has(q.id));eye.setAttribute('aria-label',(visible.has(q.id)?'Hide':'Reveal')+' answer for '+number(q));eye.title=(visible.has(q.id)?'Hide':'Reveal')+' answer';eye.setAttribute('aria-expanded',String(visible.has(q.id)));eye.onclick=()=>toggleOne(q,eye);head.append(main,eye);card.append(head);if(visible.has(q.id))appendAnswer(card,visible.get(q.id));fragment.append(card);
  }
  if(loaded&&!list.length){const empty=node('div',undefined,'empty');empty.append(node('h2','No matching questions'),node('p','Try another search or clear the filters.'));fragment.append(empty);}
