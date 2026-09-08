@@ -1874,22 +1874,80 @@
   margin: 0 0 22px;
   max-width: 290px;
 }
-.interval-app .menu-settings-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  min-height: 44px;
-  padding: 0 15px;
-  margin-bottom: 12px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
+.interval-app .menu-tabs {
+  display: flex;
+  position: sticky;
+  top: -25px;
+  background: var(--paper, #f6f0e6);
+  z-index: 1;
+  border-bottom: 1px solid var(--line);
+  gap: 16px;
+}
+.interval-app .menu-tabs button {
+  flex: 1;
+  min-height: 48px;
+  padding: 8px 0;
+  border-bottom: 2px solid transparent;
   background: transparent;
+  color: var(--muted);
+  font-size: 12px;
+  white-space: nowrap;
+}
+.interval-app .menu-tabs button[aria-selected="true"] {
   color: var(--ink);
+  border-bottom-color: var(--lime);
+}
+.interval-app .menu-panel {
+  min-height: 235px;
+  padding: 6px 0 4px;
+}
+.interval-app .menu-panel p {
+  font-size: 13px;
+  line-height: 1.65;
+  margin: 12px 0;
+  color: #675347;
+}
+.interval-app .menu-panel h3 {
+  margin-top: 20px;
+}
+.interval-app .menu-panel .menu-formula {
+  padding: 12px;
+  background: var(--wash, #eddfce);
+  font: 11px/1.7 var(--mono);
+  color: var(--ink);
+}
+.interval-app .menu-panel .menu-edition-note {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-top: 20px;
+}
+.interval-app .menu-profile-person {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 20px 0;
+  overflow-wrap: anywhere;
+}
+.interval-app .menu-profile-person .player-mark {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+.interval-app .menu-profile-stats {
+  margin: 20px 0;
+}
+.interval-app .menu-profile-stats div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 12px 0;
   font-size: 13px;
 }
-.interval-app .menu-settings-button:hover,
-.interval-app .menu-settings-button[aria-expanded="true"] {
-  background: var(--wash, #eddfce);
+.interval-app .menu-profile-stats dt {
+  color: var(--muted);
+}
+.interval-app .menu-profile-stats dd {
+  margin: 0;
 }
 .interval-app .menu-setting {
   display: flex;

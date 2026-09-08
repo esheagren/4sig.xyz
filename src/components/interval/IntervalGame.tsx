@@ -220,7 +220,9 @@ export default function IntervalGame() {
   );
   const ruler = useRef<HTMLDivElement>(null),
     heading = useRef<HTMLHeadingElement>(null);
-  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [menuTab, setMenuTab] = useState<"play" | "profile" | "settings">(
+    "play",
+  );
   const helpDialog = useRef<HTMLDialogElement>(null),
     editDialog = useRef<HTMLDialogElement>(null);
   const lock = useRef(false),
@@ -787,6 +789,7 @@ export default function IntervalGame() {
               onClick={() => {
                 dragCleanup.current?.();
                 feedback.stop();
+                setMenuTab("play");
                 setHelp(true);
               }}
               aria-label="Open menu"
@@ -1301,29 +1304,152 @@ export default function IntervalGame() {
           <p className="menu-value-prop">
             Four daily questions to test what you know and how sure you are.
           </p>
-          <button
-            className="menu-settings-button"
-            type="button"
-            aria-expanded={settingsOpen}
-            aria-controls="game-menu-settings"
-            onClick={() => setSettingsOpen((open) => !open)}
+          <div
+            className="menu-tabs"
+            role="tablist"
+            aria-label="Four Sigma menu"
           >
-            <svg
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              aria-hidden="true"
-            >
-              <path d="M4 7h5m4 0h7M4 17h11m4 0h1" />
-              <circle cx="11" cy="7" r="2" />
-              <circle cx="17" cy="17" r="2" />
-            </svg>
-            Settings
-          </button>
-          <div id="game-menu-settings" hidden={!settingsOpen}>
+            {(
+              [
+                ["play", "How to play"],
+                ["profile", "Your profile"],
+                ["settings", "Settings"],
+              ] as const
+            ).map(([id, label], index) => (
+              <button
+                key={id}
+                id={`menu-tab-${id}`}
+                role="tab"
+                type="button"
+                aria-selected={menuTab === id}
+                aria-controls={`menu-panel-${id}`}
+                tabIndex={menuTab === id ? 0 : -1}
+                onClick={() => setMenuTab(id)}
+                onKeyDown={(event) => {
+                  const ids = ["play", "profile", "settings"] as const;
+                  const next =
+                    event.key === "Home"
+                      ? 0
+                      : event.key === "End"
+                        ? 2
+                        : event.key === "ArrowRight"
+                          ? (index + 1) % 3
+                          : event.key === "ArrowLeft"
+                            ? (index + 2) % 3
+                            : null;
+                  if (next === null) return;
+                  event.preventDefault();
+                  setMenuTab(ids[next]);
+                  document.getElementById(`menu-tab-${ids[next]}`)?.focus();
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+          <section
+            className="menu-panel"
+            id="menu-panel-play"
+            role="tabpanel"
+            aria-labelledby="menu-tab-play"
+            hidden={menuTab !== "play"}
+            tabIndex={0}
+          >
+            <h3>How to play</h3>
+            <p>
+              Give your best estimate, then drag the brackets to choose a range
+              you’re 95% confident contains the answer.
+            </p>
+            <p>
+              Tap either bound to edit it. Hold a bracket at the edge to expand
+              the ruler slowly. Hold the round arrow for half a second to commit
+              your answer.
+            </p>
+            <p>
+              Use 000 for thousands and millions, or E for scientific notation:
+              4E5 = 400,000.
+            </p>
+            <h3>Scoring</h3>
+            <p>
+              If the answer falls outside your range, you earn 0 points. If it
+              falls inside, a narrower range relative to the answer earns more
+              points—up to 10,000 per question.
+            </p>
+            <p className="menu-formula">
+              50 × (|answer| ÷ range width)<sup>0.7</sup>
+            </p>
+            <p>
+              Exact guesses earn 10,000. A zero answer uses the question’s
+              reference scale.
+            </p>
+            <p className="muted menu-edition-note">
+              Four questions each day. Your first attempt counts toward your
+              score; replays are practice.
+            </p>
+          </section>
+          <section
+            className="menu-panel"
+            id="menu-panel-profile"
+            role="tabpanel"
+            aria-labelledby="menu-tab-profile"
+            hidden={menuTab !== "profile"}
+            tabIndex={0}
+          >
+            {user && !user.isAnonymous ? (
+              <>
+                <div className="menu-profile-person">
+                  <PlayerMark
+                    icon={normalizeIcon(user.avatarIcon)}
+                    color={normalizeColor(user.avatarColor)}
+                  />
+                  <strong>{user.displayName}</strong>
+                </div>
+                <dl className="menu-profile-stats">
+                  <div>
+                    <dt>Games played</dt>
+                    <dd>{user.gamesPlayed}</dd>
+                  </div>
+                  <div>
+                    <dt>Average score</dt>
+                    <dd>{scoreText(user.averageScore)}</dd>
+                  </div>
+                  <div>
+                    <dt>Current streak</dt>
+                    <dd>
+                      {user.currentStreak}{" "}
+                      {user.currentStreak === 1 ? "day" : "days"}
+                    </dd>
+                  </div>
+                </dl>
+                <Link className="text-button" to="/profile">
+                  Edit personality & view history ↗
+                </Link>
+              </>
+            ) : (
+              <>
+                <h3>Make it yours</h3>
+                <p>
+                  After your fourth answer, choose a username, animated symbol,
+                  and color to give your shared score a personality.
+                </p>
+                <button
+                  type="button"
+                  className="text-button"
+                  onClick={() => setHelp(false)}
+                >
+                  Back to the game →
+                </button>
+              </>
+            )}
+          </section>
+          <section
+            className="menu-panel"
+            id="menu-panel-settings"
+            role="tabpanel"
+            aria-labelledby="menu-tab-settings"
+            hidden={menuTab !== "settings"}
+            tabIndex={0}
+          >
             <div className="menu-setting">
               <div>
                 <span>Sound</span>
@@ -1341,38 +1467,7 @@ export default function IntervalGame() {
                 <i aria-hidden="true" />
               </button>
             </div>
-          </div>
-          <details>
-            <summary>How to play</summary>
-            <p>
-              Give an estimate, then drag the brackets to choose your range. Tap
-              either number to edit it directly. Hold a bracket at the edge to
-              expand the ruler slowly.
-            </p>
-            <p>
-              Use the 000 key for thousands and millions, or E for scientific
-              notation: 4E5 = 400,000.
-            </p>
-          </details>
-          <details>
-            <summary>Scoring</summary>
-            <p>
-              Outside your range: 0 points. Inside: points for precision
-              relative to the answer’s size. Up to 10,000 per round.
-            </p>
-            <p>
-              For a hit: 50 × (|answer| ÷ range width)<sup>0.7</sup>, capped at
-              10,000. Exact guesses earn 10,000. A zero answer uses the
-              question’s reference scale.
-            </p>
-          </details>
-          <p>
-            <Link to="/profile">Your profile & history ↗</Link>
-          </p>
-          <p className="muted">
-            A new set of numbers each day. Your first attempt counts toward your
-            score. Replays are practice.
-          </p>
+          </section>
         </dialog>
         <dialog
           ref={editDialog}
