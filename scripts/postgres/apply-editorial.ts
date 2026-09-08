@@ -22,7 +22,12 @@ try {
     "SELECT pg_advisory_xact_lock(hashtext('editorial-bank'))",
   );
   await mkdir(backupDirectory, { recursive: true, mode: 0o700 });
-  for (const table of ["questions", "daily_questions", "editorial_releases"]) {
+  for (const table of [
+    "units",
+    "questions",
+    "daily_questions",
+    "editorial_releases",
+  ]) {
     const { rows } = await client.query(`SELECT * FROM ${table} ORDER BY id`);
     await writeFile(
       `${backupDirectory}/${table}.json`,

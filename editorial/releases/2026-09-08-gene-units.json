@@ -1,0 +1,31 @@
+{
+  "id": "2026-09-08-gene-units",
+  "questions": [
+    {
+      "id": "dfead12a-2751-4788-ab45-174f13cb67aa",
+      "audit_number": 4,
+      "editorial_status": "ready",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "NHGRI Gene glossary, checked September 8, 2026, gives roughly 20,000 protein-coding genes and distinguishes genes that produce functional RNA. Corrects the scaled unit: the stored answer is now 20,000 genes, not 20 thousands.",
+      "expected": {
+        "question_text": "Approximately how many thousands of protein-coding genes are in the human genome?",
+        "answer_value": 20,
+        "source_url": "https://www.genome.gov/genetics-glossary/Gene",
+        "answer_context": "Protein-coding genes are instructions used to make proteins. They are one part of the genome; counting genes does not count every protein the body can produce.",
+        "unit_id": "9b2ddc88-b19d-41ca-868e-301379f3b830"
+      },
+      "question_text": "Approximately how many genes in the human genome code for proteins?",
+      "answer_value": 20000,
+      "observation_period": "Reference estimate checked September 2026",
+      "geography": "Human genome",
+      "measure_definition": "Approximate number of protein-coding genes, expressed as an ordinary count of genes. Excludes genes whose functional product is RNA rather than a protein.",
+      "source_name": "National Human Genome Research Institute",
+      "source_url": "https://www.genome.gov/genetics-glossary/Gene",
+      "answer_context": "About 20,000 genes contain instructions for making proteins. Other genes produce functional RNA instead, so this is not a count of every gene in the human genome.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-09-08",
+      "unit_name": "genes"
+    }
+  ]
+}

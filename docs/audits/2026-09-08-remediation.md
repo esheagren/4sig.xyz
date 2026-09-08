@@ -14,6 +14,8 @@ The old 98-question active bank is intentionally smaller. Twenty-four questions 
 
 ## Repairs
 
+Follow-up: Q004 now asks “Approximately how many genes in the human genome code for proteins?” and stores **20,000 genes**, rather than 20 thousands. The table below records the initial repair pass; the [gene-unit correction](../../editorial/releases/2026-09-08-gene-units.json) supersedes that row.
+
 Prompts now name the relevant observation period and denominator. Reveals explain what the number means without unsupported extra statistics. Dated observations are not presented as the latest available figures; some are retained as explicit 2023–2025 baselines. Provisional estimates and provider-specific samples are identified.
 
 Notable corrections include whole-port Singapore container throughput (41.12 million TEU), annual Norwegian zero-emission new-car registrations (88.9% in 2024), nuclear's share of US electricity rather than all energy (about 18% in 2024), and the effective federal funds rate rather than a target midpoint (4.33% on December 31, 2024). The CRISPR register question now asks total tracked gene-editing trials, rather than mislabeling all 250 as active CRISPR trials. GDP shares use a common World Bank vintage and market-exchange-rate denominator.

@@ -20,6 +20,7 @@ export interface EditorialQuestion {
   };
   question_text?: string;
   answer_value?: number;
+  unit_name?: string;
   observation_period?: string;
   geography?: string;
   measure_definition?: string;
@@ -52,6 +53,13 @@ export function validateRelease(release: EditorialRelease) {
       throw new Error("Invalid editorial status or role");
     if (!q.expected || !q.editorial_topic || !q.verification_notes)
       throw new Error("Missing review record");
+    if (
+      q.unit_name !== undefined &&
+      (typeof q.unit_name !== "string" ||
+        !q.unit_name.trim() ||
+        q.unit_name.length > 80)
+    )
+      throw new Error("Invalid unit name");
     if (q.editorial_status !== "ready") continue;
     for (const key of [
       "question_text",
@@ -145,11 +153,29 @@ export async function applyEditorialRelease(
       ],
     );
   for (const q of release.questions) {
+    let unitId: string | null = null;
+    if (q.unit_name !== undefined) {
+      const name = q.unit_name.trim();
+      const existing = (
+        await client.query(
+          "SELECT id FROM units WHERE name=$1 ORDER BY id LIMIT 1",
+          [name],
+        )
+      ).rows[0];
+      unitId =
+        existing?.id ??
+        (
+          await client.query(
+            "INSERT INTO units(id,name) VALUES(gen_random_uuid(),$1) RETURNING id",
+            [name],
+          )
+        ).rows[0].id;
+    }
     await client.query(
       `UPDATE questions SET editorial_status=$2,is_active=($2='ready'),editorial_role=$3,editorial_topic=$4,verification_notes=$5,
    verified_at=$6,review_due=$7,observation_period=$8,geography=$9,measure_definition=$10,
    question_text=COALESCE($11,question_text),answer_value=COALESCE($12,answer_value),source_name=COALESCE($13,source_name),
-   source_url=COALESCE($14,source_url),answer_context=COALESCE($15,answer_context),updated_at=now() WHERE id=$1`,
+   source_url=COALESCE($14,source_url),answer_context=COALESCE($15,answer_context),unit_id=COALESCE($16,unit_id),updated_at=now() WHERE id=$1`,
       [
         q.id,
         q.editorial_status,
@@ -166,6 +192,7 @@ export async function applyEditorialRelease(
         q.source_name ?? null,
         q.source_url ?? null,
         q.answer_context ?? null,
+        unitId,
       ],
     );
   }

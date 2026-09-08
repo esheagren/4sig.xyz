@@ -100,6 +100,7 @@ test("editorial release preserves games and today, repairs future schedules, bal
         },
         question_text: "Reviewed " + i,
         answer_value: 200 + i,
+        unit_name: "genes",
         observation_period: "2024",
         geography: "World",
         measure_definition: "Test count",
@@ -151,6 +152,21 @@ test("editorial release preserves games and today, repairs future schedules, bal
       today,
     );
     assert.equal(result.alreadyApplied, false);
+    const repaired = (
+      await client.query(
+        "SELECT q.answer_value,u.name unit FROM questions q JOIN units u ON u.id=q.unit_id WHERE q.id=$1",
+        [seed[0].id],
+      )
+    ).rows[0];
+    assert.equal(Number(repaired.answer_value), 200);
+    assert.equal(repaired.unit, "genes");
+    assert.equal(
+      Number(
+        (await client.query("SELECT count(*) FROM units WHERE name='genes'"))
+          .rows[0].count,
+      ),
+      1,
+    );
     assert.deepEqual(
       (
         await client.query(
@@ -170,6 +186,7 @@ test("editorial release preserves games and today, repairs future schedules, bal
     const next = await scheduleEdition(client, nextDate);
     assert.equal(next.length, 4);
     assert.ok(next.every((q) => q.prompt.startsWith("Reviewed")));
+    assert.ok(next.every((q) => q.unit === "genes"));
     const chosen = (
       await client.query(
         "SELECT editorial_role,editorial_topic FROM questions WHERE id=ANY($1::uuid[])",

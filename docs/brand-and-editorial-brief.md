@@ -40,6 +40,10 @@ Editorial selection should be deliberate. It should not select or frame numbers 
 
 Illustrative subjects, not yet researched questions: urban housing supply, the scale and composition of China’s economy, population aging, AI adoption, energy use, and the burden or prevention of major diseases. Each still needs a defensible measure, scope, date, and source before becoming a playable question.
 
+## Wording and units
+
+Ask for the natural quantity and store its full value: “How many genes …?” with an answer of 20,000 genes, rather than “How many thousands …?” with an answer of 20. Let the interface format large numbers; do not make players convert an answer into an implicit multiplier. Keep units explicit where they define the measure, such as kilometres, percentages or a rate per 100,000 people. Preserve necessary scientific distinctions in plain language, and explain them briefly in the reveal.
+
 ## Keeping changing facts trustworthy
 
 Treat a recurring quantity as an editorial subject with dated observations, rather than a timeless fact whose answer silently changes. Question records should support a source, measurement period, verification date, definition notes, and a review date appropriate to the source’s release cycle. These fields are enforced for ready questions through the [editorial review workflow](../editorial/README.md). Unreviewed imports are kept outside the playable bank.
