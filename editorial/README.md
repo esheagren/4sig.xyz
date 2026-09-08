@@ -37,3 +37,16 @@ The password-protected [question library](https://4sig.xyz/designspace?view=ques
 The follow-up [gene-unit correction](releases/2026-09-08-gene-units.json) stores a full count of 20,000 genes. Releases can specify `unit_name` to change a question’s unit atomically with its prompt and answer; existing game snapshots retain their original unit and value.
 
 The [sequencing-cost correction](releases/2026-09-08-sequencing-cost.json) replaces Q011’s undated vendor minimum with NHGRI’s May 2022 production-cost benchmark and admits it as ready. Changing facts must name their observation year in the prompt, with a month or date where needed.
+
+
+## Vocabulary review before publication
+
+Every new, rewritten or reactivated question must receive a contextual vocabulary review before it is marked ready:
+
+1. Read the full prompt as an educated adult with a college degree who is not a specialist in this subject. Identify terms they could reasonably recognize without knowing precisely what they mean here, including abbreviations, units and statistical measures.
+2. Add a short, sourced definition and an explicit question link in `editorial/glossary.json`, or confirm that a shared definition has the correct meaning for this question. Do not limit the review to words already in the glossary.
+3. Use at most two sentences at about an eighth-grade reading level, with a clearly hypothetical example if useful. The popup explains the concept without revealing the answer.
+4. If a term is already explained clearly in the question, or uses ordinary language, record that decision instead of adding decorative underlines. If the measurement itself is unclear, resolve it before publishing; a glossary entry does not make an ambiguous question ready.
+5. Check the linked phrase in the question manager with answers hidden, including on a phone. Recheck the definition when the prompt or measurement changes. Preserve the review decision with the question's editorial release.
+
+The [initial vocabulary audit](glossary-review-2026-09-08.json) covers the existing bank; [the glossary guide](../docs/glossary.md) covers how to maintain and publish definitions. This review is editorial judgment, not automatic keyword detection. Retired questions remain excluded until both their factual and vocabulary reviews are complete.

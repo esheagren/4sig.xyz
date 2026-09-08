@@ -1,0 +1,1112 @@
+{
+  "reviewedAt": "2026-09-08",
+  "standard": "Define a term whenever an educated adult with a college degree could reasonably be unsure of its exact meaning in this question. Apply to every new and revised question, not a fixed keyword list.",
+  "scope": "Screened all 109 stored prompts; definitions added to the playable bank and editorial backlog. Retired prompts remain outside the pool and require review before reactivation.",
+  "questions": [
+    {
+      "questionId": "3e0a16fd-132e-46a7-a5a8-e05dee149186",
+      "questionNumber": 1,
+      "prompt": "How many living species have been scientifically described and catalogued as of 2025?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "scientifically-described"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "aebe46a2-a2ed-43a2-bd90-1ce4a57ca150",
+      "questionNumber": 2,
+      "prompt": "What percentage of global electricity generation came from renewable sources in 2024?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "renewable-energy"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "396a8fb1-d0be-463f-a3f2-251909657f8a",
+      "questionNumber": 3,
+      "prompt": "What is the incarceration rate per 100,000 people in the United States as of 2025?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "incarceration-rate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Specify the detention populations included; the general definition does not choose a numerator."
+    },
+    {
+      "questionId": "dfead12a-2751-4788-ab45-174f13cb67aa",
+      "questionNumber": 4,
+      "prompt": "Approximately how many genes in the human genome code for proteins?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "genome",
+        "genes",
+        "proteins"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "6597b4e9-424f-4d6c-a2b9-4e569265de6d",
+      "questionNumber": 5,
+      "prompt": "Approximately what share of world GDP did China account for in 2024, at market exchange rates?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "market-exchange-rate",
+        "gdp"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "887b564c-bc2d-450e-bf4b-4b4cbe891448",
+      "questionNumber": 6,
+      "prompt": "What is the total length in kilometers of the Trans-Siberian Railway?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "b4fb7199-5785-424c-a395-60ad129e1a14",
+      "questionNumber": 7,
+      "prompt": "What is the current median age in years in Japan?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "median-age"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "1e66fc4d-13e0-4cab-9247-c4a588d8ba6a",
+      "questionNumber": 8,
+      "prompt": "How many Nobel Prizes have been awarded to women from 1901 through 2024?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Nobel Prizes and awards to women need no specialist vocabulary explanation."
+    },
+    {
+      "questionId": "d1ebc954-164b-4e04-a45c-4c4ac9c0bba1",
+      "questionNumber": 9,
+      "prompt": "How many people per square kilometre did Singapore have in 2024?",
+      "statusAtReview": "ready",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "The prompt already spells out the population-per-area measure in ordinary words."
+    },
+    {
+      "questionId": "2597594b-ea42-433c-a4c1-09ccc577db68",
+      "questionNumber": 10,
+      "prompt": "Approximately how many children per woman did the global fertility rate imply in 2023?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "total-fertility-rate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "490e4646-9fbe-42b6-9030-fb2eae2211e2",
+      "questionNumber": 11,
+      "prompt": "In May 2022, approximately what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "genome",
+        "nih"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "76df7595-e5e8-4241-b532-490eab5f4e2c",
+      "questionNumber": 12,
+      "prompt": "What is the current spot price of a kilogram of enriched uranium?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "f913e918-ec5b-493c-a53a-3898d0d8c7c9",
+      "questionNumber": 13,
+      "prompt": "What was South Africa’s Gini coefficient in the World Bank’s 2022 estimate, on a scale from 0 to 1?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "gini-coefficient"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "0bd2fca1-3265-4b5a-a568-a30dacba8aea",
+      "questionNumber": 14,
+      "prompt": "How many confirmed exoplanets have been cataloged by NASA as of December 2025?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "ec174a81-6e73-47bd-a702-6c32fbbfb135",
+      "questionNumber": 15,
+      "prompt": "What is the current percentage of global electricity generation provided by solar photovoltaics?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "solar-photovoltaics"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "0de70862-f061-4bcf-a538-aad9a556331b",
+      "questionNumber": 16,
+      "prompt": "What is the median age of the population in Niger?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "median-age"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "382fa80d-089a-4325-bbc7-b96b61071eae",
+      "questionNumber": 17,
+      "prompt": "What is the median age of the population in Japan?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [
+        "median-age"
+      ],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "c8108aac-5ad4-421c-a8b8-1b6a9ded007f",
+      "questionNumber": 18,
+      "prompt": "About how many gene-editing clinical trials did CRISPR Medicine News track in February 2025?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "crispr",
+        "gene-editing",
+        "clinical-trials"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "edab299a-a721-4c8d-8a6f-255646b05465",
+      "questionNumber": 19,
+      "prompt": "What was the effective federal funds rate on the last day of 2024?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "effective-federal-funds-rate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "6d8f9967-d998-4bf4-9092-296c0ff4e5fa",
+      "questionNumber": 20,
+      "prompt": "Approximately how many kilometres of high-speed railway were operating in China at the end of 2024?",
+      "statusAtReview": "ready",
+      "decision": "needs_context",
+      "terms": [],
+      "reason": "Retain the source’s high-speed-rail category; add a source-specific explanation if its inclusion rules become part of the prompt.",
+      "followUp": "Retain the source’s high-speed-rail category; add a source-specific explanation if its inclusion rules become part of the prompt."
+    },
+    {
+      "questionId": "3a81ece4-a9c0-4242-8e2d-e85f6a38e076",
+      "questionNumber": 21,
+      "prompt": "What was the annual average atmospheric CO₂ concentration at Mauna Loa in 2024?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "atmospheric-co2-concentration"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "0b091f38-feae-4fdc-9f07-952203e7a0b8",
+      "questionNumber": 22,
+      "prompt": "How many living languages are currently cataloged?",
+      "statusAtReview": "needs_review",
+      "decision": "needs_context",
+      "terms": [],
+      "reason": "Define living language and language versus dialect against the selected catalogue before publication; current question remains needs_review.",
+      "followUp": "Define living language and language versus dialect against the selected catalogue before publication; current question remains needs_review."
+    },
+    {
+      "questionId": "c142cea2-e8e0-4994-8358-2d986d2260e2",
+      "questionNumber": 23,
+      "prompt": "What is the average number of mutations per generation in the human germline?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "f360bca6-317d-4f56-8f33-da9d9dc7fe39",
+      "questionNumber": 24,
+      "prompt": "What is the current installed capacity of wind energy in Texas in gigawatts?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "installed-capacity",
+        "gigawatt"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "1e15c9c3-bb3d-4ce2-b9f9-11e1771ad95b",
+      "questionNumber": 25,
+      "prompt": "Approximately what percentage of Dutch land lies below sea level, according to PBL?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "pbl"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "82018e54-fc2c-4722-9346-1597e5d88100",
+      "questionNumber": 26,
+      "prompt": "How many people currently live within the Circle of Illumination (daylight) right now?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "f723fb58-ac9b-4d60-a42b-44b912641fbf",
+      "questionNumber": 27,
+      "prompt": "What is the total tonnage of plastic estimated to be floating in the Great Pacific Garbage Patch?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "great-pacific-garbage-patch"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "57b13253-0cb4-4fb9-81d1-632f0e2a71be",
+      "questionNumber": 28,
+      "prompt": "What is the current yield on the US 10-Year Treasury note?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "bond-yield",
+        "treasury-note"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Specify the observation date and the exact Treasury yield series before publication."
+    },
+    {
+      "questionId": "e3b3301c-8fe3-46c1-86e9-a1a7ace818d5",
+      "questionNumber": 29,
+      "prompt": "How many distinct active satellites are currently tracked in Low Earth Orbit?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "low-earth-orbit"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "0b418c08-74c2-4b37-8eaf-90d64940f732",
+      "questionNumber": 30,
+      "prompt": "What is the average latency in milliseconds between New York and London via the fastest fiber optic cable?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "network-latency",
+        "fiber-optic-cable"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Specify one-way versus round-trip delay and exact endpoints before publication; glossary deliberately does not invent either."
+    },
+    {
+      "questionId": "a8d275a9-f273-476a-af70-9d903ee2f544",
+      "questionNumber": 31,
+      "prompt": "Approximately what was male life expectancy at birth in Sierra Leone in 2023?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "life-expectancy-at-birth"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "a22e6d17-698a-48af-bc87-6be988dbae7a",
+      "questionNumber": 32,
+      "prompt": "What is the current number of unicorn companies (startups valued over $1B)?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "unicorn-company"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "c76389bc-23e4-4475-969c-2d605abe4587",
+      "questionNumber": 33,
+      "prompt": "In Gallup’s July 2023 poll, what percentage of US adults described themselves as vegetarian?",
+      "statusAtReview": "ready",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "The prompt explicitly asks for self-description as vegetarian, not a clinical dietary classification."
+    },
+    {
+      "questionId": "0f3ad19b-3ec3-4e00-ab9a-e01b1fa27161",
+      "questionNumber": 34,
+      "prompt": "What is the current exchange rate between the Euro and the Indian Rupee?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "b07fe366-3160-4ca7-8c00-58cd72c06e94",
+      "questionNumber": 35,
+      "prompt": "What is the total number of Wikipedia articles in the English language?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Wikipedia articles and English language are sufficiently clear for this audience."
+    },
+    {
+      "questionId": "ec7d796e-c025-42b6-a812-0239cf8bd36d",
+      "questionNumber": 36,
+      "prompt": "What is the atomic mass of the unstable isotope Technetium-99m?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "7aacb178-66ef-4bbe-94ba-2eefa06f24de",
+      "questionNumber": 37,
+      "prompt": "How many twenty-foot equivalent units of containers did the Port of Singapore handle in 2024?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "twenty-foot-equivalent-unit"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "cbd07b91-7959-4e65-9c97-63af9e962574",
+      "questionNumber": 38,
+      "prompt": "What is the current effective tax rate paid by the median of American households?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "6c62656c-31aa-4caa-b8fc-29a57520832c",
+      "questionNumber": 39,
+      "prompt": "What is the Shannon entropy (in bits) of a standard deck of 52 playing cards?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "b849058e-a2f7-4b06-be9f-6f5a562ce362",
+      "questionNumber": 40,
+      "prompt": "What is the distance to the Voyager 1 probe in Astronomical Units right now?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "astronomical-unit"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "a7678325-444d-46b3-9843-12557494f22b",
+      "questionNumber": 41,
+      "prompt": "Approximately what share of world GDP did the United States account for in 2024, at market exchange rates?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "market-exchange-rate",
+        "gdp"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "f6b2854d-5bb5-40a0-a27c-13cdb4e027b4",
+      "questionNumber": 42,
+      "prompt": "How many billionaires are there in Mumbai?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "59489469-6dfe-4e95-abac-ed636fb1c952",
+      "questionNumber": 43,
+      "prompt": "What is the current price per kilogram of saffron on the global market?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "295c45b5-3551-4712-af69-6a41b80b94a8",
+      "questionNumber": 44,
+      "prompt": "What is the total number of fatalities recorded in the Battle of Antietam?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "7bc65f34-f070-4335-849d-db37ade07ed7",
+      "questionNumber": 45,
+      "prompt": "How many distinct chess positions are possible after 3 moves?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "17fc681e-fa6d-41a4-bc35-1f5289480d91",
+      "questionNumber": 46,
+      "prompt": "What is the current number of active monthly users on WeChat?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "f4dc6271-8879-4050-a6a5-253e0d16b92e",
+      "questionNumber": 47,
+      "prompt": "What is the average height of a Dutch male born in 2000?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Average height and the birth cohort are stated in familiar language."
+    },
+    {
+      "questionId": "d3723888-4569-4cb9-a2b9-1efd202c5cbb",
+      "questionNumber": 48,
+      "prompt": "About how many nuclear warheads did the Federation of American Scientists estimate France had in July 2025?",
+      "statusAtReview": "ready",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Nuclear warheads is familiar enough at this level; stockpile inclusion rules belong in the question’s source definition."
+    },
+    {
+      "questionId": "33ebe4f4-400a-47b0-87a3-27739a723e85",
+      "questionNumber": 49,
+      "prompt": "What is the percentage of global caloric intake provided by rice?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "caloric-intake"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "1e8318c8-28c0-4671-b290-3202b0a0a258",
+      "questionNumber": 50,
+      "prompt": "What is the number of UNESCO World Heritage Sites in Italy?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "1f57b72c-2f54-40bb-9152-5d3239349138",
+      "questionNumber": 51,
+      "prompt": "What is the current prevalence of myopia in urban Asian teenagers?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "prevalence",
+        "myopia"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "ce9615c1-17f7-4dec-8d0f-bac50333a100",
+      "questionNumber": 52,
+      "prompt": "How many milliseconds does it take for light to travel from the Moon to Earth?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Light travel time and milliseconds are familiar enough here; the physical quantity is explicit."
+    },
+    {
+      "questionId": "3da4f0e9-6b9e-465f-aa22-6d1cb68e7c27",
+      "questionNumber": 53,
+      "prompt": "What was South Korea’s total fertility rate in the provisional figures for 2024?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "total-fertility-rate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "141c480a-921a-4101-bff3-ac74ab97107d",
+      "questionNumber": 54,
+      "prompt": "What is the estimated number of synapses in the average adult human brain?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "synapse"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "cf18371c-ac0e-4a58-a149-9b523fe6cb88",
+      "questionNumber": 55,
+      "prompt": "What is the melting point of Tungsten in degrees Celsius?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "fdcb81d1-e000-45cf-b49b-8152dab8769f",
+      "questionNumber": 56,
+      "prompt": "What is the current population density of Manila in people per square kilometer?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "population-density"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "5ca5a076-fb51-411d-b867-278566fd6970",
+      "questionNumber": 57,
+      "prompt": "How many patents were granted by the USPTO last year?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "uspto",
+        "patent"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "2c382f45-c39f-4ecc-81a9-ffd66fd6932f",
+      "questionNumber": 58,
+      "prompt": "How many prime numbers are there below 1,000,000?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "72ae7693-7798-48e1-9265-8941cd874ceb",
+      "questionNumber": 59,
+      "prompt": "After Rwanda’s 2024 election, what percentage of seats in its lower house were held by women?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "rwanda-lower-house"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "b10b3725-2432-40f1-a9d1-d28881544933",
+      "questionNumber": 60,
+      "prompt": "How many distinct indigenous groups are recognized in Brazil?",
+      "statusAtReview": "needs_review",
+      "decision": "needs_context",
+      "terms": [],
+      "reason": "Specify the authority and definition behind recognized indigenous groups before publication; avoid implying a universal official list.",
+      "followUp": "Specify the authority and definition behind recognized indigenous groups before publication; avoid implying a universal official list."
+    },
+    {
+      "questionId": "99c379ed-c89c-463b-8095-cdf87511ad03",
+      "questionNumber": 61,
+      "prompt": "What is the lethal dose (LD50) of botulinum toxin in nanograms per kilogram?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "72260cef-b998-40a5-b90c-c0650064bf14",
+      "questionNumber": 62,
+      "prompt": "What is the current market capitalization of the largest publicly traded company in the world?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "market-capitalization"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "9816f67f-deed-4475-9125-fef4ce27c253",
+      "questionNumber": 63,
+      "prompt": "How many distinct subway stations are there in the New York City Transit system?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Subway stations is ordinary language; station-complex counting rules belong in the question specification."
+    },
+    {
+      "questionId": "9d44cddc-e027-42aa-8024-4adb998d05df",
+      "questionNumber": 64,
+      "prompt": "What is the current price of a standard shipping container from Shanghai to Los Angeles?",
+      "statusAtReview": "needs_review",
+      "decision": "needs_context",
+      "terms": [],
+      "reason": "Specify container length and shipping service before publication; standard container is not a sufficient unit.",
+      "followUp": "Specify container length and shipping service before publication; standard container is not a sufficient unit."
+    },
+    {
+      "questionId": "3315ad95-b0cf-405b-974b-581396ea67da",
+      "questionNumber": 65,
+      "prompt": "How many Nobel Prizes have been awarded to Japanese nationals?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "d5186ee3-92c5-4d78-b916-00d72171f196",
+      "questionNumber": 66,
+      "prompt": "About how many refugees were under UNHCR’s mandate at the end of 2024?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "unhcr-mandate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "203ca96c-20db-434d-ad1e-d295a554240e",
+      "questionNumber": 67,
+      "prompt": "How many active aircraft carriers does the Indian Navy currently operate?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Aircraft carriers and current operation use familiar vocabulary; define service status in the source if disputed."
+    },
+    {
+      "questionId": "90300df7-a6d0-458e-9f49-e0bd5fda8daf",
+      "questionNumber": 68,
+      "prompt": "How many documented cases of hyperthymesia (highly superior autobiographical memory) exist?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "86c27c62-854a-4581-8632-a37d3c8d41c7",
+      "questionNumber": 69,
+      "prompt": "How many years is it estimated the longest-lived vertebrate (Greenland Shark) lives for?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "vertebrate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "bcf42117-9ef4-4756-826e-dafd392f2ae4",
+      "questionNumber": 70,
+      "prompt": "What is the percentage of the French population that smokes daily?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Daily smoking is ordinary language; survey frequency and population belong in the question’s source definition."
+    },
+    {
+      "questionId": "9f0dd4be-0118-43cc-9f8c-8c387b6cfc7c",
+      "questionNumber": 71,
+      "prompt": "What is the depth of the Mariana Trench in meters?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Depth and metres use ordinary language."
+    },
+    {
+      "questionId": "6dfd0e9b-ac36-44a8-a8ad-2a1bd88cb6df",
+      "questionNumber": 72,
+      "prompt": "How many verified supercentenarians (people over 110) are currently alive?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "4af2ae40-2210-4e9c-a842-6dfa13a6de45",
+      "questionNumber": 73,
+      "prompt": "How many lines of code are in the Linux Kernel as of the latest stable release?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "53ac3dae-3cc4-4c3f-8598-f4c247461953",
+      "questionNumber": 74,
+      "prompt": "What was Spain’s annual unemployment rate in 2024, according to the ILO estimate?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "unemployment-rate",
+        "ilo"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "a1ee5802-983a-4cad-8f17-e5c04f527749",
+      "questionNumber": 75,
+      "prompt": "How many distinct bird species have been recorded in Colombia?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "effd23bd-7ede-4e8a-8fff-af240cb43476",
+      "questionNumber": 76,
+      "prompt": "What is the current price of a first-class stamp in the UK?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "c58405a5-d624-4f8c-9867-e8c6e600e07e",
+      "questionNumber": 77,
+      "prompt": "Approximately what percentage of dry air is nitrogen, by volume?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "dry-air"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "78d133e2-43dd-4254-90f9-36fa08d4b19c",
+      "questionNumber": 78,
+      "prompt": "As of September 2026, how many amendments had been ratified to the US Constitution?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "ratification"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "a740ef6d-81a3-4300-97bb-534fa5aab55f",
+      "questionNumber": 79,
+      "prompt": "What is the current debt-to-GDP ratio of Japan?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "debt-to-gdp-ratio"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Specify central/general government and gross/net debt before publication; glossary explains only the ratio."
+    },
+    {
+      "questionId": "18d1a9d1-38e8-4246-9874-93f739285424",
+      "questionNumber": 80,
+      "prompt": "What is the estimated number of neurons in the enteric nervous system (the \"gut brain\")?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "d41324d8-1d57-45c2-9c72-275aa4184f78",
+      "questionNumber": 81,
+      "prompt": "How many active volcanoes are there worldwide?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "active-volcano"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Choose a catalogue and explicit active-volcano inclusion rule before publication."
+    },
+    {
+      "questionId": "4e597016-e7e7-4d45-afd6-8c5c7ea0be80",
+      "questionNumber": 82,
+      "prompt": "What is the half-life of Carbon-14 in years?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "half-life"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "bf6193f7-e025-4c82-9951-886cd1f205f4",
+      "questionNumber": 83,
+      "prompt": "In Imperva’s 2024 web-traffic analysis, what percentage of traffic came from automated bots?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "internet-bots"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "86cb6579-325b-49b6-9123-5c79e4710b64",
+      "questionNumber": 84,
+      "prompt": "How many distinct moves were played in the longest recorded tournament chess game?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "21ea1816-2aea-4974-8f4b-2e19b92026bf",
+      "questionNumber": 85,
+      "prompt": "How many distinct phonemes are in the Rotokas language (known for the smallest inventory)?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "42e9ce1c-61b4-4786-8efc-05f223b25849",
+      "questionNumber": 86,
+      "prompt": "What percentage of new passenger cars registered in Norway in 2024 were zero-emission vehicles?",
+      "statusAtReview": "ready",
+      "decision": "defined",
+      "terms": [
+        "zero-emission-vehicles"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "f3d89d0c-6296-434c-93c4-58bc8e140d93",
+      "questionNumber": 87,
+      "prompt": "How many active oil rigs are currently operating in the Permian Basin?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "43c2da73-9b46-4631-b5c4-dacf9001b5d4",
+      "questionNumber": 88,
+      "prompt": "What is the current inflation rate in Argentina?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "inflation-rate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt."
+    },
+    {
+      "questionId": "e10f3990-2918-4486-ba5f-208d7ee1f78c",
+      "questionNumber": 89,
+      "prompt": "What is the modal number of years of education for a woman in Bangladesh?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "2d587b02-c6e0-42b6-8f0c-1f6d66d7b766",
+      "questionNumber": 90,
+      "prompt": "How many distinct Lego bricks have been manufactured since the company's inception?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "a15850b9-4b10-4ffe-8cca-0cd9705b423a",
+      "questionNumber": 91,
+      "prompt": "What is the escape velocity of the Moon in km/s?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "b6a6cb9d-a9af-40fc-9b88-eb8d1d43bf5e",
+      "questionNumber": 92,
+      "prompt": "How many distinct amino acids are encoded by the standard genetic code?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "147d2cbf-961f-43e7-91e7-5652fe615271",
+      "questionNumber": 93,
+      "prompt": "What is the percentage of the world's population that is lactose intolerant?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "lactose-intolerance"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Check symptomatic lactose intolerance versus lactose malabsorption; the definition must match the statistic."
+    },
+    {
+      "questionId": "4f972e6e-f087-4361-9424-7feae028e19b",
+      "questionNumber": 94,
+      "prompt": "What is the speed of sound in steel in meters per second?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "4bc8730b-527a-40f5-98e0-563bc30cccba",
+      "questionNumber": 95,
+      "prompt": "How many confirmed impact craters are on the Earth's surface?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "4dfa49cd-fbbe-4914-a410-a57a43c12c3e",
+      "questionNumber": 96,
+      "prompt": "What is the percentage of global greenhouse gas emissions attributed to cement production?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "greenhouse-gas-emissions"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Confirm the greenhouse-gas basket and CO2-equivalent method, rather than silently substituting CO2-only emissions."
+    },
+    {
+      "questionId": "a54ec1f3-c836-4171-9100-b8a73a876af3",
+      "questionNumber": 97,
+      "prompt": "What is the number of active subscribers to the New York Times Digital edition?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Digital subscribers uses ordinary language; product bundles and counting rules still need source review."
+    },
+    {
+      "questionId": "31681b25-59d4-4545-8c6c-d4869ca38e23",
+      "questionNumber": 98,
+      "prompt": "How many distinct functional groups are in the molecule Vancomycin?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "c4385909-e5cd-43a0-88a7-9b3a3a628397",
+      "questionNumber": 99,
+      "prompt": "What is the total number of bones in the adult human body?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "818aa760-c7b0-4909-87c7-8b87d9b7f0a1",
+      "questionNumber": 100,
+      "prompt": "How many confirmed moons orbit Jupiter?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "a1b5ddc6-979c-4e00-8a42-75fcaa85ceda",
+      "questionNumber": 101,
+      "prompt": "Approximately what percentage of US electricity generation came from nuclear power in 2024?",
+      "statusAtReview": "ready",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "Electricity generation and nuclear power are familiar concepts at the precision asked."
+    },
+    {
+      "questionId": "c53e3ded-cce7-48fa-9907-c99e710b3128",
+      "questionNumber": 102,
+      "prompt": "How many distinct characters are in the Unicode 15.0 standard?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "ee3ca74e-2509-400c-a444-a01ed67710ee",
+      "questionNumber": 103,
+      "prompt": "What is the current cost of a 1-year subscription to the Bloomberg Terminal?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "a534a49e-5655-4897-bac3-02042508f9cc",
+      "questionNumber": 104,
+      "prompt": "How many confirmed shipwrecks are estimated to be on the ocean floor?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "b4e8f416-0ff1-4da7-a8ff-1f0a639d53a4",
+      "questionNumber": 105,
+      "prompt": "What is the current R0 (reproduction number) of the most prevalent flu strain?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "basic-reproduction-number"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Specify a study and setting; distinguish basic R0 from time-varying Rt and resolve unsupported current-strain wording."
+    },
+    {
+      "questionId": "74730f32-49c2-4bbf-bf3e-975abd3b207b",
+      "questionNumber": 106,
+      "prompt": "How many distinct skyscrapers (over 150m) are in Shenzhen?",
+      "statusAtReview": "needs_review",
+      "decision": "plain_language",
+      "terms": [],
+      "reason": "The prompt already defines its skyscraper height threshold."
+    },
+    {
+      "questionId": "f4d61446-ffef-4919-9681-9b16158942cf",
+      "questionNumber": 107,
+      "prompt": "What is the boiling point of liquid Nitrogen?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    },
+    {
+      "questionId": "4ab3cac3-e17a-491d-9ace-6945a1146d20",
+      "questionNumber": 108,
+      "prompt": "What is the current homicide rate per 100k people in El Salvador?",
+      "statusAtReview": "needs_review",
+      "decision": "defined",
+      "terms": [
+        "homicide-rate"
+      ],
+      "reason": "Linked concepts have short explanations of the meaning used in this prompt.",
+      "followUp": "Confirm the source counts intentional homicide and specify the year before publication."
+    },
+    {
+      "questionId": "c4f0ef90-f821-4c84-993b-f140ee636d0e",
+      "questionNumber": 109,
+      "prompt": "How many distinct islands make up the nation of Indonesia?",
+      "statusAtReview": "retired",
+      "decision": "retired",
+      "terms": [],
+      "reason": "Outside the question pool; requires a fresh contextual vocabulary review before reactivation."
+    }
+  ]
+}

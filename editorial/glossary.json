@@ -36,6 +36,306 @@
       "title": "Genes",
       "definition": "Genes are sections of DNA that carry instructions for making molecules a cell uses. Some tell cells how to make proteins; others make RNA molecules that do jobs of their own.",
       "sourceUrl": "https://www.genome.gov/genetics-glossary/Gene"
+    },
+    {
+      "id": "scientifically-described",
+      "title": "Scientifically described species",
+      "definition": "A species has been scientifically described when researchers have published a formal name and details that distinguish it from other species. This counts species documented by science, rather than every species that may exist.",
+      "sourceUrl": "https://www.iczn.org/outreach/faqs/"
+    },
+    {
+      "id": "renewable-energy",
+      "title": "Renewable energy",
+      "definition": "Renewable energy comes from sources that nature replenishes, such as sunlight, wind and flowing water. It also includes energy from plant material; nuclear power is counted separately.",
+      "sourceUrl": "https://www.eia.gov/energyexplained/renewable-sources/"
+    },
+    {
+      "id": "incarceration-rate",
+      "title": "Incarceration rate",
+      "definition": "An incarceration rate compares the number of people held in prisons or jails with the population. In a made-up example, 50 people held out of 100,000 residents would mean a rate of 50 per 100,000.",
+      "sourceUrl": "https://bjs.ojp.gov/frequently-asked-questions?iid=241&page=2&ty=qa"
+    },
+    {
+      "id": "proteins",
+      "title": "Proteins",
+      "definition": "Proteins are molecules that build parts of the body and carry out much of the work inside cells. Some form structures such as muscle, while others help chemical reactions happen.",
+      "sourceUrl": "https://www.genome.gov/genetics-glossary/Protein"
+    },
+    {
+      "id": "gdp",
+      "title": "GDP",
+      "definition": "GDP, short for gross domestic product, measures the value of goods and services produced within a country over a period such as a year. It counts the finished output without counting its ingredients again.",
+      "sourceUrl": "https://www.imf.org/en/publications/fandd/issues/series/back-to-basics/gross-domestic-product-gdp"
+    },
+    {
+      "id": "median-age",
+      "title": "Median age",
+      "definition": "The median age is the middle age when people are lined up from youngest to oldest. In a made-up group aged 10, 20 and 60, the median is 20.",
+      "sourceUrl": "https://www.census.gov/glossary/?term=Median+age"
+    },
+    {
+      "id": "total-fertility-rate",
+      "title": "Total fertility rate",
+      "definition": "This estimates how many children a woman would have over her lifetime if the birth rates at each age in the stated year stayed the same. It describes a pattern of births, not anyone’s ability to have children.",
+      "sourceUrl": "https://databank.worldbank.org/metadataglossary/world-development-indicators/series/SP.DYN.TFRT.IN"
+    },
+    {
+      "id": "nih",
+      "title": "NIH",
+      "definition": "NIH stands for the National Institutes of Health, the US government’s medical research agency. It funds research at universities and other centers as well as doing research in its own laboratories.",
+      "sourceUrl": "https://www.nih.gov/about-nih"
+    },
+    {
+      "id": "solar-photovoltaics",
+      "title": "Solar photovoltaics",
+      "definition": "Photovoltaic cells turn sunlight directly into electricity and are the main parts of ordinary solar panels. This is different from using the Sun’s heat to warm water or make steam.",
+      "sourceUrl": "https://www.eia.gov/energyexplained/solar/"
+    },
+    {
+      "id": "clinical-trials",
+      "title": "Clinical trials",
+      "definition": "Clinical trials are studies in people that test treatments or other ways to improve health. They help researchers learn whether an approach works and what risks or side effects it may have.",
+      "sourceUrl": "https://www.nimh.nih.gov/health/publications/clinical-research-trials-and-you-questions-and-answers"
+    },
+    {
+      "id": "effective-federal-funds-rate",
+      "title": "Effective federal funds rate",
+      "definition": "This measures the interest rates US banks actually pay to borrow dollars overnight in the federal funds market. It reflects real loans, with larger loans given more weight, rather than simply the rate range the Federal Reserve aims for.",
+      "sourceUrl": "https://www.newyorkfed.org/markets/reference-rates/effr.html"
+    },
+    {
+      "id": "atmospheric-co2-concentration",
+      "title": "Atmospheric CO₂ concentration",
+      "definition": "This measures how much carbon dioxide, or CO₂, is mixed into dry air, usually in parts per million (ppm). In a made-up example, 200 ppm means 200 CO₂ molecules for every million air molecules.",
+      "sourceUrl": "https://gml.noaa.gov/ccgg/about/co2_measurements.html"
+    },
+    {
+      "id": "installed-capacity",
+      "title": "Installed capacity",
+      "definition": "Installed capacity is the rated maximum power that a set of generators can produce at once. For wind turbines, actual output changes with the wind, so capacity does not tell you how much electricity they generate over a year.",
+      "sourceUrl": "https://www.eia.gov/tools/glossary/?id=electricity"
+    },
+    {
+      "id": "gigawatt",
+      "title": "Gigawatt",
+      "definition": "A gigawatt is one billion watts, a unit measuring how quickly energy is being produced or used. It measures power at a moment, rather than the total electricity produced over time.",
+      "sourceUrl": "https://www.eia.gov/tools/glossary/?id=electricity"
+    },
+    {
+      "id": "pbl",
+      "title": "PBL",
+      "definition": "PBL is the Netherlands Environmental Assessment Agency. It researches the environment, land use and related public policy.",
+      "sourceUrl": "https://www.pbl.nl/en/about-pbl"
+    },
+    {
+      "id": "great-pacific-garbage-patch",
+      "title": "Great Pacific Garbage Patch",
+      "definition": "This is an area of the North Pacific where ocean currents collect floating plastic and other debris. The pieces are spread through the water, rather than forming a solid island of rubbish.",
+      "sourceUrl": "https://oceanservice.noaa.gov/facts/garbagepatch.html"
+    },
+    {
+      "id": "bond-yield",
+      "title": "Bond yield",
+      "definition": "A bond’s yield expresses its return as a yearly percentage based on its price and payments. For Treasury notes, the quoted yield accounts for interest payments and the amount repaid when the note ends.",
+      "sourceUrl": "https://www.investor.gov/introduction-investing/general-resources/news-alerts/alerts-bulletins/investor-bulletins/what-are"
+    },
+    {
+      "id": "treasury-note",
+      "title": "US Treasury note",
+      "definition": "A Treasury note is a loan to the US government that pays interest and returns its face value when it ends. A 10-year note is issued with a ten-year term.",
+      "sourceUrl": "https://www.treasurydirect.gov/marketable-securities/treasury-notes/"
+    },
+    {
+      "id": "low-earth-orbit",
+      "title": "Low Earth orbit",
+      "definition": "Low Earth orbit is the region where satellites circle Earth at heights of about 2,000 kilometres or less. It is much closer to Earth than the orbits used by many weather and communications satellites.",
+      "sourceUrl": "https://www.nasa.gov/humans-in-space/leo-economy-frequently-asked-questions/"
+    },
+    {
+      "id": "network-latency",
+      "title": "Network latency",
+      "definition": "Latency is the delay while a message travels across a network, measured here in milliseconds, or thousandths of a second. A shorter delay means a quicker response, rather than more data sent at once.",
+      "sourceUrl": "https://www.cloudflare.com/learning/performance/glossary/what-is-latency/"
+    },
+    {
+      "id": "life-expectancy-at-birth",
+      "title": "Life expectancy at birth",
+      "definition": "This is the average lifespan a newborn would have if death rates at each age in the stated year stayed the same. It is a snapshot of those rates, rather than a prediction for a particular baby.",
+      "sourceUrl": "https://databank.worldbank.org/metadataglossary/world-development-indicators/series/SP.DYN.LE00.IN"
+    },
+    {
+      "id": "twenty-foot-equivalent-unit",
+      "title": "Twenty-foot equivalent unit",
+      "definition": "A twenty-foot equivalent unit, or TEU, is a way to count shipping containers using a standard 20-foot container as one unit. A standard 40-foot container counts as two TEUs.",
+      "sourceUrl": "https://ec.europa.eu/eurostat/statistics-explained/SEPDF/cache/10018.pdf"
+    },
+    {
+      "id": "astronomical-unit",
+      "title": "Astronomical unit",
+      "definition": "An astronomical unit, or AU, is a distance roughly equal to the average gap between Earth and the Sun. In a made-up example, a probe 4 AU away would be four Earth–Sun distances away.",
+      "sourceUrl": "https://ssd.jpl.nasa.gov/faq.html"
+    },
+    {
+      "id": "caloric-intake",
+      "title": "Caloric intake",
+      "definition": "Caloric intake is the energy people get from food and drink. A food’s share of calories measures its contribution to that energy, rather than its share of the food’s weight.",
+      "sourceUrl": "https://www.nia.nih.gov/health/how-much-should-i-eat-quantity-and-quality"
+    },
+    {
+      "id": "prevalence",
+      "title": "Prevalence",
+      "definition": "Prevalence describes how common a condition is in a group at a given time or over a stated period. In a made-up example, if 20 of 100 people have a condition, its prevalence is 20%.",
+      "sourceUrl": "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/prevalence"
+    },
+    {
+      "id": "myopia",
+      "title": "Myopia",
+      "definition": "Myopia means nearsightedness: nearby objects look clear, while distant ones look blurry. It happens when the eye focuses light in front of the retina, the light-sensitive layer at the back of the eye.",
+      "sourceUrl": "https://www.nei.nih.gov/eye-health-information/eye-conditions-and-diseases/nearsightedness-myopia"
+    },
+    {
+      "id": "synapse",
+      "title": "Synapse",
+      "definition": "A synapse is a connection where a nerve cell passes a signal to another cell. It is a communication point, rather than a whole nerve cell.",
+      "sourceUrl": "https://www.cancer.gov/publications/dictionaries/cancer-terms/def/synapse"
+    },
+    {
+      "id": "population-density",
+      "title": "Population density",
+      "definition": "Population density is the number of people living in an area divided by its size. In a made-up town with 1,000 people over 10 square kilometres, it is 100 people per square kilometre.",
+      "sourceUrl": "https://www.census.gov/data/tables/time-series/dec/population-density.html"
+    },
+    {
+      "id": "uspto",
+      "title": "USPTO",
+      "definition": "USPTO stands for the United States Patent and Trademark Office. It is the federal agency that grants US patents and registers trademarks.",
+      "sourceUrl": "https://www.uspto.gov/about-us"
+    },
+    {
+      "id": "patent",
+      "title": "Patent",
+      "definition": "A patent gives its owner a time-limited right to stop others from making, using or selling a covered invention without permission. A granted patent has passed the patent office’s review; an application is only a request for one.",
+      "sourceUrl": "https://www.uspto.gov/patents/basics/essentials"
+    },
+    {
+      "id": "rwanda-lower-house",
+      "title": "Lower house",
+      "definition": "A parliament can have two lawmaking chambers, called an upper and a lower house. In Rwanda, the lower house is the Chamber of Deputies; the upper house is the Senate.",
+      "sourceUrl": "https://data.ipu.org/parliament/RW/RW-LC01/"
+    },
+    {
+      "id": "market-capitalization",
+      "title": "Market capitalization",
+      "definition": "Market capitalization is the stock-market value of a company’s shares: share price multiplied by the number of shares. In a made-up example, one million shares at $5 each gives a market value of $5 million.",
+      "sourceUrl": "https://www.investor.gov/introduction-investing/investing-basics/glossary/market-capitalization"
+    },
+    {
+      "id": "unhcr-mandate",
+      "title": "UNHCR’s mandate",
+      "definition": "UNHCR is the UN Refugee Agency, and its mandate is the group of people it is responsible for protecting. This refugee count excludes people displaced within their own country and Palestinian refugees covered by the separate UN agency UNRWA.",
+      "sourceUrl": "https://www.unhcr.org/glossary"
+    },
+    {
+      "id": "unemployment-rate",
+      "title": "Unemployment rate",
+      "definition": "The unemployment rate is the share of the workforce who have no job, are available for work and are looking for one. In a made-up workforce of 100 people, five unemployed people would mean a 5% unemployment rate.",
+      "sourceUrl": "https://ilostat.ilo.org/topics/unemployment-and-labour-underutilization/"
+    },
+    {
+      "id": "ilo",
+      "title": "ILO",
+      "definition": "ILO stands for the International Labour Organization, the UN agency focused on work and workers’ rights. Its statistics use common definitions to help compare employment across countries.",
+      "sourceUrl": "https://ilostat.ilo.org/methods/concepts-and-definitions/"
+    },
+    {
+      "id": "debt-to-gdp-ratio",
+      "title": "Debt-to-GDP ratio",
+      "definition": "This compares a government’s debt with the value of everything its economy produces in a year. In a made-up example, debt of $200 billion and yearly output of $100 billion gives a ratio of 200%.",
+      "sourceUrl": "https://www.oecd.org/en/data/indicators/general-government-debt.html"
+    },
+    {
+      "id": "half-life",
+      "title": "Half-life",
+      "definition": "A radioactive substance’s half-life is the time it takes for half of its unstable atoms to change into other atoms. In a made-up sample starting with 80 such atoms, about 40 would remain after one half-life and 20 after two.",
+      "sourceUrl": "https://www.nrc.gov/reading-rm/basic-ref/glossary/half-life"
+    },
+    {
+      "id": "internet-bots",
+      "title": "Internet bots",
+      "definition": "Bots are programs that perform online tasks automatically, such as indexing websites for a search engine or repeatedly trying to log in. Bot traffic means requests made by these programs, rather than by people browsing directly.",
+      "sourceUrl": "https://www.cloudflare.com/en-gb/learning/bots/what-is-a-bot/"
+    },
+    {
+      "id": "zero-emission-vehicles",
+      "title": "Zero-emission vehicles",
+      "definition": "These vehicles produce no exhaust pollution while driving, such as battery-electric and hydrogen fuel-cell cars. The label concerns the vehicle’s exhaust, rather than emissions from building it or producing its energy.",
+      "sourceUrl": "https://afdc.energy.gov/vehicles/electric-emissions"
+    },
+    {
+      "id": "inflation-rate",
+      "title": "Inflation rate",
+      "definition": "Inflation measures how much the overall price of a basket of goods and services rises over a stated period. In a made-up example, a basket rising from $100 to $110 over a year means 10% annual inflation.",
+      "sourceUrl": "https://www.imf.org/en/about/glossary"
+    },
+    {
+      "id": "lactose-intolerance",
+      "title": "Lactose intolerance",
+      "definition": "Lactose intolerance means having digestive symptoms after consuming lactose, the natural sugar in milk, because the body cannot fully digest it. It is different from a milk allergy.",
+      "sourceUrl": "https://www.niddk.nih.gov/health-information/digestive-diseases/lactose-intolerance"
+    },
+    {
+      "id": "greenhouse-gas-emissions",
+      "title": "Greenhouse gas emissions",
+      "definition": "These are releases of gases that trap heat in the atmosphere, such as carbon dioxide and methane. Different gases are often combined using a common measure of their warming effect.",
+      "sourceUrl": "https://www.epa.gov/ghgemissions/overview-greenhouse-gases"
+    },
+    {
+      "id": "basic-reproduction-number",
+      "title": "R0: basic reproduction number",
+      "definition": "R0 estimates how many people one infected person would infect on average if no one were immune and no measures were taken to stop spread. In a made-up example, R0 of 3 means three new infections per infected person on average.",
+      "sourceUrl": "https://www.cdc.gov/cfa-modeling-and-forecasting/modeling-handbook/mh-rt.html"
+    },
+    {
+      "id": "fiber-optic-cable",
+      "title": "Fiber optic cable",
+      "definition": "A fiber optic cable carries information as pulses of light through very thin strands of glass. These cables connect networks over land and across oceans.",
+      "sourceUrl": "https://docs.fcc.gov/public/attachments/DOC-334528A1.pdf"
+    },
+    {
+      "id": "unicorn-company",
+      "title": "Unicorn company",
+      "definition": "A unicorn is a privately held company valued at more than $1 billion. That valuation is an estimate of the company’s worth, rather than its yearly sales or profit.",
+      "sourceUrl": "https://www.cbinsights.com/research-unicorn-companies"
+    },
+    {
+      "id": "vertebrate",
+      "title": "Vertebrate",
+      "definition": "A vertebrate is an animal with a backbone. Fish, amphibians, reptiles, birds and mammals are all vertebrates.",
+      "sourceUrl": "https://naturalhistory.si.edu/research/vertebrate-zoology"
+    },
+    {
+      "id": "ratification",
+      "title": "Ratification",
+      "definition": "Ratification means formal approval. A proposed US constitutional amendment becomes part of the Constitution once the required share of states approves it.",
+      "sourceUrl": "https://www.archives.gov/federal-register/constitution"
+    },
+    {
+      "id": "dry-air",
+      "title": "Dry air",
+      "definition": "For this measurement, dry air means the mixture of gases after leaving out water vapor. Removing water vapor makes it possible to compare gas percentages without changes in humidity affecting them.",
+      "sourceUrl": "https://gml.noaa.gov/ccgg/about/co2_measurements.html"
+    },
+    {
+      "id": "active-volcano",
+      "title": "Active volcano",
+      "definition": "An active volcano is one considered capable of erupting again, even if it is quiet now. Different catalogues use different evidence and time periods to decide which volcanoes qualify.",
+      "sourceUrl": "https://www.usgs.gov/observatories/yvo/news/active-dormant-and-extinct-clarifying-confusing-classifications"
+    },
+    {
+      "id": "homicide-rate",
+      "title": "Homicide rate",
+      "definition": "This rate compares the number of people killed unlawfully and intentionally with the population. A made-up rate of 5 per 100,000 means five such deaths for every 100,000 residents during the stated period.",
+      "sourceUrl": "https://data.unodc.org/datasearch?f%5B0%5D=dataportal%3A102&search_api_fulltext=wi-homicide"
     }
   ],
   "links": [
@@ -78,6 +378,276 @@
       "questionId": "dfead12a-2751-4788-ab45-174f13cb67aa",
       "termId": "genes",
       "matchText": "genes"
+    },
+    {
+      "questionId": "3e0a16fd-132e-46a7-a5a8-e05dee149186",
+      "termId": "scientifically-described",
+      "matchText": "scientifically described"
+    },
+    {
+      "questionId": "aebe46a2-a2ed-43a2-bd90-1ce4a57ca150",
+      "termId": "renewable-energy",
+      "matchText": "renewable sources"
+    },
+    {
+      "questionId": "396a8fb1-d0be-463f-a3f2-251909657f8a",
+      "termId": "incarceration-rate",
+      "matchText": "incarceration rate"
+    },
+    {
+      "questionId": "dfead12a-2751-4788-ab45-174f13cb67aa",
+      "termId": "proteins",
+      "matchText": "proteins"
+    },
+    {
+      "questionId": "6597b4e9-424f-4d6c-a2b9-4e569265de6d",
+      "termId": "gdp",
+      "matchText": "GDP"
+    },
+    {
+      "questionId": "a7678325-444d-46b3-9843-12557494f22b",
+      "termId": "gdp",
+      "matchText": "GDP"
+    },
+    {
+      "questionId": "b4fb7199-5785-424c-a395-60ad129e1a14",
+      "termId": "median-age",
+      "matchText": "median age"
+    },
+    {
+      "questionId": "0de70862-f061-4bcf-a538-aad9a556331b",
+      "termId": "median-age",
+      "matchText": "median age"
+    },
+    {
+      "questionId": "382fa80d-089a-4325-bbc7-b96b61071eae",
+      "termId": "median-age",
+      "matchText": "median age"
+    },
+    {
+      "questionId": "2597594b-ea42-433c-a4c1-09ccc577db68",
+      "termId": "total-fertility-rate",
+      "matchText": "fertility rate"
+    },
+    {
+      "questionId": "3da4f0e9-6b9e-465f-aa22-6d1cb68e7c27",
+      "termId": "total-fertility-rate",
+      "matchText": "total fertility rate"
+    },
+    {
+      "questionId": "490e4646-9fbe-42b6-9030-fb2eae2211e2",
+      "termId": "nih",
+      "matchText": "NIH"
+    },
+    {
+      "questionId": "ec174a81-6e73-47bd-a702-6c32fbbfb135",
+      "termId": "solar-photovoltaics",
+      "matchText": "solar photovoltaics"
+    },
+    {
+      "questionId": "c8108aac-5ad4-421c-a8b8-1b6a9ded007f",
+      "termId": "clinical-trials",
+      "matchText": "clinical trials"
+    },
+    {
+      "questionId": "edab299a-a721-4c8d-8a6f-255646b05465",
+      "termId": "effective-federal-funds-rate",
+      "matchText": "effective federal funds rate"
+    },
+    {
+      "questionId": "3a81ece4-a9c0-4242-8e2d-e85f6a38e076",
+      "termId": "atmospheric-co2-concentration",
+      "matchText": "atmospheric CO₂ concentration"
+    },
+    {
+      "questionId": "f360bca6-317d-4f56-8f33-da9d9dc7fe39",
+      "termId": "installed-capacity",
+      "matchText": "installed capacity"
+    },
+    {
+      "questionId": "f360bca6-317d-4f56-8f33-da9d9dc7fe39",
+      "termId": "gigawatt",
+      "matchText": "gigawatts"
+    },
+    {
+      "questionId": "1e15c9c3-bb3d-4ce2-b9f9-11e1771ad95b",
+      "termId": "pbl",
+      "matchText": "PBL"
+    },
+    {
+      "questionId": "f723fb58-ac9b-4d60-a42b-44b912641fbf",
+      "termId": "great-pacific-garbage-patch",
+      "matchText": "Great Pacific Garbage Patch"
+    },
+    {
+      "questionId": "57b13253-0cb4-4fb9-81d1-632f0e2a71be",
+      "termId": "bond-yield",
+      "matchText": "yield"
+    },
+    {
+      "questionId": "57b13253-0cb4-4fb9-81d1-632f0e2a71be",
+      "termId": "treasury-note",
+      "matchText": "US 10-Year Treasury note"
+    },
+    {
+      "questionId": "e3b3301c-8fe3-46c1-86e9-a1a7ace818d5",
+      "termId": "low-earth-orbit",
+      "matchText": "Low Earth Orbit"
+    },
+    {
+      "questionId": "0b418c08-74c2-4b37-8eaf-90d64940f732",
+      "termId": "network-latency",
+      "matchText": "latency"
+    },
+    {
+      "questionId": "a8d275a9-f273-476a-af70-9d903ee2f544",
+      "termId": "life-expectancy-at-birth",
+      "matchText": "life expectancy at birth"
+    },
+    {
+      "questionId": "7aacb178-66ef-4bbe-94ba-2eefa06f24de",
+      "termId": "twenty-foot-equivalent-unit",
+      "matchText": "twenty-foot equivalent units"
+    },
+    {
+      "questionId": "b849058e-a2f7-4b06-be9f-6f5a562ce362",
+      "termId": "astronomical-unit",
+      "matchText": "Astronomical Units"
+    },
+    {
+      "questionId": "33ebe4f4-400a-47b0-87a3-27739a723e85",
+      "termId": "caloric-intake",
+      "matchText": "caloric intake"
+    },
+    {
+      "questionId": "1f57b72c-2f54-40bb-9152-5d3239349138",
+      "termId": "prevalence",
+      "matchText": "prevalence"
+    },
+    {
+      "questionId": "1f57b72c-2f54-40bb-9152-5d3239349138",
+      "termId": "myopia",
+      "matchText": "myopia"
+    },
+    {
+      "questionId": "141c480a-921a-4101-bff3-ac74ab97107d",
+      "termId": "synapse",
+      "matchText": "synapses"
+    },
+    {
+      "questionId": "fdcb81d1-e000-45cf-b49b-8152dab8769f",
+      "termId": "population-density",
+      "matchText": "population density"
+    },
+    {
+      "questionId": "5ca5a076-fb51-411d-b867-278566fd6970",
+      "termId": "uspto",
+      "matchText": "USPTO"
+    },
+    {
+      "questionId": "5ca5a076-fb51-411d-b867-278566fd6970",
+      "termId": "patent",
+      "matchText": "patents"
+    },
+    {
+      "questionId": "72ae7693-7798-48e1-9265-8941cd874ceb",
+      "termId": "rwanda-lower-house",
+      "matchText": "lower house"
+    },
+    {
+      "questionId": "72260cef-b998-40a5-b90c-c0650064bf14",
+      "termId": "market-capitalization",
+      "matchText": "market capitalization"
+    },
+    {
+      "questionId": "d5186ee3-92c5-4d78-b916-00d72171f196",
+      "termId": "unhcr-mandate",
+      "matchText": "UNHCR’s mandate"
+    },
+    {
+      "questionId": "53ac3dae-3cc4-4c3f-8598-f4c247461953",
+      "termId": "unemployment-rate",
+      "matchText": "unemployment rate"
+    },
+    {
+      "questionId": "53ac3dae-3cc4-4c3f-8598-f4c247461953",
+      "termId": "ilo",
+      "matchText": "ILO"
+    },
+    {
+      "questionId": "a740ef6d-81a3-4300-97bb-534fa5aab55f",
+      "termId": "debt-to-gdp-ratio",
+      "matchText": "debt-to-GDP ratio"
+    },
+    {
+      "questionId": "4e597016-e7e7-4d45-afd6-8c5c7ea0be80",
+      "termId": "half-life",
+      "matchText": "half-life"
+    },
+    {
+      "questionId": "bf6193f7-e025-4c82-9951-886cd1f205f4",
+      "termId": "internet-bots",
+      "matchText": "automated bots"
+    },
+    {
+      "questionId": "42e9ce1c-61b4-4786-8efc-05f223b25849",
+      "termId": "zero-emission-vehicles",
+      "matchText": "zero-emission vehicles"
+    },
+    {
+      "questionId": "43c2da73-9b46-4631-b5c4-dacf9001b5d4",
+      "termId": "inflation-rate",
+      "matchText": "inflation rate"
+    },
+    {
+      "questionId": "147d2cbf-961f-43e7-91e7-5652fe615271",
+      "termId": "lactose-intolerance",
+      "matchText": "lactose intolerant"
+    },
+    {
+      "questionId": "4dfa49cd-fbbe-4914-a410-a57a43c12c3e",
+      "termId": "greenhouse-gas-emissions",
+      "matchText": "greenhouse gas emissions"
+    },
+    {
+      "questionId": "b4e8f416-0ff1-4da7-a8ff-1f0a639d53a4",
+      "termId": "basic-reproduction-number",
+      "matchText": "R0 (reproduction number)"
+    },
+    {
+      "questionId": "0b418c08-74c2-4b37-8eaf-90d64940f732",
+      "termId": "fiber-optic-cable",
+      "matchText": "fiber optic cable"
+    },
+    {
+      "questionId": "a22e6d17-698a-48af-bc87-6be988dbae7a",
+      "termId": "unicorn-company",
+      "matchText": "unicorn companies"
+    },
+    {
+      "questionId": "86c27c62-854a-4581-8632-a37d3c8d41c7",
+      "termId": "vertebrate",
+      "matchText": "vertebrate"
+    },
+    {
+      "questionId": "78d133e2-43dd-4254-90f9-36fa08d4b19c",
+      "termId": "ratification",
+      "matchText": "ratified"
+    },
+    {
+      "questionId": "c58405a5-d624-4f8c-9867-e8c6e600e07e",
+      "termId": "dry-air",
+      "matchText": "dry air"
+    },
+    {
+      "questionId": "d41324d8-1d57-45c2-9c72-275aa4184f78",
+      "termId": "active-volcano",
+      "matchText": "active volcanoes"
+    },
+    {
+      "questionId": "4ab3cac3-e17a-491d-9ace-6945a1146d20",
+      "termId": "homicide-rate",
+      "matchText": "homicide rate"
     }
   ]
 }

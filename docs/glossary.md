@@ -6,6 +6,13 @@ The game and protected question manager show a faint dotted underline. Tapping t
 
 ## Editorial rules
 
+**Required threshold:** Give a term a definition whenever an educated adult with a college degree could reasonably be unsure of its exact meaning **in this question**. This applies to every new or revised question across all subjects. The original examples and the current glossary are starting points, not an exhaustive list.
+
+Review the whole prompt, including acronyms, technical units, statistical measures, and ordinary-looking words with specialist meanings. Recognizing a word is not the same as understanding the quantity it describes. Prefer one useful phrase-level explanation over several fragmented definitions; reuse a definition only when its meaning fits the new context.
+
+
+- Leave ordinary language and terms already clearly explained in the prompt alone; the goal is comprehension, not a page full of underlines.
+- If the measurement itself is ambiguous, clarify and source the question before publication. A generic popup cannot choose the intended definition or repair the answer.
 - Use one or two sentences, at most 65 words and 450 characters. Aim for an eighth-grade reading level; define necessary jargon with familiar words.
 - Explain the idea, not the answer to the question. Avoid real figures, country comparisons or rankings that could reveal the answer.
 - Use a brief, explicitly made-up numerical example when it makes a concept easier to understand. A higher Gini value means more inequality; it is not a percentage of income.
@@ -15,8 +22,10 @@ The game and protected question manager show a faint dotted underline. Tapping t
 
 ## Maintaining definitions
 
-The initial reviewed content and explicit question links are in `editorial/glossary.json`. Edit this manifest and run `node --env-file=.env.preview.local --import tsx scripts/postgres/apply-glossary.ts` against preview. Check the question manager, then run the same command with `.env` for production. The script applies `006_glossary.sql` and upserts the manifest atomically, validating sentence length and that every linked phrase actually occurs in its question. Missing questions or mismatched phrases abort the whole update. It never changes game answers, question wording or daily schedules.
+The reviewed content and explicit question links are in `editorial/glossary.json`. Edit this manifest and run `node --env-file=.env.preview.local --import tsx scripts/postgres/apply-glossary.ts` against preview. Check the question manager, then run the same command with `.env` for production. The script applies `006_glossary.sql` and upserts the manifest atomically, validating sentence length and that every linked phrase actually occurs in its question. Missing questions or mismatched phrases abort the whole update. It never changes game answers, question wording or daily schedules.
 
 Apply the migration before deploying code that reads glossary tables. The empty-database import creates the schema; apply the reviewed glossary after importing and updating the editorial question bank. Reapplying the manifest preserves other terms and links; retiring a link requires an explicit database deletion.
 
 Game snapshots remain unchanged. The server looks up current glossary definitions and computes spans against the actual saved prompt each time a game is loaded. An old prompt without the linked phrase gets no annotation. Public game responses contain only the linked title, definition and text offsets, without source notes or unrevealed answers.
+
+The [September 8 vocabulary review](../editorial/glossary-review-2026-09-08.json) records all 109 stored prompts, their linked concepts, plain-language decisions, and unresolved context. Retired questions require a fresh review before reactivation. A changed prompt invalidates its old review; do not treat the saved list as automatic approval for a new wording.
