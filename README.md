@@ -6,6 +6,8 @@ A daily game of the numbers that matter for understanding the world, with four q
 
 Use the [brand and editorial brief](docs/brand-and-editorial-brief.md) when developing questions, product copy, design, or other materials. Four Sigma centers on carefully selected numbers that help people understand the world; question quality is the core editorial promise.
 
+See the [September 2026 question-bank audit](docs/audits/2026-09-08-question-bank.md) for the current inventory, editorial recommendations, and sourcing issues.
+
 ## Development
 
 Node 22+, PostgreSQL 15+, and npm are required.
