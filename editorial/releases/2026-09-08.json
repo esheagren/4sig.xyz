@@ -1,0 +1,1881 @@
+{
+  "id": "2026-09-08-editorial-review",
+  "verified_by": "Codex primary-source review, authorized by Erik",
+  "questions": [
+    {
+      "id": "3e0a16fd-132e-46a7-a5a8-e05dee149186",
+      "audit_number": 1,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Biodiversity",
+      "verification_notes": "Useful biodiversity anchor; bind the count to the January 2025 catalogue release and trim speculative synonym estimates in the reveal.",
+      "expected": {
+        "question_text": "How many living species have been scientifically described and catalogued as of 2025?",
+        "answer_value": "2.05",
+        "source_url": "https://www.catalogueoflife.org/2025/01/17/release;https://ourworldindata.org/how-many-species-are-there",
+        "answer_context": "The Catalogue of Life's January 2025 release contains approximately 2.05 million living species that have been scientifically described and catalogued. This represents only a small fraction of Earth's total biodiversity—scientists estimate that about 86% of terrestrial species and 91% of marine species still await formal description. The catalogued species include 1.05 million insects, over 11,000 birds, over 11,000 reptiles, and over 6,000 mammals. It's also worth noting that roughly 20% of described species may be undiscovered synonyms (duplicates), suggesting the true number of unique catalogued species could be closer to 1.6-1.7 million.",
+        "unit_id": "ba7849fe-c2ba-41f5-a80f-2def6881e786"
+      }
+    },
+    {
+      "id": "aebe46a2-a2ed-43a2-bd90-1ce4a57ca150",
+      "audit_number": 2,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "Strong topic and dated prompt; replace the 2024 report citation with the 2025 report covering 2024, and verify the generation breakdown.",
+      "expected": {
+        "question_text": "What percentage of global electricity generation came from renewable sources in 2024?",
+        "answer_value": "32",
+        "source_url": "https://www.iea.org/reports/renewables-2024/global-overview;https://ember-energy.org/latest-insights/global-electricity-review-2024/",
+        "answer_context": "Renewables reached 32% of the global electricity mix in 2024, representing an increase of nearly 12 percentage points since 2010. This figure includes all renewable sources: hydropower (14.3%), wind (8.1%), and solar (6.9%). When combined with nuclear power, low-carbon electricity reached 40.9% of global generation—the first time passing the 40% threshold since the 1940s. Renewables added a record 858 TWh in 2024, with solar being the largest contributor for the third consecutive year, adding 474 TWh at a 29% growth rate. For the first time ever, combined wind and solar generation exceeded hydropower globally.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "396a8fb1-d0be-463f-a3f2-251909657f8a",
+      "audit_number": 3,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Governance and security",
+      "verification_notes": "Keep; define which detention populations the rate includes and the observation date, then check the numerator and population denominator together.",
+      "expected": {
+        "question_text": "What is the incarceration rate per 100,000 people in the United States as of 2025?",
+        "answer_value": "580",
+        "source_url": "https://www.prisonpolicy.org/reports/pie2025.html;https://www.prisonpolicy.org/global/2024.html",
+        "answer_context": "The United States incarcerates people at a rate of 580 per 100,000 residents as of 2025, giving it the highest incarceration rate among independent democracies. This figure includes people in prisons, jails, immigration detention, and other correctional facilities. While this represents a decline from the 2008 peak of 760 per 100,000 (when the total incarcerated population reached 2.3 million), the U.S. rate remains extraordinarily high by international standards. For context, El Salvador currently has the world's highest rate at over 1,600 per 100,000 due to recent anti-gang crackdowns. The U.S. incarceration rate reflects complex factors including sentencing policies, the war on drugs, and structural inequalities in the criminal justice system.",
+        "unit_id": "aa8eddac-4c10-4085-a397-f49be42595cd"
+      }
+    },
+    {
+      "id": "dfead12a-2751-4788-ab45-174f13cb67aa",
+      "audit_number": 4,
+      "editorial_status": "ready",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "NHGRI Gene glossary gives roughly 20,000 protein-coding genes. Existing unit is thousands, so stored answer remains 20.",
+      "expected": {
+        "question_text": "How many protein-coding genes are in the human genome?",
+        "answer_value": "20",
+        "source_url": "https://link.springer.com/article/10.1186/s13104-019-4343-8;https://pmc.ncbi.nlm.nih.gov/articles/PMC6100717/",
+        "answer_context": "The human genome contains approximately 20,000 protein-coding genes, with a 2019 comprehensive analysis identifying 19,116 known nuclear protein-coding genes. This number is surprisingly low and represents a dramatic revision from initial estimates—when the Human Genome Project began in 1990, scientists predicted 100,000 human genes. The actual count has steadily decreased as genome annotation has improved. Despite having only ~20,000 protein-coding genes, humans can produce an estimated 500,000 or more different proteins through mechanisms like alternative splicing, where a single gene can code for multiple protein variants. Protein-coding sequences make up only 1-2% of the human genome, with the remaining 98-99% consisting of non-coding DNA that includes regulatory elements, structural sequences, and other functional regions.",
+        "unit_id": "9b2ddc88-b19d-41ca-868e-301379f3b830"
+      },
+      "question_text": "Approximately how many thousands of protein-coding genes are in the human genome?",
+      "answer_value": 20,
+      "observation_period": "Reference estimate checked September 2026",
+      "geography": "Human genome",
+      "measure_definition": "Approximate protein-coding gene count expressed in thousands; not all functional RNA genes or the number of proteins.",
+      "source_name": "National Human Genome Research Institute",
+      "source_url": "https://www.genome.gov/genetics-glossary/Gene",
+      "answer_context": "Protein-coding genes are instructions used to make proteins. They are one part of the genome; counting genes does not count every protein the body can produce.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-09-08"
+    },
+    {
+      "id": "6597b4e9-424f-4d6c-a2b9-4e569265de6d",
+      "audit_number": 5,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "WDI vintage 2026-07-13: China 18,729,668,435,848 / world 111,669,432,109,121 × 100 = 16.7724%; scored at 16.8%.",
+      "expected": {
+        "question_text": "What percentage of global GDP does China represent as of 2024?",
+        "answer_value": "17.65",
+        "source_url": "https://www.worldeconomics.com/Share-of-Global-GDP/China.aspx;https://tradingeconomics.com/china/gdp",
+        "answer_context": "China represents approximately 17.65% of global GDP in 2024 based on nominal GDP calculations (using current exchange rates). When measured by purchasing power parity (PPP), which adjusts for differences in cost of living and purchasing power, China's share rises to about 19.45% of global GDP. China's nominal GDP reached 134.9 trillion yuan (approximately $18.77 trillion USD) in 2024, with the economy growing 5% year-over-year. As the world's second-largest economy, China has been contributing around 30% to global economic growth annually in recent years, making it the largest single engine driving the world economy. The gap between China's nominal GDP share (17.65%) and PPP-adjusted share (19.45%) reflects that goods and services in China are generally less expensive than in advanced economies when converted at market exchange rates.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "Approximately what share of world GDP did China account for in 2024, at market exchange rates?",
+      "answer_value": 16.8,
+      "observation_period": "2024",
+      "geography": "China / world",
+      "measure_definition": "China GDP divided by world GDP, both in current US dollars; rounded to 0.1 percentage point.",
+      "source_name": "World Bank — World Development Indicators",
+      "source_url": "https://api.worldbank.org/v2/country/CHN/indicator/NY.GDP.MKTP.CD?date=2024&format=json;https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?date=2024&format=json",
+      "answer_context": "About one-sixth of global output, measured in current US dollars. This comparison uses market exchange rates; adjusting for differences in local prices produces a different share.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "887b564c-bc2d-450e-bf4b-4b4cbe891448",
+      "audit_number": 6,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Railway-record trivia has limited explanatory payoff. Prefer freight share, passenger use, or a consequential transport comparison.",
+      "expected": {
+        "question_text": "What is the total length in kilometers of the Trans-Siberian Railway?",
+        "answer_value": "9289",
+        "source_url": "https://en.wikipedia.org/wiki/Trans-Siberian_Railway;https://www.britannica.com/topic/Trans-Siberian-Railroad",
+        "answer_context": "The Trans-Siberian Railway spans 9,289 kilometers (5,772 miles) from Moscow to Vladivostok, making it the longest railway line in the world. This legendary route crosses eight time zones and connects the western edge of Russia to the Pacific coast. Construction began in 1891 and was largely completed by 1916, representing one of the most ambitious engineering projects in history. The railway traverses diverse terrain including the Ural Mountains, vast Siberian forests, and the shores of Lake Baikal. If extended to include the branch line to the port of Nakhodka, the total system reaches 9,441 km. The Trans-Siberian Railway remains a critical transportation artery for Russia, carrying both passengers and freight across the Eurasian continent, and has been instrumental in the economic development of Siberia and the Russian Far East.",
+        "unit_id": "260db678-d6d1-4144-afe6-32c52fc27b02"
+      }
+    },
+    {
+      "id": "b4fb7199-5785-424c-a395-60ad129e1a14",
+      "audit_number": 7,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Population",
+      "verification_notes": "Keep one Japan median-age question; specify UN revision and observation year. Merge the duplicate at Q017.",
+      "expected": {
+        "question_text": "What is the current median age in years in Japan?",
+        "answer_value": "49.8",
+        "source_url": "https://www.worldometers.info/demographics/japan-demographics/;https://www.worldeconomics.com/Demographics/Median-Age/Japan.aspx",
+        "answer_context": "Japan's median age is 49.8 years in 2025, making it one of the world's oldest populations (compared to a global median age of 30.5 years). This represents a dramatic demographic shift—in 1955, Japan's median age was just 22.7 years, meaning the median age has more than doubled in 70 years, an increase of 133.8%. This aging is driven by two key factors: extremely low birth rates (currently around 1.3 children per woman, well below the replacement rate of 2.1) and high life expectancy (among the highest in the world). The median age is projected to continue rising, potentially reaching 53 years by 2100. This demographic reality creates significant economic and social challenges, including a shrinking workforce, increased healthcare and pension costs, and questions about economic growth and innovation. Japan's experience serves as a preview of demographic trends facing many other developed nations.",
+        "unit_id": "3fa28d40-3001-410c-9903-6c369df76cef"
+      }
+    },
+    {
+      "id": "1e66fc4d-13e0-4cab-9247-c4a588d8ba6a",
+      "audit_number": 8,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "Prompt asks prizes through 2024, while notes distinguish women from awards and use an inconsistent count. Recount dated official laureate entries.",
+      "expected": {
+        "question_text": "How many Nobel Prizes have been awarded to women from 1901 through 2024?",
+        "answer_value": "67",
+        "source_url": "https://www.nobelprize.org/prizes/lists/nobel-prize-awarded-women/;https://en.wikipedia.org/wiki/List_of_female_Nobel_laureates",
+        "answer_context": "A total of 67 women have been awarded Nobel Prizes from 1901 through 2024 (note that Marie Curie won twice—Physics in 1903 and Chemistry in 1911—so there have been 68 total Nobel awards to women). The distribution varies dramatically by category: 20 women have won the Peace Prize (16.3% of recipients), 18 in Literature (15%), 14 in Physiology or Medicine (5.6%), 8 in Chemistry (4.1%), 5 in Physics (1.8%), and 3 in Economic Sciences (2.17%). These percentages highlight persistent gender disparities in recognition, particularly in the sciences. The low representation reflects historical barriers women faced in accessing education and research positions, though the rate has improved in recent decades. The 2024 prizes notably went entirely to men across all science categories, a reminder that progress toward gender equity in scientific recognition remains incomplete despite growing awareness and initiatives to support women in STEM fields.",
+        "unit_id": "ccea0032-a377-4951-a849-7076c77d871c"
+      }
+    },
+    {
+      "id": "d1ebc954-164b-4e04-a45c-4c4ac9c0bba1",
+      "audit_number": 9,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Population Trends 2024, Key Demographic Indicators: total population 6,036.9 thousand; population density 8,207 per sq km. Use published density, not an independently mixed land-area denominator.",
+      "expected": {
+        "question_text": "What is Singapore's current population density in people per square kilometer?",
+        "answer_value": "8387",
+        "source_url": "https://www.worldometers.info/world-population/singapore-population/;https://data.worldbank.org/indicator/EN.POP.DNST?locations=SG",
+        "answer_context": "Singapore's population density is approximately 8,387 people per square kilometer in 2025, making it one of the most densely populated countries in the world (other sources report figures as high as 9,084 people per km², with variation depending on how land area is calculated). This density is based on a population of roughly 5.87 million people living in a total land area of just 700-730 km² (about 270 square miles). To put this in perspective, Singapore's density is roughly 200 times that of the United States and about 20 times that of China. Despite this extreme density, Singapore has achieved remarkably high living standards through intensive urban planning, vertical development, efficient public transportation, and innovative land reclamation projects that have expanded the island's area by about 25% since independence in 1965. The city-state manages its constrained space through strict zoning regulations, high-rise residential buildings, and careful integration of green spaces and infrastructure.",
+        "unit_id": "7777aeea-39d9-4b8f-8018-ed19a788ef99"
+      },
+      "question_text": "How many people per square kilometre did Singapore have in 2024?",
+      "answer_value": 8207,
+      "observation_period": "2024 mid-year population",
+      "geography": "Singapore",
+      "measure_definition": "Total population per square kilometre of land, including non-residents; official 2024 density.",
+      "source_name": "Singapore Department of Statistics — Population Trends 2024",
+      "source_url": "https://www.singstat.gov.sg/-/media/files/publications/population/population2024.pdf",
+      "answer_context": "A national average this dense helps frame Singapore’s choices about housing, transport and land use. It includes the whole country and people living there who are not citizens.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "2597594b-ea42-433c-a4c1-09ccc577db68",
+      "audit_number": 10,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Population",
+      "verification_notes": "WDI vintage 2026-07-13: 2.1956672724205 births per woman; rounded to 2.2.",
+      "expected": {
+        "question_text": "What is the current global fertility rate as estimated by the UN Population Division?",
+        "answer_value": "2.24",
+        "source_url": "https://www.unfpa.org/swp2025; https://database.earth/population/fertility-rate/2025",
+        "answer_context": "The UN Population Division's World Population Prospects 2024 revision reports a global total fertility rate of 2.2385 births per woman for 2025, commonly rounded to 2.24. This represents a significant decline from approximately 5 children per woman in the 1960s. The rate varies dramatically by region, with Africa at 3.95 and high-income countries at only 1.47.",
+        "unit_id": "bbf73030-9c87-47be-be94-a086f9451a97"
+      },
+      "question_text": "Approximately how many children per woman did the global fertility rate imply in 2023?",
+      "answer_value": 2.2,
+      "observation_period": "2023",
+      "geography": "World",
+      "measure_definition": "Total fertility rate: births per woman if the age-specific fertility rates of that year persisted; rounded to 0.1.",
+      "source_name": "World Bank — World Development Indicators",
+      "source_url": "https://api.worldbank.org/v2/country/WLD/indicator/SP.DYN.TFRT.IN?date=2023&format=json",
+      "answer_context": "This summarizes the birth rates of a particular year. It is a way to understand population change, rather than a count of children already born to the average woman.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "490e4646-9fbe-42b6-9030-fb2eae2211e2",
+      "audit_number": 11,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "A vendor's minimum sequencing cost is not an all-in clinical genome price. Fix platform, coverage, date, and included costs.",
+      "expected": {
+        "question_text": "What is the cost in USD to sequence a full human genome?",
+        "answer_value": "200",
+        "source_url": "https://www.genome.gov/about-genomics/fact-sheets/Sequencing-Human-Genome-cost; https://3billion.io/blog/whole-genome-sequencing-costs-2024-new-prices-and-future-projections",
+        "answer_context": "As of 2025, sequencing giant Illumina can achieve whole genome sequencing for as little as $200 using their NovaSeq X series platform. This represents a dramatic decrease from $100 million in 2001 and $1 million in 2007. The cost continues to decline as technology advances toward the goal of a $100 genome.",
+        "unit_id": "e1f4f40f-3b40-433a-8b0c-6606b50cddbf"
+      }
+    },
+    {
+      "id": "76df7595-e5e8-4241-b532-490eab5f4e2c",
+      "audit_number": 12,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "Keep inactive. Zero is a placeholder, and enriched fuel has no single comparable spot price per kilogram. Consider a separately defined fuel-market question.",
+      "expected": {
+        "question_text": "What is the current spot price of a kilogram of enriched uranium?",
+        "answer_value": "0",
+        "source_url": "https://www.cameco.com/invest/markets/uranium-price; https://www.uxc.com/p/price",
+        "answer_context": "Enriched uranium is not traded with a spot price per kilogram. The uranium market prices natural uranium oxide (U3O8) at around $77-83 per pound as of December 2025, plus separate enrichment services priced in SWU (Separative Work Units) at approximately $98 per SWU. The final enriched uranium fuel cost depends on feed material, conversion, and enrichment services combined. This question cannot be answered with a single price per kilogram.",
+        "unit_id": "216bb094-d5cf-40cc-b5d6-a52a34ca0ad9"
+      }
+    },
+    {
+      "id": "f913e918-ec5b-493c-a53a-3898d0d8c7c9",
+      "audit_number": 13,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "WDI vintage 2026-07-13: Gini index 54.1 on 0–100 scale, converted to 0.541. Replaces undated 0.63; survey concepts can differ across countries.",
+      "expected": {
+        "question_text": "What is the Gini coefficient of South Africa according to the most recent World Bank data?",
+        "answer_value": "0.63",
+        "source_url": "https://data.worldbank.org/indicator/SI.POV.GINI?locations=ZA",
+        "answer_context": "The most recent World Bank estimate shows South Africa's Gini coefficient was 63.0 in 2014, which appears to be the latest data point in the World Bank's standard database. A 2022 World Bank document suggests the coefficient was around 67 between 2008-2018. South Africa consistently ranks as having the highest income inequality in the world.",
+        "unit_id": "84c5f95e-190a-4d67-abce-89c6b8af2cb1"
+      },
+      "question_text": "What was South Africa’s Gini coefficient in the World Bank’s 2022 estimate, on a scale from 0 to 1?",
+      "answer_value": 0.541,
+      "observation_period": "2022",
+      "geography": "South Africa",
+      "measure_definition": "World Bank Gini index divided by 100; survey-based household income or consumption inequality, not wealth inequality.",
+      "source_name": "World Bank — World Development Indicators",
+      "source_url": "https://api.worldbank.org/v2/country/ZAF/indicator/SI.POV.GINI?date=2022&format=json",
+      "answer_context": "On this scale, zero means everyone has the same income or consumption and one represents complete concentration. It describes household economic inequality; it does not measure the distribution of wealth.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "0bd2fca1-3265-4b5a-a568-a30dacba8aea",
+      "audit_number": 14,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Discovery-count trivia. A distance or habitability-scale question would offer a more reusable astronomical yardstick.",
+      "expected": {
+        "question_text": "How many confirmed exoplanets have been cataloged by NASA as of December 2025?",
+        "answer_value": "6053",
+        "source_url": "https://exoplanetarchive.ipac.caltech.edu/; https://science.nasa.gov/exoplanets/",
+        "answer_context": "As of December 4, 2025, there are 6,053 confirmed exoplanets in 4,510 planetary systems according to the NASA Exoplanet Archive. The archive passed the 6,000 milestone in early December 2025. The archive continues to be updated with new discoveries and refined parameters for known planets.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "ec174a81-6e73-47bd-a702-6c32fbbfb135",
+      "audit_number": 15,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "Keep; replace current with a named annual period, cite the matching report, and avoid clustering it with the renewable-share question.",
+      "expected": {
+        "question_text": "What is the current percentage of global electricity generation provided by solar photovoltaics?",
+        "answer_value": "6.9",
+        "source_url": "https://www.iea.org/reports/renewables-2025/renewable-electricity; https://ember-energy.org/latest-insights/global-electricity-review-2025/",
+        "answer_context": "Solar represented 6.9% of global electricity generation in 2024, the most recent complete year data. Solar generation grew by 30% in 2024, adding a record 475 TWh year-on-year to reach over 2000 TWh total. The first half of 2025 saw 380 GW of new capacity added, suggesting continued strong growth.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "0de70862-f061-4bcf-a538-aad9a556331b",
+      "audit_number": 16,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Population",
+      "verification_notes": "Strong counterpart to Japan; specify Niger's reference year and UN revision and verify the extra fertility claims.",
+      "expected": {
+        "question_text": "What is the median age of the population in Niger?",
+        "answer_value": "15.6",
+        "source_url": "https://www.worldometers.info/demographics/niger-demographics/; https://www.unfpa.org/data/world-population/NE",
+        "answer_context": "The median age in Niger is 15.6 years as of 2025, making it one of the youngest populations in the world. This extremely low median age reflects Niger's very high total fertility rate of 6.89 children per woman (the highest in the world), which means that nearly half (49%) of the Nigerien population is under age 15.",
+        "unit_id": "3fa28d40-3001-410c-9903-6c369df76cef"
+      }
+    },
+    {
+      "id": "382fa80d-089a-4325-bbc7-b96b61071eae",
+      "audit_number": 17,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Population",
+      "verification_notes": "Same Japan median-age quantity and stored answer as Q007. Merge editorially; retain IDs in completed-game history.",
+      "expected": {
+        "question_text": "What is the median age of the population in Japan?",
+        "answer_value": "49.8",
+        "source_url": "https://www.worldometers.info/demographics/japan-demographics/; https://x.com/stats_feed/status/1913028453911118151",
+        "answer_context": "The median age in Japan is 49.8 years in 2025, according to U.N. Department of Economic and Social Affairs data. Japan has the second highest median age in the world, behind only Monaco. This represents a dramatic increase from 22.7 years in 1955 and reflects Japan's aging population and low birth rate.",
+        "unit_id": "3fa28d40-3001-410c-9903-6c369df76cef"
+      }
+    },
+    {
+      "id": "c8108aac-5ad4-421c-a8b8-1b6a9ded007f",
+      "audit_number": 18,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Legacy dated register introduction states approximately 250 tracked trials as of February 2025, with more than 150 active. The old prompt incorrectly called all 250 active CRISPR trials.",
+      "expected": {
+        "question_text": "How many active clinical trials were registered for CRISPR-Cas9 therapies in 2025?",
+        "answer_value": "250",
+        "source_url": "https://crisprmedicinenews.com/clinical-trials/; https://innovativegenomics.org/news/crispr-clinical-trials-2025/",
+        "answer_context": "As of February 2025, CRISPR Medicine News monitors approximately 250 clinical trials involving gene-editing therapeutic candidates, with more than 150 trials currently active. Over 80% use CRISPR/Cas9 technology. Applications span cardiovascular disease, blood disorders, cancer, and hereditary conditions. Notable 2025 trials include CTX310 for cholesterol reduction and BEAM-302 for alpha-1 antitrypsin deficiency.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      },
+      "question_text": "About how many gene-editing clinical trials did CRISPR Medicine News track in February 2025?",
+      "answer_value": 250,
+      "observation_period": "February 2025",
+      "geography": "Worldwide trials in the CRISPR Medicine News register",
+      "measure_definition": "Total tracked clinical trials involving gene-editing therapeutic candidates, including trials that were not active.",
+      "source_name": "CRISPR Medicine News — clinical trial register",
+      "source_url": "https://crisprmedicinenews.com/clinical-trials/",
+      "answer_context": "The register tracked hundreds of trials, showing the scale of efforts to turn gene editing into treatments. This is the total tracked, not a count of approved therapies or of trials currently recruiting patients.",
+      "verified_at": "2026-09-08",
+      "review_due": "2026-12-08"
+    },
+    {
+      "id": "edab299a-a721-4c8d-8a6f-255646b05465",
+      "audit_number": 19,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "NY Fed API effectiveDate 2024-12-31, percentRate 4.33, targetRateFrom 4.25, targetRateTo 4.50. Replaces a target midpoint mislabeled as an effective rate.",
+      "expected": {
+        "question_text": "What is the current effective federal funds rate in the United States?",
+        "answer_value": "3.625",
+        "source_url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20251210a.htm; https://fred.stlouisfed.org/series/FEDFUNDS",
+        "answer_context": "The Federal Reserve set the federal funds rate to a range of 3.5%-3.75% on December 10, 2025, representing a 25 basis point cut. The effective rate (midpoint) is 3.625%. This marks the third consecutive rate cut since September 2025, bringing borrowing costs to their lowest level since 2022. The decision was made in a 9-3 vote.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "What was the effective federal funds rate on the last day of 2024?",
+      "answer_value": 4.33,
+      "observation_period": "2024-12-31",
+      "geography": "United States",
+      "measure_definition": "Effective federal funds rate, annualized percent, volume-weighted median of overnight federal funds transactions.",
+      "source_name": "Federal Reserve Bank of New York",
+      "source_url": "https://markets.newyorkfed.org/api/rates/unsecured/effr/search.json?startDate=2024-12-31&endDate=2024-12-31",
+      "answer_context": "This is an observed overnight borrowing rate, a benchmark for US monetary policy. It can differ from the midpoint of the Federal Reserve’s target range.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "6d8f9967-d998-4bf4-9092-296c0ff4e5fa",
+      "audit_number": 20,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Government-hosted 2025-02-13 report quotes China State Railway Group: 48,000 km of high-speed lines at end-2024; rounded reported total.",
+      "expected": {
+        "question_text": "What is the total length of the high-speed rail network in China in kilometers?",
+        "answer_value": "50600",
+        "source_url": "https://www.scmp.com/economy/china-economy/article/3293188/chinas-high-speed-rail-network-track-breach-50000km-milestone-2025; https://english.www.gov.cn/news/202501/02/content_WS67764b48c6d0868f4e8ee732.html",
+        "answer_context": "China's high-speed railway network is projected to reach 50,600 kilometers by the end of 2025, adding 2,600 km during the year. This represents growth from 48,000 km at the end of 2024. China aims to expand to 60,000 km by 2030 and over 70,000 km by 2035, maintaining its position as having the world's largest high-speed rail network.",
+        "unit_id": "260db678-d6d1-4144-afe6-32c52fc27b02"
+      },
+      "question_text": "Approximately how many kilometres of high-speed railway were operating in China at the end of 2024?",
+      "answer_value": 48000,
+      "observation_period": "End of 2024",
+      "geography": "China",
+      "measure_definition": "Operating high-speed railway route length in kilometres; not all railway and not a planned end-2025 target.",
+      "source_name": "State Council of China — railway statistics",
+      "source_url": "https://english.www.gov.cn/news/202502/13/content_WS67ad629bc6d0868f4e8ef9c2.html",
+      "answer_context": "The network’s route length gives a sense of the scale of China’s intercity infrastructure. This measures lines already operating, rather than projects planned or under construction.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "3a81ece4-a9c0-4242-8e2d-e85f6a38e076",
+      "audit_number": 21,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "NOAA file created 2026-08-05: 2024 mean 424.61 ppm, uncertainty 0.12 ppm. Read directly from the annual data file; replaces an undated seasonal peak.",
+      "expected": {
+        "question_text": "What is the current atmospheric concentration of CO2 in parts per million?",
+        "answer_value": "430.5",
+        "source_url": "https://www.co2.earth/daily-co2; https://gml.noaa.gov/ccgg/trends/; https://scripps.ucsd.edu/news/annual-carbon-dioxide-peak-passes-another-milestone",
+        "answer_context": "The most recent monthly peak was in May 2025 at 430.5 ppm according to NOAA's Global Monitoring Laboratory (Scripps reported 430.2 ppm). The annual average for 2024 was 423.9 ppm. December 2025 specific data is not yet finalized, but following seasonal patterns, current levels are likely 425-428 ppm. The 2023-2024 increase of 3.5 ppm was the largest since modern measurements began in 1957.",
+        "unit_id": "094fe0a1-bfcd-4cad-b82d-6cb654fcdaf2"
+      },
+      "question_text": "What was the annual average atmospheric CO₂ concentration at Mauna Loa in 2024?",
+      "answer_value": 424.61,
+      "observation_period": "2024 annual mean",
+      "geography": "Mauna Loa, Hawaii",
+      "measure_definition": "Annual mean CO2 mole fraction in dry air, parts per million, NOAA Mauna Loa series.",
+      "source_name": "NOAA Global Monitoring Laboratory",
+      "source_url": "https://gml.noaa.gov/webdata/ccgg/trends/co2/co2_annmean_mlo.txt",
+      "answer_context": "The annual mean smooths out the seasonal rise and fall in CO₂. Mauna Loa provides a long-running atmospheric record; a monthly peak and a global annual average are different measurements.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "0b091f38-feae-4fdc-9f07-952203e7a0b8",
+      "audit_number": 22,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "Language diversity can earn a place; specify Ethnologue edition, then explain language loss rather than relying on a catalog count alone.",
+      "expected": {
+        "question_text": "How many living languages are currently cataloged?",
+        "answer_value": "7159",
+        "source_url": "https://www.ethnologue.com/; https://ourworldindata.org/grapher/living-languages",
+        "answer_context": "Ethnologue's 28th edition, published in February 2025, lists 7,159 living languages worldwide. This represents a net decrease of 5 living languages since the previous edition, including 5 languages changed from living to extinct, 2 designated as unattested, 2 removed from the ISO standard, and 4 newly listed as living.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "c142cea2-e8e0-4994-8358-2d986d2260e2",
+      "audit_number": 23,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Specialist mutation-count question with SNV/indel and parental-age ambiguity. Prefer disease risk, diagnostic reach, or an accessible genomics outcome.",
+      "expected": {
+        "question_text": "What is the average number of mutations per generation in the human germline?",
+        "answer_value": "70",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC3785239/; https://www.nature.com/articles/s41586-025-08922-2",
+        "answer_context": "Studies show an average of 64-76 de novo mutations per generation in humans. Direct estimates give 64 new mutations per generation (range 43-84), or about 70.1 de novo SNVs and 5.9 de novo indels per genome. The mutation rate is approximately 1.2 × 10^-8 per base pair per generation. More comprehensive analysis including all mutation types finds 98-206 DNMs per transmission.",
+        "unit_id": "a14dab6e-50ff-42c3-9d9f-51220c3110c7"
+      }
+    },
+    {
+      "id": "f360bca6-317d-4f56-8f33-da9d9dc7fe39",
+      "audit_number": 24,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "Keep with year and official capacity table; distinguish Texas from ERCOT and capacity from generation in the reveal.",
+      "expected": {
+        "question_text": "What is the current installed capacity of wind energy in Texas in gigawatts?",
+        "answer_value": "42",
+        "source_url": "https://bkvenergy.com/learning-center/largest-wind-farms-in-texas/; https://renewables-info.com/2025/11/13/texas-the-undisputed-u-s-leader-in-wind-energy-development/; https://windexchange.energy.gov/states/tx",
+        "answer_context": "Texas has more than 42 gigawatts of installed wind capacity as of 2025, more than any other US state. The state operates over 19,000 wind turbines and produces 29.5% of the nation's wind energy. These turbines account for roughly 30% of electricity generated within the ERCOT system. New projects expected by late 2025 will add over 300 MW additional capacity.",
+        "unit_id": "45d4dac4-4169-4861-b071-ef12727cd994"
+      }
+    },
+    {
+      "id": "1e15c9c3-bb3d-4ce2-b9f9-11e1771ad95b",
+      "audit_number": 25,
+      "editorial_status": "ready",
+      "editorial_role": "reference",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "PBL flood-risks reference explicitly distinguishes 26% below sea level from 59% prone to flooding. Treat as a geographical yardstick, not a new survey.",
+      "expected": {
+        "question_text": "What percentage of the Netherlands' land area is below mean sea level?",
+        "answer_value": "26",
+        "source_url": "https://en.wikipedia.org/wiki/Netherlands; https://www.pbl.nl/en/correction-wording-flood-risks-for-the-netherlands-in-ipcc-report",
+        "answer_context": "Approximately 26% of the Netherlands' land area is below sea level, confirmed by multiple authoritative sources including the Netherlands Environmental Assessment Agency. About 21% of the population lives in these areas. An additional 29% of land is susceptible to river flooding, bringing the total flood-vulnerable area to 59%. Most below-sea-level areas are polders reclaimed since the 14th century.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "Approximately what percentage of Dutch land lies below sea level, according to PBL?",
+      "answer_value": 26,
+      "observation_period": "PBL geographical reference",
+      "geography": "Netherlands",
+      "measure_definition": "Land surface below sea level; distinct from the larger area susceptible to river or coastal flooding.",
+      "source_name": "PBL Netherlands Environmental Assessment Agency",
+      "source_url": "https://themasites.pbl.nl/o/flood-risks/",
+      "answer_context": "About a quarter of Dutch land lies below sea level. That helps explain the importance of flood protection; the area that can flood is larger than the area below sea level.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-09-08"
+    },
+    {
+      "id": "82018e54-fc2c-4722-9346-1597e5d88100",
+      "audit_number": 26,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Population",
+      "verification_notes": "Keep inactive. Unstable real-time puzzle and placeholder zero; poor fit for a durable educational bank.",
+      "expected": {
+        "question_text": "How many people currently live within the Circle of Illumination (daylight) right now?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "This question requires real-time calculation based on current sun position and population distribution. The answer varies continuously throughout the day as Earth rotates. At any given moment, approximately half of Earth's 8+ billion people are in daylight. Without access to real-time solar position and detailed population density data, I cannot provide a specific answer for this moment.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "f723fb58-ac9b-4d60-a42b-44b912641fbf",
+      "audit_number": 27,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "Worthwhile if tied to a particular study estimate; disclose uncertainty and avoid mixing the 2018 estimate with a later website summary.",
+      "expected": {
+        "question_text": "What is the total tonnage of plastic estimated to be floating in the Great Pacific Garbage Patch?",
+        "answer_value": "100000",
+        "source_url": "https://theoceancleanup.com/great-pacific-garbage-patch/; https://www.nature.com/articles/s41598-018-22939-w",
+        "answer_context": "The Great Pacific Garbage Patch contains more than 1.8 trillion pieces of plastic weighing an estimated 100,000 metric tonnes according to The Ocean Cleanup. A 2018 Nature study estimated 79,000 tonnes (range 45,000-129,000). This mass is 4-16 times higher than previous calculations. The patch covers 1.6 million km², with most mass being abandoned fishing gear rather than bottles or packaging.",
+        "unit_id": "e755ecc3-c2f2-4994-a81d-2bfe640fd99a"
+      }
+    },
+    {
+      "id": "57b13253-0cb4-4fb9-81d1-632f0e2a71be",
+      "audit_number": 28,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "Replace current with an explicit observation date or monthly average. A December 2025 snapshot cannot remain a live-market question.",
+      "expected": {
+        "question_text": "What is the current yield on the US 10-Year Treasury note?",
+        "answer_value": "4.15",
+        "source_url": "https://tradingeconomics.com/united-states/government-bond-yield; https://fred.stlouisfed.org/series/DGS10; https://www.cnbc.com/quotes/US10Y",
+        "answer_context": "The US 10-year Treasury yield was 4.15% as of December 16, 2025, down from around 4.2% earlier in December (the highest since early September). The recent decline followed delayed jobs figures showing a net loss and unemployment rising to 4.6%. The yield movement reflects market reactions to economic data and Fed rate decisions.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "e3b3301c-8fe3-46c1-86e9-a1a7ace818d5",
+      "audit_number": 29,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Useful space-infrastructure topic, but 8,800 is an inference from all-orbit totals and an approximate share. Use a direct, dated LEO count; remove unrelated exoplanet URL.",
+      "expected": {
+        "question_text": "How many distinct active satellites are currently tracked in Low Earth Orbit?",
+        "answer_value": "8800",
+        "source_url": "https://www.esa.int/Space_Safety/Space_Debris/ESA_Space_Environment_Report_2025; https://science.nasa.gov/exoplanets/discoveries-dashboard/",
+        "answer_context": "About 40,000 objects are tracked by space surveillance networks, of which about 11,000 are active payloads across all orbits. Over 80% of active satellites reside in Low Earth Orbit (LEO, 160-2,000 km altitude). This suggests approximately 8,800 active satellites in LEO. Different databases report 9,800-12,149 active satellites total depending on tracking methodology and inclusion criteria.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "0b418c08-74c2-4b37-8eaf-90d64940f732",
+      "audit_number": 30,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Potential latency yardstick; the source is a 2015 route claim. Define endpoints and round-trip versus one-way, and drop unsupported current-fastest/average wording.",
+      "expected": {
+        "question_text": "What is the average latency in milliseconds between New York and London via the fastest fiber optic cable?",
+        "answer_value": "58.95",
+        "source_url": "https://www.businesswire.com/news/home/20150924005286/en/Hibernia-Express-Transatlantic-Cable-Route-Connects-New-York-to-London-in-under-58.95-Milliseconds; https://www.submarinenetworks.com/en/systems/trans-atlantic/project-express/hibernia-express-connects-new-york-to-london-in-under-58-95ms",
+        "answer_context": "The Hibernia Express transatlantic cable achieved a tested latency of 58.95 milliseconds from New York to London, representing a ~5ms improvement over other transatlantic links. The theoretical minimum is about 55ms round-trip due to fiber's refractive index. Light travels through fiber at roughly 203,000 km/s, about two-thirds the speed in vacuum. For high-frequency trading, even millisecond reductions significantly impact profitability.",
+        "unit_id": "5751acaf-ba74-4a37-a755-12bb77a3c08a"
+      }
+    },
+    {
+      "id": "a8d275a9-f273-476a-af70-9d903ee2f544",
+      "audit_number": 31,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "WDI vintage 2026-07-13, male-specific series: 60.065 years, rounded to 60.1.",
+      "expected": {
+        "question_text": "What is the current life expectancy at birth for a male in Sierra Leone?",
+        "answer_value": "60.06",
+        "source_url": "https://data.worldbank.org/indicator/SP.DYN.LE00.IN?locations=SL; https://tradingeconomics.com/sierra-leone/life-expectancy-at-birth-male-years-wb-data.html",
+        "answer_context": "Life expectancy at birth for males in Sierra Leone was 60.06 years in 2023 according to World Bank data, the most recent available. Sierra Leone ranks 186/197 globally for average life expectancy. Specific 2025 projections were not clearly provided in available sources, but the trend shows gradual improvement from previous decades.",
+        "unit_id": "3fa28d40-3001-410c-9903-6c369df76cef"
+      },
+      "question_text": "Approximately what was male life expectancy at birth in Sierra Leone in 2023?",
+      "answer_value": 60.1,
+      "observation_period": "2023",
+      "geography": "Sierra Leone",
+      "measure_definition": "Male period life expectancy at birth, years; rounded to 0.1.",
+      "source_name": "World Bank — World Development Indicators",
+      "source_url": "https://api.worldbank.org/v2/country/SLE/indicator/SP.DYN.LE00.MA.IN?date=2023&format=json",
+      "answer_context": "This estimates how long a newborn boy would live if that year’s mortality rates persisted. It reflects deaths across all ages, rather than the remaining lifespan of an adult.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "a22e6d17-698a-48af-bc87-6be988dbae7a",
+      "audit_number": 32,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "Keep only with named registry/date and a reason unicorn counts illuminate investment scale. Registry definitions currently conflict.",
+      "expected": {
+        "question_text": "What is the current number of unicorn companies (startups valued over $1B)?",
+        "answer_value": "1562",
+        "source_url": "https://www.cbinsights.com/research-unicorn-companies; https://pitchbook.com/news/articles/unicorn-startups-list-trends; https://ff.co/unicorn-companies-2025/",
+        "answer_context": "As of December 5, 2025, there are 1,562 active unicorns globally according to PitchBook data. Other sources cite 1,639 private unicorns or over 1,300 unicorns depending on inclusion criteria. In 2025, 117 companies reached unicorn status (96 still private). The US has 729 unicorns (51.4%), China has 313, India has 61. OpenAI is the most valuable at $500B.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "c76389bc-23e4-4475-969c-2d605abe4587",
+      "audit_number": 33,
+      "editorial_status": "ready",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Gallup August 2023 release: July 3–27 survey, adults 18+, 4% vegetarian. The survey also asks about vegan preferences separately.",
+      "expected": {
+        "question_text": "What is the percentage of US adults who identify as vegetarians?",
+        "answer_value": "4",
+        "source_url": "https://www.vrg.org/blog/2025/08/08/how-many-vegetarians-and-vegans-are-there-in-the-united-states-2/; https://news.gallup.com/poll/510038/identify-vegetarian-vegan.aspx",
+        "answer_context": "According to a February 2025 VRG YouGov poll, approximately 4% of adults were vegetarian (including vegan), or 8-10 million US adults. A Harris Poll found 3.3% self-report as vegetarian. Gallup found 4% identifying as vegetarian and 1% as vegan. The data ranges from 3-6% depending on survey methodology, with most recent mid-2025 data suggesting approximately 4%.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "In Gallup’s July 2023 poll, what percentage of US adults described themselves as vegetarian?",
+      "answer_value": 4,
+      "observation_period": "July 3–27, 2023 survey",
+      "geography": "US adults",
+      "measure_definition": "Self-identified vegetarian eating preferences in Gallup’s survey; estimate, not observed diet or vegan share.",
+      "source_name": "Gallup — Consumption Habits poll, 2023",
+      "source_url": "https://news.gallup.com/poll/510038/identify-vegetarian-vegan.aspx",
+      "answer_context": "This measures how people describe their diet, rather than a direct record of what they eat. It offers a baseline for thinking about how widespread a complete move away from meat was in this survey.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "0f3ad19b-3ec3-4e00-ab9a-e01b1fa27161",
+      "audit_number": 34,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Economics",
+      "verification_notes": "Arbitrary live currency-pair quote. Prefer a dated purchasing-power or trade comparison with a clear explanatory purpose.",
+      "expected": {
+        "question_text": "What is the current exchange rate between the Euro and the Indian Rupee?",
+        "answer_value": "106.7",
+        "source_url": "https://www.exchangerates.org.uk/EUR-INR-spot-exchange-rates-history-2025.html; https://www.xe.com/currencycharts/?from=EUR&to=INR",
+        "answer_context": "The highest Euro to Indian Rupee rate in December 2025 was on December 16, when 1 Euro was worth 106.6990 INR. During the past week, the rate fluctuated between a high of 107.274 on Dec 16 and a low of 104.664 on Dec 10. The Euro has been performing strongly against the Rupee in December 2025, with rates staying above 104 INR per Euro.",
+        "unit_id": "1dbc18ed-3514-4757-8549-54713a352f35"
+      }
+    },
+    {
+      "id": "b07fe366-3160-4ca7-8c00-58cd72c06e94",
+      "audit_number": 35,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Possible knowledge-infrastructure scale question; date the Wikimedia count and reduce meaningless precision and incidental statistics.",
+      "expected": {
+        "question_text": "What is the total number of Wikipedia articles in the English language?",
+        "answer_value": "7107076",
+        "source_url": "https://en.wikipedia.org/wiki/Wikipedia:Statistics; https://en.wikipedia.org/wiki/Wikipedia:Size_of_Wikipedia",
+        "answer_context": "As of December 17, 2025, there are 7,107,076 articles in the English Wikipedia containing over 5 billion words. The English Wikipedia surpassed seven million articles on May 28, 2025. The site averages around 500 new articles per day. There are 64,667,063 total pages, of which 7,107,076 (10.99%) are articles. English Wikipedia has the most articles of any edition.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "ec7d796e-c025-42b6-a812-0239cf8bd36d",
+      "audit_number": 36,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Technetium isotope mass to many decimals is specialist recall. It does not meet the broad-world-understanding test.",
+      "expected": {
+        "question_text": "What is the atomic mass of the unstable isotope Technetium-99m?",
+        "answer_value": "98.9062547",
+        "source_url": "https://en.wikipedia.org/wiki/Technetium-99m; https://chemlin.org/isotope/technetium-99m",
+        "answer_context": "The isotopic mass of Technetium-99m is 98.9062547(21) atomic mass units, where the notation (21) represents the uncertainty in the last two digits (±0.0000021 u). This metastable nuclear isomer has mass number 99 (43 protons, 56 neutrons), excitation energy of 142.6836 keV, and a half-life of 6.0072 hours. It's widely used in medical imaging.",
+        "unit_id": "f238c5ca-4165-457f-b795-321b257d39ab"
+      }
+    },
+    {
+      "id": "7aacb178-66ef-4bbe-94ba-2eefa06f24de",
+      "audit_number": 37,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "MPA release 2025-01-15 reports 41.12 million TEUs for the whole port. The old 40.9 million described PSA alone.",
+      "expected": {
+        "question_text": "How many cargo containers (TEU) passed through the Port of Singapore last year?",
+        "answer_value": "40900000",
+        "source_url": "https://www.singaporepsa.com/2024/12/27/psa-singapore-hits-record-breaking-annual-throughput-of-more-than-40-million-teus/; https://www.statista.com/statistics/870629/singapore-container-throughput/",
+        "answer_context": "PSA's flagship terminal in Singapore reported a record throughput of 40.9 million TEUs in 2024, up 5.5% from 38.8 million in 2023. Singapore's port (including both PSA and Jurong Port terminals) surpassed the 2023 record of 39.01 million TEUs. PSA reached the 40 million milestone on December 24, 2024, cementing Singapore's position as the world's largest transhipment hub and second-busiest container port globally.",
+        "unit_id": "ea4cd087-0367-4dcd-9fe8-49cd434cb829"
+      },
+      "question_text": "How many twenty-foot equivalent units of containers did the Port of Singapore handle in 2024?",
+      "answer_value": 41120000,
+      "observation_period": "2024",
+      "geography": "Port of Singapore",
+      "measure_definition": "Annual container throughput across the port, measured in TEUs; one TEU is one twenty-foot equivalent unit.",
+      "source_name": "Maritime and Port Authority of Singapore",
+      "source_url": "https://www.mpa.gov.sg/media-centre/details/strong-growth-momentum-for-maritime-singapore",
+      "answer_context": "A TEU is a unit of container capacity. Counting the whole port gives a sense of Singapore’s role as a transfer point in global trade; the figure is larger than the throughput of a single terminal operator.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "cbd07b91-7959-4e65-9c97-63af9e962574",
+      "audit_number": 38,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Economics",
+      "verification_notes": "Keep inactive until a defined household/tax concept has a supported observation. Zero is an unanswered placeholder; topic is worth rebuilding.",
+      "expected": {
+        "question_text": "What is the current effective tax rate paid by the median of American households?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "This question requires data on the median American household's effective tax rate, which combines federal income tax, state/local taxes, payroll taxes, and other levies. Without access to current IRS or tax policy research data, I cannot provide an accurate 2025 figure. The effective rate varies significantly based on income level, deductions, and state of residence.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "6c62656c-31aa-4caa-b8fc-29a57520832c",
+      "audit_number": 39,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Entropy of card permutations is a mathematical puzzle. Use sparingly elsewhere; replace in the main bank with a consequential information-scale fact.",
+      "expected": {
+        "question_text": "What is the Shannon entropy (in bits) of a standard deck of 52 playing cards?",
+        "answer_value": "225.58",
+        "source_url": "https://mikesmathpage.wordpress.com/2017/04/23/card-shuffling-and-shannon-entropy/; https://github.com/atoponce/deckware",
+        "answer_context": "The Shannon entropy of a standard 52-card deck's complete arrangement is log₂(52!) ≈ 225.581 bits, commonly rounded to 226 bits. This represents the minimum number of yes/no questions needed to determine the deck's configuration. For a single card from the deck, you need log₂(52) ≈ 6 bits. A thoroughly shuffled deck provides approximately 226 bits of randomness, making it an excellent entropy source.",
+        "unit_id": "b8538d89-209e-4802-a127-505ee01ec69a"
+      }
+    },
+    {
+      "id": "b849058e-a2f7-4b06-be9f-6f5a562ce362",
+      "audit_number": 40,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Possible space-distance yardstick; anchor date and Earth-versus-Sun distance, or replace with a stable Earth–Sun/light-time reference.",
+      "expected": {
+        "question_text": "What is the distance to the Voyager 1 probe in Astronomical Units right now?",
+        "answer_value": "169.9",
+        "source_url": "https://theskylive.com/voyager1-info; https://science.nasa.gov/mission/voyager/voyager-1/",
+        "answer_context": "Voyager 1's distance from Earth is currently 169.895551 Astronomical Units (25,416,012,654 km or 15.8 billion miles) as of December 2025. Light takes 23 hours, 32 minutes to travel from Voyager 1 to Earth. The spacecraft travels at 17.7 km/s, adding roughly 3.5 AU per year. Voyager 1 will reach one light-day from Earth in November 2026.",
+        "unit_id": "de08e386-3814-4ba8-a629-c188a28abe33"
+      }
+    },
+    {
+      "id": "a7678325-444d-46b3-9843-12557494f22b",
+      "audit_number": 41,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "WDI vintage 2026-07-13: US 29,298,013,000,000 / world 111,669,432,109,121 × 100 = 26.2364%; scored at 26.2%.",
+      "expected": {
+        "question_text": "What is the current percentage of global GDP represented by the United States?",
+        "answer_value": "26.2",
+        "source_url": "https://www.worldeconomics.com/Share-of-Global-GDP/United%20States.aspx; https://www.statista.com/statistics/268173/countries-with-the-largest-gross-domestic-product-gdp/",
+        "answer_context": "The US accounted for 26.2% of global GDP in nominal terms in 2024-2025, making up more than one-quarter of the global GDP of almost 110 trillion USD. However, using Purchasing Power Parity (PPP) adjustment, the US share is 12.7-14.8%. The difference reflects that nominal GDP uses current exchange rates while PPP adjusts for cost of living differences across countries.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "Approximately what share of world GDP did the United States account for in 2024, at market exchange rates?",
+      "answer_value": 26.2,
+      "observation_period": "2024",
+      "geography": "United States / world",
+      "measure_definition": "US GDP divided by world GDP, both in current US dollars; rounded to 0.1 percentage point.",
+      "source_name": "World Bank — World Development Indicators",
+      "source_url": "https://api.worldbank.org/v2/country/USA/indicator/NY.GDP.MKTP.CD?date=2024&format=json;https://api.worldbank.org/v2/country/WLD/indicator/NY.GDP.MKTP.CD?date=2024&format=json",
+      "answer_context": "About a quarter of global output was produced in the United States, measured at market exchange rates. The measure is economic production, rather than wealth or the share of people living there.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "f6b2854d-5bb5-40a0-a27c-13cdb4e027b4",
+      "audit_number": 42,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Economics",
+      "verification_notes": "Keep inactive. City billionaire league-table trivia and placeholder zero; wealth concentration would be a stronger replacement.",
+      "expected": {
+        "question_text": "How many billionaires are there in Mumbai?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "Web search returned empty results for this specific query. Without access to current Forbes or wealth tracking databases, I cannot provide an accurate count of billionaires specifically in Mumbai for 2025.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "59489469-6dfe-4e95-abac-ed636fb1c952",
+      "audit_number": 43,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Economics",
+      "verification_notes": "Keep inactive. Saffron price lacks grade, origin, and transaction basis; low priority for the collection.",
+      "expected": {
+        "question_text": "What is the current price per kilogram of saffron on the global market?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "Web search returned empty results for this query. Saffron prices vary widely based on grade and origin, typically ranging from hundreds to thousands of dollars per kilogram. Without current market data, I cannot provide a specific 2025 price.",
+        "unit_id": "216bb094-d5cf-40cc-b5d6-a52a34ca0ad9"
+      }
+    },
+    {
+      "id": "295c45b5-3551-4712-af69-6a41b80b94a8",
+      "audit_number": 44,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Governance and security",
+      "verification_notes": "Keep inactive. Unanswered historical battle count; casualties and deaths must be distinguished if used in a separate history set.",
+      "expected": {
+        "question_text": "What is the total number of fatalities recorded in the Battle of Antietam?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "Web search returned empty results. Historical records indicate the Battle of Antietam (September 17, 1862) resulted in approximately 22,000-23,000 total casualties (killed, wounded, missing), with about 3,600-3,700 total deaths. Without access to authoritative historical sources, I cannot confirm the exact fatality count.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "7bc65f34-f070-4335-849d-db37ade07ed7",
+      "audit_number": 45,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Keep inactive. Chess-combinatorics puzzle with moves/positions ambiguity; not a priority for this editorial purpose.",
+      "expected": {
+        "question_text": "How many distinct chess positions are possible after 3 moves?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "Web search returned empty results. This requires calculating all possible chess positions after 3 moves by each player (6 half-moves total). The calculation is complex as it must account for legal moves only. Without access to chess combinatorics databases, I cannot provide the precise count.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "17fc681e-fa6d-41a4-bc35-1f5289480d91",
+      "audit_number": 46,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Worth rebuilding from Tencent filings: dated Weixin/WeChat combined monthly-active-account metric, not an unsupported zero or unique-person count.",
+      "expected": {
+        "question_text": "What is the current number of active monthly users on WeChat?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "Web search returned empty results for WeChat's current monthly active users. Without access to Tencent's latest quarterly reports or tech industry databases, I cannot provide a specific 2025 figure.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "f4dc6271-8879-4050-a6a5-253e0d16b92e",
+      "audit_number": 47,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Can illustrate nutrition and cohort change; fix birth-year and measurement-age mismatch rather than treating height as generic trivia.",
+      "expected": {
+        "question_text": "What is the average height of a Dutch male born in 2000?",
+        "answer_value": "182.9",
+        "source_url": "https://longreads.cbs.nl/the-netherlands-in-numbers-2022/how-tall-are-dutch-people/; https://www.tandfonline.com/doi/full/10.1080/1081602X.2023.2192193",
+        "answer_context": "The average 19-year-old male born in the Netherlands was 182.9 cm tall in 2020, representing males born around 2000-2001. Some sources report 184 cm for this cohort. Notably, men born in 2001 were on average 1 cm shorter than those born in 1980, suggesting Dutch height may have plateaued or begun to slightly decline after peaking with the 1980 generation.",
+        "unit_id": "59d5b597-0820-4be6-9be8-944e99811209"
+      }
+    },
+    {
+      "id": "d3723888-4569-4cb9-a2b9-1efd202c5cbb",
+      "audit_number": 48,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Governance and security",
+      "verification_notes": "FAS authors’ July 2025 Nuclear Notebook estimates approximately 290 stockpiled warheads. Use explicitly historical estimate, not a claim about the current arsenal.",
+      "expected": {
+        "question_text": "How many operational nuclear warheads does France possess?",
+        "answer_value": "290",
+        "source_url": "https://thebulletin.org/premium/2025-07/french-nuclear-weapons-2025/; https://www.armscontrol.org/factsheets/arms-control-and-proliferation-profile-france",
+        "answer_context": "France has approximately 290 operational nuclear warheads as of 2025, making it the fourth-largest nuclear weapons power. About 240 warheads are assigned to M51 submarine-launched ballistic missiles on four Triomphant-class submarines, and 50 are assigned to Rafale fighters with ASMP-A cruise missiles. An additional ~80 retired warheads await dismantlement, giving a total inventory of ~370. The 290 count has remained stable since a 2008 commitment to stay below 300.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      },
+      "question_text": "About how many nuclear warheads did the Federation of American Scientists estimate France had in July 2025?",
+      "answer_value": 290,
+      "observation_period": "July 2025 estimate",
+      "geography": "France",
+      "measure_definition": "Estimated total nuclear weapons stockpile, not a count of deployed or operational warheads.",
+      "source_name": "FAS Nuclear Notebook — French nuclear weapons, 2025",
+      "source_url": "https://thebulletin.org/premium/2025-07/french-nuclear-weapons-2025/",
+      "answer_context": "This is an estimate of the stockpile, rather than an official inventory or a count of weapons deployed at that moment. Keeping those categories separate makes comparisons of nuclear forces more meaningful.",
+      "verified_at": "2026-09-08",
+      "review_due": "2026-12-08"
+    },
+    {
+      "id": "33ebe4f4-400a-47b0-87a3-27739a723e85",
+      "audit_number": 49,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Strong food-system fact; use a dated FAO food-balance measure and distinguish calories supplied from calories actually consumed.",
+      "expected": {
+        "question_text": "What is the percentage of global caloric intake provided by rice?",
+        "answer_value": "20",
+        "source_url": "https://www.researchgate.net/publication/336570767_Rice_Importance_for_Global_Nutrition; https://www.fao.org/4/Y6618E/Y6618E00.htm",
+        "answer_context": "Rice provides approximately 20% of calories consumed worldwide, with some sources citing 21% of global per capita caloric intake. Over 3.5 billion people depend on rice as a dietary staple, serving as the primary caloric source across Asia where 60% of the world's population resides. Together, corn, rice, and wheat make up 51% of global caloric intake, with wheat also providing about 20%.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "1e8318c8-28c0-4671-b290-3202b0a0a258",
+      "audit_number": 50,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "Heritage-site league-table count has limited explanatory value and changes with designations. Replace with a stronger cultural or economic measure.",
+      "expected": {
+        "question_text": "What is the number of UNESCO World Heritage Sites in Italy?",
+        "answer_value": "61",
+        "source_url": "https://en.wikipedia.org/wiki/List_of_World_Heritage_Sites_in_Italy; https://whc.unesco.org/en/statesparties/it",
+        "answer_context": "Italy has 61 listed UNESCO World Heritage Sites, making it the state party with the most World Heritage Sites, just above China (60) and Germany (55). Out of Italy's 61 sites, 55 are cultural and 6 are natural. Seven sites are transnational, shared with other countries. The newest addition is the 'domus de janas' (fairy houses) in Sardinia, rock-cut tombs from the 5th-3rd millennia BCE.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "1f57b72c-2f54-40bb-9152-5d3239349138",
+      "audit_number": 51,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Important public-health topic, but urban Asian teenagers is not a defined population. Choose age, geography, year, study, and diagnostic threshold.",
+      "expected": {
+        "question_text": "What is the current prevalence of myopia in urban Asian teenagers?",
+        "answer_value": "80",
+        "source_url": "https://link.springer.com/chapter/10.1007/978-981-13-8491-2_2; https://bmcophthalmol.biomedcentral.com/articles/10.1186/s12886-019-1220-0; https://www.thelancet.com/journals/lanwpc/article/PIIS2666-6065(25)00114-2/fulltext",
+        "answer_context": "Myopia prevalence in urban Asian teenagers is extremely high, with rates of 65.5-96.5% in East Asian countries. High-income Asian regions show 80-90% prevalence among teenagers, with up to 96% in young South Korean adults. East Asians reach 69% prevalence at age 15 (86% for Singaporean-Chinese). Chinese urban teenagers (15-19) show 67.2% prevalence. Urban children have 2.6 times the odds of myopia versus rural children.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "ce9615c1-17f7-4dec-8d0f-bac50333a100",
+      "audit_number": 52,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Good reusable light-time yardstick. Say mean Earth–Moon distance and use a primary astronomical reference; do not imply constant distance.",
+      "expected": {
+        "question_text": "How many milliseconds does it take for light to travel from the Moon to Earth?",
+        "answer_value": "1280",
+        "source_url": "https://www.space.com/18145-how-far-is-the-moon.html",
+        "answer_context": "Light takes approximately 1.28 seconds or 1,280 milliseconds to travel from the Moon to Earth. This is calculated from the average Earth-Moon distance of ~384,400 km and light speed of ~299,792 km/s. The actual time varies from about 1,250 to 1,320 milliseconds depending on whether the Moon is at perigee (closest) or apogee (farthest) due to its elliptical orbit.",
+        "unit_id": "5751acaf-ba74-4a37-a755-12bb77a3c08a"
+      }
+    },
+    {
+      "id": "3da4f0e9-6b9e-465f-aa22-6d1cb68e7c27",
+      "audit_number": 53,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Population",
+      "verification_notes": "Provisional 2024 annual total fertility rate table: 0.75. Publication status is explicit in the prompt; refresh to a final or newer annual observation at review.",
+      "expected": {
+        "question_text": "What is the current total fertility rate in South Korea?",
+        "answer_value": "0.85",
+        "source_url": "https://www.macrotrends.net/global-metrics/countries/kor/south-korea/fertility-rate; https://www.koreaherald.com/article/10497796",
+        "answer_context": "South Korea's total fertility rate rose to 0.85 in September 2025, up from 0.82 in Q1 2025 and 0.75 in 2024. This represents a significant reversal after nine consecutive years of decline. The improvement is tied to a rise in marriages, with 58,704 couples marrying in Q1, up 8.4% year-over-year. Despite this improvement, South Korea continues to have the lowest fertility rate in the world.",
+        "unit_id": "bbf73030-9c87-47be-be94-a086f9451a97"
+      },
+      "question_text": "What was South Korea’s total fertility rate in the provisional figures for 2024?",
+      "answer_value": 0.75,
+      "observation_period": "2024 (provisional release)",
+      "geography": "South Korea",
+      "measure_definition": "Annual total fertility rate, births per woman; Statistics Korea provisional 2024 release, not a single month.",
+      "source_name": "Statistics Korea — Birth and Death Statistics in 2024",
+      "source_url": "https://www.kostat.go.kr/boardDownload.es?bid=11773&list_no=436027&seq=2",
+      "answer_context": "The annual rate was below one birth per woman. This measure puts population aging and the future size of the workforce in perspective; it is not the number of children each woman already has.",
+      "verified_at": "2026-09-08",
+      "review_due": "2026-12-08"
+    },
+    {
+      "id": "141c480a-921a-4101-bff3-ac74ab97107d",
+      "audit_number": 54,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "A broad synapse estimate is poorly suited to exact-bound scoring. Reframe to a named study estimate or choose a better measured biology yardstick.",
+      "expected": {
+        "question_text": "What is the estimated number of synapses in the average adult human brain?",
+        "answer_value": "150000000000000",
+        "source_url": "https://www.ncbi.nlm.nih.gov/books/NBK10799/",
+        "answer_context": "The estimated number of synapses in the average adult human brain is approximately 100 to 150 trillion (10^14 to 1.5 × 10^14), with 150 trillion being a commonly cited figure. This estimate is based on the brain containing approximately 86 billion neurons, each forming thousands of synaptic connections (average 1,000-10,000 per neuron depending on type). The exact number is difficult to determine precisely due to brain complexity.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "cf18371c-ac0e-4a58-a149-9b523fe6cb88",
+      "audit_number": 55,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Specialist material-property record. Industrial use or critical-mineral supply would better serve the intended audience.",
+      "expected": {
+        "question_text": "What is the melting point of Tungsten in degrees Celsius?",
+        "answer_value": "3422",
+        "source_url": "https://en.wikipedia.org/wiki/Tungsten; https://powdermetallurgy.com/melting-point-of-tungsten/",
+        "answer_context": "Tungsten has the highest melting point of all metallic elements at 3,422°C (6,192°F). This exceptional property makes tungsten ideal for applications requiring extreme heat resistance, such as filaments in light bulbs, heating devices, and rocket engine nozzles. It's the element with the highest melting point among all metals.",
+        "unit_id": "c42d1058-28a2-4e8c-a39f-840da92b5ca2"
+      }
+    },
+    {
+      "id": "fdcb81d1-e000-45cf-b49b-8152dab8769f",
+      "audit_number": 56,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Define city proper versus metropolitan area and use one census boundary. The notes' population divided by area does not produce the stored density.",
+      "expected": {
+        "question_text": "What is the current population density of Manila in people per square kilometer?",
+        "answer_value": "43611.5",
+        "source_url": "https://en.wikipedia.org/wiki/Manila; https://www.worldometers.info/cities/philippines/manila",
+        "answer_context": "Manila has a population density of 43,611.5 inhabitants per square kilometer based on the 2024 census showing 1,902,590 people in 42.88 km². Other sources report 73,920 persons/km² (2020 Census) or 42,857-45,000 people/km². The variation stems from different methodologies and what areas are included. Metro Manila has a much lower density of ~23,200/km² due to its larger 636 km² area. Manila proper is one of the world's most densely populated cities.",
+        "unit_id": "7777aeea-39d9-4b8f-8018-ed19a788ef99"
+      }
+    },
+    {
+      "id": "5ca5a076-fb51-411d-b867-278566fd6970",
+      "audit_number": 57,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Innovation subject worth keeping, but distinguish utility patents from all grants and calendar from fiscal year. Replace last year with a fixed official reporting period.",
+      "expected": {
+        "question_text": "How many patents were granted by the USPTO last year?",
+        "answer_value": "324042",
+        "source_url": "https://www.anaqua.com/resource/anaqua-analysis-of-uspto-patenting-statistics-2024/; https://patentlyo.com/patent/2024/12/patent-grants-2024.html",
+        "answer_context": "The USPTO granted 324,042 patents in calendar year 2024, up 4% from 2023. Fiscal year 2024 (Oct 1, 2023 - Sep 30, 2024) saw 326,921 patents issued. The 12-month period Dec 1, 2023 - Nov 30, 2024 showed 368,597 grants, a 5.7% increase. The differences reflect different measurement periods. The calendar year 2024 figure of 324,042 is the most commonly referenced metric.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "2c382f45-c39f-4ecc-81a9-ffd66fd6932f",
+      "audit_number": 58,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Prime-number count is a calculation puzzle, not an important empirical world fact.",
+      "expected": {
+        "question_text": "How many prime numbers are there below 1,000,000?",
+        "answer_value": "78498",
+        "source_url": "https://www.mathematical.com/primes0to1000k.html; https://www.quora.com/How-many-prime-numbers-are-there-less-than-a-million",
+        "answer_context": "There are exactly 78,498 prime numbers less than 1,000,000. This count is confirmed by multiple mathematical sources. Interestingly, the prime number theorem predicts approximately 72,382 primes below one million, showing the theorem provides a good approximation though the actual count is about 8% higher.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "72ae7693-7798-48e1-9265-8941cd874ceb",
+      "audit_number": 59,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Governance and security",
+      "verification_notes": "IPU dated ranking: 51 women / 80 seats = 63.75%; displayed by IPU rounded to 63.8. Scope explicitly lower chamber.",
+      "expected": {
+        "question_text": "What is the percentage of female parliament members in Rwanda?",
+        "answer_value": "63.75",
+        "source_url": "https://www.parliament.gov.rw/women-representation; https://intelpoint.co/insights/63-8-of-rwandas-parliament-are-women-as-of-2024-highest-in-the-world/",
+        "answer_context": "Rwanda has 63.75% women in the Chamber of Deputies (lower house) and 46.15% in the Senate, making it the first country in the world with a female majority in parliament. Nearly two-thirds (63.8%) of its parliament is women. This achievement is rooted in post-genocide reforms prioritizing gender equity, supported by a 30% constitutional gender quota that has led to consistently high female representation.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "After Rwanda’s 2024 election, what percentage of seats in its lower house were held by women?",
+      "answer_value": 63.75,
+      "observation_period": "November 2024 IPU ranking, following July election",
+      "geography": "Rwanda, Chamber of Deputies",
+      "measure_definition": "Women’s share of the 80 lower-house seats; excludes the Senate.",
+      "source_name": "Inter-Parliamentary Union — November 2024 ranking",
+      "source_url": "https://data.ipu.org/women-ranking/?date_month=11&date_year=2024",
+      "answer_context": "Women held a majority of seats in Rwanda’s Chamber of Deputies. The figure describes the lower house, whose composition can differ from the Senate’s.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "b10b3725-2432-40f1-a9d1-d28881544933",
+      "audit_number": 60,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Population",
+      "verification_notes": "Could illuminate census recognition and diversity; specify IBGE 2022 ethnic-group definition and use the primary release rather than an undated count.",
+      "expected": {
+        "question_text": "How many distinct indigenous groups are recognized in Brazil?",
+        "answer_value": "391",
+        "source_url": "https://en.wikipedia.org/wiki/Indigenous_peoples_in_Brazil; https://www.survivalinternational.org/peoples/brazilian",
+        "answer_context": "The 2022 IBGE census recorded 391 ethnic groups among 1,693,535 Indigenous Brazilians, with 295 Indigenous languages. The 2010 census recorded 305 ethnic groups. The Special Secretariat of Indigenous Health reports 416 distinct groups. The variation reflects different methodologies and recognition criteria. The most recent official figure is 391 ethnic groups from the 2022 census, showing an increase in recognized indigenous populations.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "99c379ed-c89c-463b-8095-cdf87511ad03",
+      "audit_number": 61,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Keep inactive; placeholder and poor fit. Prefer an accessible public-health burden or treatment-access question.",
+      "expected": {
+        "question_text": "What is the lethal dose (LD50) of botulinum toxin in nanograms per kilogram?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "This query was refused by the web search API due to usage policy concerns regarding sensitive toxin information. Botulinum toxin is one of the most lethal substances known, but specific LD50 values cannot be provided per safety guidelines.",
+        "unit_id": "e9930a88-97f3-4fe2-a238-0e537d02c296"
+      }
+    },
+    {
+      "id": "72260cef-b998-40a5-b90c-c0650064bf14",
+      "audit_number": 62,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "Concentration and AI investment are strong subjects; name the company and market close/date or choose a less volatile revenue/investment measure.",
+      "expected": {
+        "question_text": "What is the current market capitalization of the largest publicly traded company in the world?",
+        "answer_value": "4144000000000",
+        "source_url": "https://companiesmarketcap.com/; https://www.fool.com/research/largest-companies-by-market-cap/",
+        "answer_context": "As of mid-December 2025, NVIDIA (NVDA) is the largest company in the world with a market cap of $4.144 trillion (some sources cite $4.46T). NVIDIA surpassed Apple ($4.10T) and Alphabet ($3.78T). The company first became the largest publicly traded company in June 2024, briefly surpassing Microsoft. Throughout 2025, Nvidia has fluctuated in and out of the number one spot. Eleven companies have a market cap of at least $1 trillion.",
+        "unit_id": "e1f4f40f-3b40-433a-8b0c-6606b50cddbf"
+      }
+    },
+    {
+      "id": "9816f67f-deed-4475-9125-fef4ce27c253",
+      "audit_number": 63,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Useful transit scale reference; name the MTA station-count convention and date. Ridership or access may be a stronger core question.",
+      "expected": {
+        "question_text": "How many distinct subway stations are there in the New York City Transit system?",
+        "answer_value": "472",
+        "source_url": "https://en.wikipedia.org/wiki/New_York_City_Subway_stations; https://data.ny.gov/Transportation/MTA-Subway-Stations/39hk-dx4f",
+        "answer_context": "The New York City Subway has 472 total stations as of January 2025, the largest number of public transit subway stations of any system in the world. The MTA's ridership tables list 424 stations because they combine ridership data for station complexes connected by transfer passageways. The count varies depending on whether station complexes are counted as separate stations (472) or as single units (424).",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "9d44cddc-e027-42aa-8024-4adb998d05df",
+      "audit_number": 64,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "Prompt sounds like container purchase price but notes are a freight spot rate. Specify shipment, 40-foot unit, route, date, and benchmark coverage.",
+      "expected": {
+        "question_text": "What is the current price of a standard shipping container from Shanghai to Los Angeles?",
+        "answer_value": "2103",
+        "source_url": "https://www.drewry.co.uk/supply-chain-advisors/supply-chain-expertise/world-container-index-assessed-by-drewry; https://www.freightos.com/routes/route/cn-shanghai-shanghai/us-losangeles-ca",
+        "answer_context": "Spot rates from Shanghai to Los Angeles declined 7% to $2,103 per 40ft container as of December 11, 2025 according to Drewry's World Container Index. Other sources show varying rates: Freightos data shows $1,725/FEU, while some quote $2,900 for a 40GP/HQ container. Rates vary based on what's included (port-to-port vs. including local charges) and carrier. Carriers are struggling to prop up falling rates due to lack of volume after Christmas inventory was shipped in November.",
+        "unit_id": "e1f4f40f-3b40-433a-8b0c-6606b50cddbf"
+      }
+    },
+    {
+      "id": "3315ad95-b0cf-405b-974b-581396ea67da",
+      "audit_number": 65,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "Nationality-based Nobel count is recognition trivia with citizenship ambiguity. Prefer research investment or scientific participation.",
+      "expected": {
+        "question_text": "How many Nobel Prizes have been awarded to Japanese nationals?",
+        "answer_value": "32",
+        "source_url": "https://en.wikipedia.org/wiki/List_of_Japanese_Nobel_laureates_and_nominees; https://www.nippon.com/en/japan-data/h02570/",
+        "answer_context": "Since 1949, there have been 32 Japanese laureates of the Nobel Prize. The count may vary (30 vs. 32) depending on criteria - some sources count only those with Japanese nationality at award time, while others include Japanese-born individuals who acquired foreign citizenship. By category: 12 physicists, 9 chemists, 6 for physiology/medicine, 3 for literature, and 2 for peace. No Japanese national has won the Economics prize.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "d5186ee3-92c5-4d78-b916-00d72171f196",
+      "audit_number": 66,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Population",
+      "verification_notes": "UNHCR Global Trends 2024 reports 31 million refugees under its mandate. Replaces 42.5 million that combined different protection categories.",
+      "expected": {
+        "question_text": "What is the current number of refugees worldwide according to the UNHCR?",
+        "answer_value": "42500000",
+        "source_url": "https://www.unhcr.org/refugee-statistics; https://www.unhcr.org/mid-year-trends",
+        "answer_context": "As of June 2025, there were 42.5 million refugees globally, including 27.2 million refugees under UNHCR's mandate, 3.3 million in refugee-like situations, 6.1 million in need of international protection, and 5.9 million Palestine refugees under UNRWA's mandate. Total forcibly displaced persons worldwide: 117.3 million (including refugees, 67.8 million IDPs, and 8.42 million asylum-seekers). The global number fell slightly by 1% to 122.1 million by April 2025.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      },
+      "question_text": "About how many refugees were under UNHCR’s mandate at the end of 2024?",
+      "answer_value": 31000000,
+      "observation_period": "End of 2024",
+      "geography": "World, UNHCR mandate",
+      "measure_definition": "Refugees under UNHCR mandate, excluding UNRWA’s Palestine refugees, other people in need of international protection, asylum-seekers and internally displaced people.",
+      "source_name": "UNHCR — Global Trends 2024",
+      "source_url": "https://www.unhcr.org/sites/default/files/2025-06/global-trends-report-2024.pdf",
+      "answer_context": "This is one part of the wider picture of forced displacement. It excludes people displaced within their own country and Palestine refugees covered by UNRWA, which are counted separately.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "203ca96c-20db-434d-ad1e-d295a554240e",
+      "audit_number": 67,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Governance and security",
+      "verification_notes": "Useful strategic-capacity anchor in moderation; define commissioned/in-service carriers and the reference date using a naval source.",
+      "expected": {
+        "question_text": "How many active aircraft carriers does the Indian Navy currently operate?",
+        "answer_value": "2",
+        "source_url": "https://en.wikipedia.org/wiki/List_of_active_Indian_Navy_ships; https://www.pib.gov.in/PressReleasePage.aspx?PRID=2182277",
+        "answer_context": "As of 2025, the Indian Navy operates 2 active aircraft carriers: INS Vikramaditya (modified Kiev-class, procured from Russia in 2013, serving as flagship) and INS Vikrant (India's first domestically-built carrier, commissioned September 2022). In April 2025, the Navy contracted 26 Dassault Rafale M fighters for these carriers, with deliveries by 2030. India shelved plans for a third carrier (INS Vishal).",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "90300df7-a6d0-458e-9f49-e0bd5fda8daf",
+      "audit_number": 68,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Rare-memory-condition case count lacks a stable registry and mixes documented, screened, and confirmed cases. Replace with a consequential health statistic.",
+      "expected": {
+        "question_text": "How many documented cases of hyperthymesia (highly superior autobiographical memory) exist?",
+        "answer_value": "61",
+        "source_url": "https://en.wikipedia.org/wiki/Hyperthymesia; https://cnlm.uci.edu/hsam/; https://pmc.ncbi.nlm.nih.gov/articles/PMC11965258/",
+        "answer_context": "As of April 2016, six hyperthymesia cases were confirmed in peer-reviewed articles, first being Jill Price (AJ) in 2006. Estimated worldwide cases vary: about 61-62 confirmed cases, though UC Irvine's Center identifies over 50 individuals, and nearly 100 have been identified through screening. The discrepancy reflects the difference between rigorously peer-reviewed confirmed cases (fewer) and individuals identified as potentially having the condition (significantly more, not all formally published).",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "86c27c62-854a-4581-8632-a37d3c8d41c7",
+      "audit_number": 69,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Fun biological scale question, but 400 summarizes an uncertain individual-age estimate, not a precise species lifespan. Reframe or use outside ranked play.",
+      "expected": {
+        "question_text": "How many years is it estimated the longest-lived vertebrate (Greenland Shark) lives for?",
+        "answer_value": "400",
+        "source_url": "https://en.wikipedia.org/wiki/Greenland_shark; https://oceanservice.noaa.gov/facts/greenland-shark.html; https://www.science.org/content/article/greenland-shark-may-live-400-years-smashing-longevity-record",
+        "answer_context": "The Greenland shark has the longest known lifespan of all vertebrate species. The species has a lifespan of at least 272 years, with the oldest individual estimated to be 392 ± 120 years of age. Estimates range between 250 and 500 years. Age is determined using radiocarbon dating of eye lens crystals. For context, the next oldest vertebrate is the bowhead whale at 211 years. Greenland sharks reach sexual maturity around 150 years.",
+        "unit_id": "3fa28d40-3001-410c-9903-6c369df76cef"
+      }
+    },
+    {
+      "id": "bcf42117-9ef4-4756-826e-dafd392f2ae4",
+      "audit_number": 70,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Strong public-health topic; the prompt says the French population while notes concern surveyed adults and mix 2021 with 2025. Specify ages/year and daily smoking.",
+      "expected": {
+        "question_text": "What is the percentage of the French population that smokes daily?",
+        "answer_value": "25.3",
+        "source_url": "https://www.statista.com/statistics/937572/evolution-proportion-daily-smokers-by-gender-france/; https://gsthr.org/countries/profile/fra/",
+        "answer_context": "The most recent data shows 25.3 percent of French respondents were daily smokers in 2021, a decrease from 30% in 2000. Note that 34.6% of French adults are current smokers (including daily and occasional) in 2025, with 36% of men and 33.2% of women smoking. The distinction between current smokers (34.6%) and daily smokers (25.3%) accounts for occasional smokers.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "9f0dd4be-0118-43cc-9f8c-8c387b6cfc7c",
+      "audit_number": 71,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Good physical-scale yardstick; specify deepest measured point, survey, and approximation instead of treating measurement revisions as error.",
+      "expected": {
+        "question_text": "What is the depth of the Mariana Trench in meters?",
+        "answer_value": "10984",
+        "source_url": "https://en.wikipedia.org/wiki/Mariana_Trench; https://www.britannica.com/place/Mariana-Trench",
+        "answer_context": "The maximum known depth of the Mariana Trench is 10,984 ± 25 metres (36,037 ± 82 ft) at the Challenger Deep, located at the southern end of the trench. Measurements vary slightly: 10,900-11,034m using different methods, with a 2021 estimate of 10,935m. This is deeper than Mount Everest is tall - if Everest (8,848m) were submerged, its summit would remain 2km underwater.",
+        "unit_id": "ba51f902-5d51-4f9d-bc00-33eb66f10011"
+      }
+    },
+    {
+      "id": "6dfd0e9b-ac36-44a8-a8ad-2a1bd88cb6df",
+      "audit_number": 72,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Living supercentenarian registry counts change frequently and reflect incomplete verification. Prefer population longevity or survival probabilities.",
+      "expected": {
+        "question_text": "How many verified supercentenarians (people over 110) are currently alive?",
+        "answer_value": "272",
+        "source_url": "https://en.wikipedia.org/wiki/List_of_oldest_living_people; https://longeviquest.com/; https://www.grg-supercentenarians.org/world-supercentenarian-rankings-list/",
+        "answer_context": "There are currently 272 validated living supercentenarians as of 2025, validated by either the Gerontology Research Group (GRG) or LongeviQuest, of whom 242 are female and 30 are male. At any time, approximately 300-500 living supercentenarians exist, with numbers increasing due to healthcare advances. The oldest is Ethel Caterham (UK, 116 years). LongeviQuest recognizes 17 verified living supercentenarians in France alone.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "4af2ae40-2210-4e9c-a842-6dfa13a6de45",
+      "audit_number": 73,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Kernel line count is specialist size trivia; notes infer the answer from a growth trend. Replace with compute, adoption, or infrastructure scale.",
+      "expected": {
+        "question_text": "How many lines of code are in the Linux Kernel as of the latest stable release?",
+        "answer_value": "40000000",
+        "source_url": "https://www.linuxtoday.com/blog/linux-kernel-source-code-surpasses-40-million-lines-january-2025-update/; https://www.theregister.com/2025/07/29/linux_kernel_616/",
+        "answer_context": "As of January 2025, the Linux Kernel Source has approximately 40 million lines of code. The latest stable release is 6.18 (November 30, 2025), the 2025 LTS release. Linux kernel 6.16 (July 2025) had 38.4 million lines across 78,000 files. Based on growth trajectory, kernel 6.18 likely has ~40 million lines or slightly more. For context, version 4.1 (2015) had 19.5 million lines, showing the kernel has roughly doubled in a decade.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "53ac3dae-3cc4-4c3f-8598-f4c247461953",
+      "audit_number": 74,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "WDI vintage 2026-07-13, SL.UEM.TOTL.ZS, 2024 value 11.4. Replaces a quarter-specific figure presented as current.",
+      "expected": {
+        "question_text": "What is the current unemployment rate in Spain?",
+        "answer_value": "10.45",
+        "source_url": "https://tradingeconomics.com/spain/unemployment-rate; https://www.healthplanspain.com/blog/expat-tips/2127-spains-unemployment-rate-continues-to-decline-2025.html",
+        "answer_context": "Spain's unemployment rate was 10.45% for Q3 2025 (or 10.50% for September 2025), marking the lowest level since 2008. Specific December 2025 data is not yet available as official surveys are released quarterly with lag. OECD projects unemployment will decline to 10.7% by end of 2025. Spain's unemployment has improved significantly from historical highs, with the workforce expected to exceed 22 million in 2025.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "What was Spain’s annual unemployment rate in 2024, according to the ILO estimate?",
+      "answer_value": 11.4,
+      "observation_period": "2024",
+      "geography": "Spain",
+      "measure_definition": "Unemployed people as a percentage of the total labor force, annual modeled ILO estimate; not a quarterly national release.",
+      "source_name": "World Bank — ILO modeled estimates",
+      "source_url": "https://api.worldbank.org/v2/country/ESP/indicator/SL.UEM.TOTL.ZS?date=2024&format=json",
+      "answer_context": "Roughly one in nine people in the labor force were unemployed. The denominator excludes people outside the labor force, such as those who are neither working nor looking for work.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "a1ee5802-983a-4cad-8f17-e5c04f527749",
+      "audit_number": 75,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Biodiversity",
+      "verification_notes": "Another catalog record competing with the broader species question. Prefer biodiversity loss, habitat extent, or a clearly dated conservation measure.",
+      "expected": {
+        "question_text": "How many distinct bird species have been recorded in Colombia?",
+        "answer_value": "1969",
+        "source_url": "https://en.wikipedia.org/wiki/List_of_birds_of_Colombia; https://www.audubon.org/our-work/americas/colombia/international-colombia; https://bdj.pensoft.net/article/59202/",
+        "answer_context": "The latest official checklist by the Colombian Committee of Ornithological Records includes 1,969 bird species. Wikipedia's list shows 2,037 species including additional records. Colombia has the highest bird species diversity in the world, representing approximately 20% of global avian species. This includes 84 endemic species and 225 migratory birds. Colombia became the first country to record 1,900+ species in 2013, a figure that continues to increase annually.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "effd23bd-7ede-4e8a-8fff-af240cb43476",
+      "audit_number": 76,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Economics",
+      "verification_notes": "Live stamp price is a weak global reference point. A broader price-level or service-access measure would be more useful.",
+      "expected": {
+        "question_text": "What is the current price of a first-class stamp in the UK?",
+        "answer_value": "1.7",
+        "source_url": "https://www.royalmail.com/prices2025; https://shop.royalmail.com/postage-and-packaging/first-and-second-class-stamps",
+        "answer_context": "The UK first class stamp price is £1.70 for a standard letter (up to 100g), effective from April 7, 2025. This represents a 3% increase from the previous price of £1.65 (October 2024). No additional increase has been announced for the remainder of 2025, so the price remains £1.70 as of December 2025. Second class stamps are priced at 87p.",
+        "unit_id": "0d607a78-8c11-45f3-bcbd-c9eeb8b80df9"
+      }
+    },
+    {
+      "id": "c58405a5-d624-4f8c-9867-e8c6e600e07e",
+      "audit_number": 77,
+      "editorial_status": "ready",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "NOAA JetStream atmosphere table: nitrogen N2 78.084%; dry-air composition, not mass fraction.",
+      "expected": {
+        "question_text": "What is the percentage of nitrogen in the Earth's atmosphere?",
+        "answer_value": "78.08",
+        "source_url": "https://www.noaa.gov/jetstream/atmosphere; https://en.wikipedia.org/wiki/Atmosphere_of_Earth",
+        "answer_context": "Nitrogen comprises 78.08% of Earth's atmosphere by mole fraction (quantity of molecules) in dry air. By volume, nitrogen makes up 78.1%, though it accounts for 75.5% by mass. Multiple authoritative sources confirm Earth's atmosphere is composed of about 78% nitrogen, 21% oxygen, 0.9% argon, and 0.1% other gases. Nitrogen is the most abundant naturally occurring gas in the atmosphere.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "Approximately what percentage of dry air is nitrogen, by volume?",
+      "answer_value": 78.084,
+      "observation_period": "Standard atmospheric composition",
+      "geography": "Earth’s atmosphere",
+      "measure_definition": "Nitrogen proportion by volume in dry air, excluding variable water vapor.",
+      "source_name": "NOAA — JetStream: The Atmosphere",
+      "source_url": "https://www.noaa.gov/jetstream/atmosphere",
+      "answer_context": "Nitrogen makes up most of the air around us. Specifying dry air keeps changing amounts of water vapor from altering the comparison.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-09-08"
+    },
+    {
+      "id": "78d133e2-43dd-4254-90f9-36fa08d4b19c",
+      "audit_number": 78,
+      "editorial_status": "ready",
+      "editorial_role": "reference",
+      "editorial_topic": "Governance and security",
+      "verification_notes": "National Archives lists amendments 1–10 as the Bill of Rights and 11–27 here, with the 27th ratified May 7, 1992.",
+      "expected": {
+        "question_text": "How many times has the US Constitution been amended?",
+        "answer_value": "27",
+        "source_url": "https://constitutioncenter.org/the-constitution/amendments; https://www.archives.gov/founding-docs/amendments-11-27",
+        "answer_context": "27 amendments to the U.S. Constitution have been ratified. The first 10 (Bill of Rights) were ratified December 15, 1791. Congress has endorsed 33 amendments since 1789, and states ratified 27 between 1791 and 1992. The remaining six were not ratified by sufficient states. While approximately 11,985 proposals have been introduced in Congress since 1789, only 27 successfully completed ratification.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      },
+      "question_text": "As of September 2026, how many amendments had been ratified to the US Constitution?",
+      "answer_value": 27,
+      "observation_period": "As of 2026-09-08",
+      "geography": "United States",
+      "measure_definition": "Number of ratified constitutional amendments, including the Bill of Rights and the subsequently repealed Eighteenth Amendment.",
+      "source_name": "US National Archives",
+      "source_url": "https://www.archives.gov/founding-docs/amendments-11-27",
+      "answer_context": "The count includes the Bill of Rights and amendments later changed or repealed. It is a compact reference point for how rarely the Constitution’s text has been formally amended.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-09-08"
+    },
+    {
+      "id": "a740ef6d-81a3-4300-97bb-534fa5aab55f",
+      "audit_number": 79,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "Central versus general government and gross versus net debt are mixed. Use a defined debt-to-nominal-GDP series and reference period.",
+      "expected": {
+        "question_text": "What is the current debt-to-GDP ratio of Japan?",
+        "answer_value": "234.9",
+        "source_url": "https://www.worldeconomics.com/Debt/Japan.aspx; https://www.mof.go.jp/english/policy/budget/budget/fy2025/02.pdf",
+        "answer_context": "As of March 2025, Japan's general gross debt was 1,324 trillion yen, or 234.9% of GDP, among the highest of developed nations. By September 2025, government debt was 203.0% of nominal GDP (central government only, vs. 204.7% in previous quarter). Using PPP-adjusted GDP, the ratio is 208.2%. Variations reflect different methodologies (general vs. central government, nominal vs. PPP GDP). Of total debt, 88.1% is held domestically.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "18d1a9d1-38e8-4246-9874-93f739285424",
+      "audit_number": 80,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Gut-neuron count is uncertain specialist anatomy with limited explanatory payoff. Prefer disease burden or treatment effectiveness at population level.",
+      "expected": {
+        "question_text": "What is the estimated number of neurons in the enteric nervous system (the \"gut brain\")?",
+        "answer_value": "500000000",
+        "source_url": "https://en.wikipedia.org/wiki/Enteric_nervous_system; https://www.jneurosci.org/content/38/44/9346; https://onlinelibrary.wiley.com/doi/abs/10.1111/nmo.14440",
+        "answer_context": "The enteric nervous system (ENS) in humans consists of approximately 500 million neurons (range: 200-600 million). The human small intestine alone contains 100 million neurons. This represents 0.5% of brain neurons and five times the spinal cord's neurons, making the ENS the largest neuronal collection outside the brain and the largest division of the peripheral nervous system. The ENS is called the 'second brain' because it operates independently of the brain and spinal cord.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "d41324d8-1d57-45c2-9c72-275aa4184f78",
+      "audit_number": 81,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Stored count is potentially active volcanoes, not currently erupting ones. Specify definition and registry/date; a hazard-exposure measure may be stronger.",
+      "expected": {
+        "question_text": "How many active volcanoes are there worldwide?",
+        "answer_value": "1350",
+        "source_url": "https://www.usgs.gov/faqs/how-many-active-volcanoes-are-there-earth; https://volcano.si.edu/faq/index.cfm?question=activevolcanoes",
+        "answer_context": "There are about 1,350 potentially active volcanoes worldwide (excluding continuous ocean floor belts at spreading centers). About 500 have erupted in historical time. The Smithsonian's Global Volcanism Program reports 1,229 volcanoes with Holocene eruptions (past 12,000 years) as of September 2025. Currently, 40-50 volcanoes are in continuing eruption, with ~20 actively erupting on any particular day. Around 50-70 volcanoes erupt annually.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "4e597016-e7e7-4d45-afd6-8c5c7ea0be80",
+      "audit_number": 82,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Useful dating-timescale yardstick; retain sparingly with a primary physical reference and concise explanation of what the scale enables.",
+      "expected": {
+        "question_text": "What is the half-life of Carbon-14 in years?",
+        "answer_value": "5730",
+        "source_url": "https://en.wikipedia.org/wiki/Carbon-14; https://www.britannica.com/science/carbon-14",
+        "answer_context": "Carbon-14 has a half-life of 5,730 years (some sources: 5,700±30 years). After 5,730 years, only half the original 14C remains. Through beta decay, a neutron converts to a proton, emitting an electron and antineutrino, transforming 14C into stable nitrogen-14. The half-life allows radiocarbon dating of samples up to ~50,000 years old. 14C is continuously produced in the upper atmosphere when cosmic ray neutrons strike nitrogen-14 atoms.",
+        "unit_id": "3fa28d40-3001-410c-9903-6c369df76cef"
+      }
+    },
+    {
+      "id": "bf6193f7-e025-4c82-9951-886cd1f205f4",
+      "audit_number": 83,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "2025-04-15 report release explicitly gives 51% automated web traffic in 2024. Prompt attributes the provider and year, and reveal limits the scope.",
+      "expected": {
+        "question_text": "What is the current percentage of internet traffic that is bot-generated?",
+        "answer_value": "51",
+        "source_url": "https://www.imperva.com/resources/resource-library/reports/2025-bad-bot-report/; https://cpl.thalesgroup.com/about-us/newsroom/2025-imperva-bad-bot-report-ai-internet-traffic",
+        "answer_context": "Automated bot traffic surpassed human-generated traffic for the first time in a decade, constituting 51% of all web traffic in 2024 (reported in 2025 Imperva Bad Bot Report). Bad bots comprised 37% (up from 32% prior year), while good bots accounted for 14%. This shift is attributed to rise of AI and LLMs simplifying bot creation. AI crawlers accounted for almost 80% of all AI bot traffic April-July 2025.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "In Imperva’s 2024 web-traffic analysis, what percentage of traffic came from automated bots?",
+      "answer_value": 51,
+      "observation_period": "2024",
+      "geography": "Web traffic analyzed by Imperva",
+      "measure_definition": "Automated bot share of web traffic in the provider’s dataset; includes benign and malicious bots, not a census of the entire internet.",
+      "source_name": "Thales / Imperva — 2025 Bad Bot Report",
+      "source_url": "https://cpl.thalesgroup.com/about-us/newsroom/2025-imperva-bad-bot-report-ai-internet-traffic",
+      "answer_context": "More than half of the web traffic in this analysis was automated. Bots include useful services as well as abuse; this provider’s measurements should not be treated as a census of every internet connection.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "86cb6579-325b-49b6-9123-5c79e4710b64",
+      "audit_number": 84,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "Chess record trivia; the stored explanation itself cites a 272-move decisive game after calling 269 the longest. Replace rather than patching the record.",
+      "expected": {
+        "question_text": "How many distinct moves were played in the longest recorded tournament chess game?",
+        "answer_value": "269",
+        "source_url": "https://www.chess.com/blog/BrittleSnarl/the-longest-chess-game-nikolic-arsovic-belgrade-1989; https://chess.fandom.com/wiki/Longest_Chess_game",
+        "answer_context": "The longest tournament chess game was Nikolić–Arsović, Belgrade 1989, lasting 269 moves over 20 hours 15 minutes, ending in a draw. At the time, FIDE allowed 100 moves (vs. normal 50) in rook-bishop vs. rook endgames. FIDE has since rescinded this modification. Software analysis revealed Nikolic missed victories on moves 201, 238, 239, 241, 244, 247, and 255. The longest decisive FIDE game is Fellowes vs. Lalić (London 2024) at 272 moves.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "21ea1816-2aea-4974-8f4b-2e19b92026bf",
+      "audit_number": 85,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "Rare-language phoneme record is obscure and dialect-dependent. Language access or endangered-language share is a stronger subject.",
+      "expected": {
+        "question_text": "How many distinct phonemes are in the Rotokas language (known for the smallest inventory)?",
+        "answer_value": "11",
+        "source_url": "https://en.wikipedia.org/wiki/Rotokas_language; https://www.researchgate.net/publication/236719083_The_Phoneme_Inventory_of_the_Aita_Dialect_of_Rotokas",
+        "answer_context": "Central Rotokas possesses one of the world's smallest phonemic inventories, consisting of only 11 phonemes: five vowels and six consonants. Only Pirahã has been claimed to have fewer. Central Rotokas lacks phonemic nasals, with consonants at three articulation places (bilabial, alveolar, velar), each with voiced/unvoiced variants. The Aita dialect has nine consonants (adds phonemic nasals). The language uses 12 Latin letters with no diacritics.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "42e9ce1c-61b4-4786-8efc-05f223b25849",
+      "audit_number": 86,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "OFV December/full-year 2024 release: 128,691 new passenger cars and 88.9% zero-emission (nullutslippsbiler). Preserves source category rather than silently treating it as BEV-only.",
+      "expected": {
+        "question_text": "What is the current adoption rate of EVs in Norway as a percentage of new car sales?",
+        "answer_value": "97.6",
+        "source_url": "https://thedriven.io/2025/08/04/norway-sets-record-month-for-ev-sales-97-2-per-cent-as-tesla-slips-to-fourth-in-electric-brands/; https://cleantechnica.com/2025/07/11/evs-take-a-record-97-7-share-in-norway-tesla-model-y-strong-lead/",
+        "answer_context": "Norway recorded 97.6% EV market share for new passenger car sales in November 2025. Throughout 2025, Norway maintained extraordinary rates: 97.2% in July, 97.4% in April. EV Volumes expects 97.9% plug-in share by end of 2025, up from 91.7% in 2024, with BEVs alone accounting for 89%. The remaining 2.4% is split among petrol, diesel, and hybrid (each <1%). Norway is approaching its 2025 goal of 100% electric new car sales.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "What percentage of new passenger cars registered in Norway in 2024 were zero-emission vehicles?",
+      "answer_value": 88.9,
+      "observation_period": "2024",
+      "geography": "Norway",
+      "measure_definition": "Zero-emission share of newly registered passenger cars over the full calendar year; not the share of all cars on the road.",
+      "source_name": "Norwegian Road Federation (OFV)",
+      "source_url": "https://ofv.no/bilsalget/bilsalget-i-desember-2024",
+      "answer_context": "Nearly nine in ten newly registered passenger cars were zero-emission. New registrations show the direction of the market; the existing vehicle fleet changes more slowly.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "f3d89d0c-6296-434c-93c4-58bc8e140d93",
+      "audit_number": 87,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "Weekly Permian rig count is an industry indicator requiring specialist context. Replace with oil output, productivity change, or energy supply share.",
+      "expected": {
+        "question_text": "How many active oil rigs are currently operating in the Permian Basin?",
+        "answer_value": "251",
+        "source_url": "https://rigcount.bakerhughes.com/na-rig-count; https://www.ainvest.com/news/baker-hughes-total-rig-count-surges-548-december-2025-sector-rotation-opportunities-energy-linked-industries-2512/",
+        "answer_context": "The Permian Basin has 251 rigs as of December 2025, remaining the epicenter of US drilling activity. Recent weekly data shows the count may be around 249 rigs mid-December. Year-over-year, the count declined from 305 rigs in 2024. Despite lower rig counts (down 15% YoY), production rose 400,000 bpd due to improved productivity from longer laterals, optimized spacing, and higher-intensity completions.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "43c2da73-9b46-4631-b5c4-dacf9001b5d4",
+      "audit_number": 88,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Economics",
+      "verification_notes": "Strong inflation example; state month/year and year-on-year CPI, use INDEC, and keep monthly and annual rates separate.",
+      "expected": {
+        "question_text": "What is the current inflation rate in Argentina?",
+        "answer_value": "31.4",
+        "source_url": "https://tradingeconomics.com/argentina/inflation-cpi; https://www.bbvaresearch.com/en/publicaciones/argentina-inflation-recorded-27-mom-in-december-and-an-annual-rate-of-1178-for-2024/",
+        "answer_context": "Argentina's inflation rate was 31.40% in November 2025 (year-over-year), up slightly from 31.30% in October. December 2025 data is not yet available. This marks the first acceleration after a sustained disinflationary trend since early 2024. Annual inflation for full year 2024 was 117.8%. The monthly rate in December 2024 was 2.7%.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "e10f3990-2918-4486-ba5f-208d7ee1f78c",
+      "audit_number": 89,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "Education attainment is worth rebuilding, but the mode needs a defined cohort and source. Zero is an unanswered placeholder, not an observed outcome.",
+      "expected": {
+        "question_text": "What is the modal number of years of education for a woman in Bangladesh?",
+        "answer_value": "0",
+        "source_url": "",
+        "answer_context": "Search results provided extensive information about Bangladesh women's education progress but did not contain specific data on modal years of schooling. While secondary enrollment jumped from 39% (1998) to 67% (2017) and girls now make up over half of secondary enrollment, the specific modal education level completed was not available in the sources.",
+        "unit_id": "3fa28d40-3001-410c-9903-6c369df76cef"
+      }
+    },
+    {
+      "id": "2d587b02-c6e0-42b6-8f0c-1f6d66d7b766",
+      "audit_number": 90,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Education and culture",
+      "verification_notes": "LEGO manufacturing trivia; distinct brick types are confused with pieces produced, and one citation is a shipwreck article.",
+      "expected": {
+        "question_text": "How many distinct Lego bricks have been manufactured since the company's inception?",
+        "answer_value": "1100000000000",
+        "source_url": "https://www.engineeringfordiscovery.org/education/shipwrecks/how-many-shipwrecks-are-there/; https://brickrecycler.com/lego-fun-facts/",
+        "answer_context": "As of 2024, over 1.1 trillion LEGO pieces have been produced. Earlier estimates: 600 billion by July 2015, 400+ billion since 1958. Annual production averages approximately 36 billion pieces (1,140 elements per second). In 2012 alone, 45.7 billion bricks were produced at 5.2 million per hour. The modern brick design with hollow tubes was patented in 1958.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "a15850b9-4b10-4ffe-8cca-0cd9705b423a",
+      "audit_number": 91,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Moon escape velocity is a second-order astronomy constant. Prefer the more reusable Earth–Moon light-time or Earth–Sun distance anchor.",
+      "expected": {
+        "question_text": "What is the escape velocity of the Moon in km/s?",
+        "answer_value": "2.38",
+        "source_url": "https://en.wikipedia.org/wiki/Escape_velocity; https://www.britannica.com/science/escape-velocity",
+        "answer_context": "The Moon's escape velocity is 2.38 km/s (8,600 km/h; 5,300 mph), some sources round to 2.4 km/s. This is much less than Earth's escape velocity of 11.2 km/s. This represents the minimum speed needed for an object to escape the Moon's gravitational pull without additional propulsion.",
+        "unit_id": "3848b339-a019-4cc1-b2d4-22a1317a3922"
+      }
+    },
+    {
+      "id": "b6a6cb9d-a9af-40fc-9b88-eb8d1d43bf5e",
+      "audit_number": 92,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Amino-acid count is textbook recall; lower priority than health, nutrition, or accessible biotechnology measures.",
+      "expected": {
+        "question_text": "How many distinct amino acids are encoded by the standard genetic code?",
+        "answer_value": "20",
+        "source_url": "https://en.wikipedia.org/wiki/Genetic_code; https://www.britannica.com/science/genetic-code",
+        "answer_context": "The standard genetic code encodes 20 common amino acids. The 64 possible codons include 61 that specify these 20 amino acids and 3 stop codons. Two additional amino acids can be incorporated in special circumstances: selenocysteine (Sec, the 21st) and pyrrolysine (Pyl, the 22nd), encoded by UGA and UAG codons that usually function as stop signals. Methionine and tryptophan are the only amino acids coded by single codons.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "147d2cbf-961f-43e7-91e7-5652fe615271",
+      "audit_number": 93,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "68% describes lactose malabsorption, not necessarily symptomatic intolerance. Align condition, adult population, and study definition.",
+      "expected": {
+        "question_text": "What is the percentage of the world's population that is lactose intolerant?",
+        "answer_value": "68",
+        "source_url": "https://worldpopulationreview.com/country-rankings/lactose-intolerance-by-country; https://www.thelancet.com/journals/langas/article/PIIS2468-1253(17)30154-1/fulltext",
+        "answer_context": "Approximately 65-68% of the world's adult population is lactose intolerant. A systematic review found global lactose malabsorption prevalence of 68% (95% CI 64-72) when standardizing for country size. Regional variation is significant: 5% in northern Europe, 28% in western/southern/northern Europe, 75-95% in African American and Asian populations, and up to 90% in parts of Asia. Lactose intolerance is the ancestral state before lactase persistence evolved.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "4f972e6e-f087-4361-9424-7feae028e19b",
+      "audit_number": 94,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Steel sound speed depends on alloy, wave mode, and conditions; notes give incompatible values. Low editorial payoff for this audience.",
+      "expected": {
+        "question_text": "What is the speed of sound in steel in meters per second?",
+        "answer_value": "5960",
+        "source_url": "https://www.engineeringtoolbox.com/sound-speed-solids-d_713.html; https://www.classltd.com/sound-velocity-table/",
+        "answer_context": "The speed of sound in steel varies by type and conditions. Mild steel: 5,960 m/s; Stainless steel: 5,790 m/s. Other commonly cited values: 5,000-5,200 m/s at 20°C. Generally ranges from 5,000 to 6,000 m/s depending on steel composition, temperature, and wave type (longitudinal vs. transverse). This is significantly faster than in air (343 m/s) or water (1,480 m/s).",
+        "unit_id": "726992f5-2663-4e22-aed1-3f9fb924cded"
+      }
+    },
+    {
+      "id": "4bc8730b-527a-40f5-98e0-563bc30cccba",
+      "audit_number": 95,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Cataloged-crater count is discovery trivia. Hazard frequency or exposure would be more useful if reliably measurable.",
+      "expected": {
+        "question_text": "How many confirmed impact craters are on the Earth's surface?",
+        "answer_value": "194",
+        "source_url": "https://en.wikipedia.org/wiki/List_of_impact_structures_on_Earth; http://www.passc.net/EarthImpactDatabase/",
+        "answer_context": "There are 194 confirmed impact structures on Earth as of 2024 (some sources cite 190 as of earlier dates). This is maintained by the Earth Impact Database at the Planetary and Space Science Centre. The relatively small number compared to the Moon (2 million+ craters) is due to weathering, erosion, plate tectonics, and volcanic activity that continuously reshape Earth's surface. Less than 1% of these have been explored.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "4dfa49cd-fbbe-4914-a410-a57a43c12c3e",
+      "audit_number": 96,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "Prompt asks all greenhouse gases; notes support a CO2 share. Specify CO2, production/process boundary, reference year, and source estimate.",
+      "expected": {
+        "question_text": "What is the percentage of global greenhouse gas emissions attributed to cement production?",
+        "answer_value": "8",
+        "source_url": "https://www.weforum.org/stories/2024/09/cement-production-sustainable-concrete-co2-emissions/; https://en.wikipedia.org/wiki/Environmental_impact_of_concrete",
+        "answer_context": "Global cement manufacturing is responsible for about 8% of the world's total CO2 emissions. Sources indicate 5-8% range, with some citing 4-8%. In 2023, global emissions from cement stood at 1.56 billion metric tons CO2. Emissions breakdown: 50% from chemical process, 40% from fuel, 5% from electricity, 5% from transport. If ranked as a country, the cement industry would be the third-highest emitter after China and the US.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      }
+    },
+    {
+      "id": "a54ec1f3-c836-4171-9100-b8a73a876af3",
+      "audit_number": 97,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Paid-news scale can be useful occasionally; specify digital-only subscribers and quarter and use company filings rather than secondary summaries.",
+      "expected": {
+        "question_text": "What is the number of active subscribers to the New York Times Digital edition?",
+        "answer_value": "11300000",
+        "source_url": "https://www.statista.com/statistics/1424757/new-york-times-digital-subscribers-by-type/; https://digiday.com/media/how-the-new-york-times-is-betting-on-a-new-family-plan-to-grow-its-digital-subscriber-base-and-revenue/",
+        "answer_context": "At the end of Q2 2025, The New York Times had approximately 11.30 million digital-only subscribers out of 11.88-11.9 million total subscribers. The Times added 230,000 net new digital subscribers in Q2 2025. Q1 2025 had 11.06 million digital-only subscribers. ARPU increased to $9.64 in Q2 from $9.34 year-ago. The company aims to reach 15 million subscribers by end of 2027. Q3/Q4 2025 data not yet publicly available.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "31681b25-59d4-4545-8c6c-d4869ca38e23",
+      "audit_number": 98,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Specialist vancomycin functional-group classification is not uniquely defined here; notes also have inconsistent hydroxyl arithmetic. Replace.",
+      "expected": {
+        "question_text": "How many distinct functional groups are in the molecule Vancomycin?",
+        "answer_value": "11",
+        "source_url": "https://pubchem.ncbi.nlm.nih.gov/compound/Vancomycin; https://go.drugbank.com/drugs/DB00512",
+        "answer_context": "Vancomycin (C66H75Cl2N9O24) contains approximately 11 distinct functional group types: carboxylic acid, primary amide, secondary amide, primary amine, secondary amine, phenolic hydroxyl, primary alcohol, secondary alcohol, aliphatic ether, aromatic ether, and aryl chloride. Specifically: 1 carboxylic acid, 1 primary amide, 6 secondary amides, 1 primary amine, 1 secondary amine, 7 total hydroxyls (3 aromatic, 1 primary alcohol, 5 secondary alcohols), 3 aliphatic ethers, 3 aromatic ethers, and 2 chlorine atoms.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "c4385909-e5cd-43a0-88a7-9b3a3a628397",
+      "audit_number": 99,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Familiar anatomy trivia gives little leverage for understanding the contemporary world. Prefer a consequential health measure.",
+      "expected": {
+        "question_text": "What is the total number of bones in the adult human body?",
+        "answer_value": "206",
+        "source_url": "https://en.wikipedia.org/wiki/Human_skeleton; https://my.clevelandclinic.org/health/body/25176-bones",
+        "answer_context": "An adult human skeleton consists of 206 bones, though adults can have between 206 and 213 bones due to individual anatomical variations. At birth, there are ~270 bones, which decrease to 206 by adulthood as some fuse together. The skeleton divides into: axial skeleton (spine, chest, head) with 80 bones, and appendicular skeleton (limbs, pelvic and shoulder girdles) with 126 bones, totaling 206.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "818aa760-c7b0-4909-87c7-8b87d9b7f0a1",
+      "audit_number": 100,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Moon-catalog count is date-sensitive discovery trivia. Keep a stronger astronomy yardstick instead.",
+      "expected": {
+        "question_text": "How many confirmed moons orbit Jupiter?",
+        "answer_value": "97",
+        "source_url": "https://en.wikipedia.org/wiki/Moons_of_Jupiter; https://science.nasa.gov/jupiter/jupiter-moons/",
+        "answer_context": "As of April 30, 2025, the IAU recognizes 97 confirmed moons orbiting Jupiter. The most recently announced are S/2017 J 10 and S/2017 J 11, bringing the total from 95 to 97. The four largest are the Galilean moons (Io, Europa, Ganymede, Callisto) discovered in 1610. This doesn't include meter-sized moonlets or hundreds of possible kilometer-sized outer irregular moons only briefly captured by telescopes.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "a1b5ddc6-979c-4e00-8a42-75fcaa85ceda",
+      "audit_number": 101,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Energy and climate",
+      "verification_notes": "EIA US energy facts 2024 electricity generation summary reports nuclear at 18%; the separate primary-energy-production table reports a different share.",
+      "expected": {
+        "question_text": "What is the current percentage of US energy produced by nuclear fission?",
+        "answer_value": "17.8",
+        "source_url": "https://en.wikipedia.org/wiki/Nuclear_power_in_the_United_States; https://www.eia.gov/energyexplained/nuclear/us-nuclear-industry.php",
+        "answer_context": "Nuclear power accounts for 17.8% of total electricity generated in the United States as of September 2025 according to the EIA. By 2024, nuclear energy accounted for 18.6% of total electric energy generation, showing a slight decrease into 2025. The US produced 65,458 thousand megawatt-hours of nuclear power in September 2025. Some sources cite ~20% as a general figure.",
+        "unit_id": "2734941c-c202-46ec-9b41-5d6271762a3a"
+      },
+      "question_text": "Approximately what percentage of US electricity generation came from nuclear power in 2024?",
+      "answer_value": 18,
+      "observation_period": "2024",
+      "geography": "United States",
+      "measure_definition": "Share of electricity generation, using EIA’s rounded 2024 summary; not the nuclear share of all energy.",
+      "source_name": "US Energy Information Administration",
+      "source_url": "https://www.eia.gov/energyexplained/us-energy-facts/data-and-statistics.php",
+      "answer_context": "Nuclear supplied roughly a fifth of US electricity. Electricity is only one part of total energy use, so this percentage should not be read as nuclear’s share of all the energy the country consumes.",
+      "verified_at": "2026-09-08",
+      "review_due": "2027-03-08"
+    },
+    {
+      "id": "c53e3ded-cce7-48fa-9907-c99e710b3128",
+      "audit_number": 102,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Technology and AI",
+      "verification_notes": "Version-specific Unicode character count is specialist catalog trivia. Replace with digital access or language coverage with a clear use.",
+      "expected": {
+        "question_text": "How many distinct characters are in the Unicode 15.0 standard?",
+        "answer_value": "149186",
+        "source_url": "https://unicode.org/versions/stats/charcountv15_0.html; https://blog.unicode.org/2022/09/announcing-unicode-standard-version-150.html",
+        "answer_context": "Unicode Standard Version 15.0 adds 4,489 characters, bringing the total to 149,186 characters. These additions include two new scripts (for a total of 161 scripts), 20 new emoji characters, and 4,193 CJK (Chinese, Japanese, Korean) ideographs. The official character count page is available at unicode.org/versions/stats/charcountv15_0.html.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "ee3ca74e-2509-400c-a444-a01ed67710ee",
+      "audit_number": 103,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Economics",
+      "verification_notes": "Bloomberg subscription price is insider occupational trivia. A financial-market scale or access question is more broadly useful.",
+      "expected": {
+        "question_text": "What is the current cost of a 1-year subscription to the Bloomberg Terminal?",
+        "answer_value": "31980",
+        "source_url": "https://www.neugroup.com/bloomberg-terminals-how-much-more-youll-pay-next-year/; https://www.bluegamma.io/post/bloomberg-terminal-pricing",
+        "answer_context": "The annual cost for users with one Bloomberg Terminal will rise to $31,980 in 2025, a 6.5% increase. For clients with multiple terminals, the cost is approximately $28,320 per terminal annually. Monthly pricing: ~$2,665 for single terminal, ~$2,360 per month for multiple terminals. The 6.5% increase also applies to Bloomberg data licenses and real-time data services. Historical pricing was $24,000/year, dropping to $20,000 for 2+ terminals.",
+        "unit_id": "e1f4f40f-3b40-433a-8b0c-6606b50cddbf"
+      }
+    },
+    {
+      "id": "a534a49e-5655-4897-bac3-02042508f9cc",
+      "audit_number": 104,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Confirmed shipwrecks and estimated total wrecks are incompatible concepts. The 3m rough estimate is not a confirmed census; low editorial priority.",
+      "expected": {
+        "question_text": "How many confirmed shipwrecks are estimated to be on the ocean floor?",
+        "answer_value": "3000000",
+        "source_url": "https://www.engineeringfordiscovery.org/education/shipwrecks/how-many-shipwrecks-are-there/; https://www.worldatlas.com/articles/how-many-shipwrecks-are-there.html",
+        "answer_context": "UNESCO estimates 3 million shipwrecks are spread across ocean floors worldwide, including rivers and lakes. NOAA recognizes 4,300 shipwrecks in its National Marine Sanctuaries. Less than 1% of these wrecks have been explored. These represent ships throughout human history, from 10,000-year-old dugout canoes to 21st century wrecks. Most remain unexplored and undocumented, making 3 million a rough estimate rather than precise count.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "b4e8f416-0ff1-4da7-a8ff-1f0a639d53a4",
+      "audit_number": 105,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Important transmission concept, unsupported current-strain estimate. The linked older study cannot establish the claimed 2025 strain R0; choose a named study or a better measured burden statistic.",
+      "expected": {
+        "question_text": "What is the current R0 (reproduction number) of the most prevalent flu strain?",
+        "answer_value": "1.4",
+        "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4169819/; https://www.cdc.gov/fluview/surveillance/2025-week-49.html",
+        "answer_context": "The predominant 2025 flu strain is influenza A(H3N2) subclade K, representing 89% of sequences. The H3N2 subclade K variant has an estimated R0 around 1.4. For context, seasonal influenza typically has R0 of 1.0-1.5 (median 1.27). The subclade K strain's R0 of 1.4 falls within typical seasonal flu range but on the higher end. This strain has driven increases in influenza activity since late 2025.",
+        "unit_id": "81f2440a-1d21-4441-9e13-0de69e2f3077"
+      }
+    },
+    {
+      "id": "74730f32-49c2-4bbf-bf3e-975abd3b207b",
+      "audit_number": 106,
+      "editorial_status": "needs_review",
+      "editorial_role": "reference",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Possible urban-growth comparison; specify completed buildings above 150m, registry, and date, or prefer housing and density measures.",
+      "expected": {
+        "question_text": "How many distinct skyscrapers (over 150m) are in Shenzhen?",
+        "answer_value": "443",
+        "source_url": "https://en.wikipedia.org/wiki/List_of_tallest_buildings_in_Shenzhen; https://www.skydb.net/city/403733930/shenzhen/",
+        "answer_context": "Shenzhen has over 443 completed skyscrapers taller than 150m as of November 2025. Other recent estimates range from 414 to 460 buildings over 150 meters. Shenzhen has the second-most skyscrapers over 150 meters globally, following only Hong Kong (569). Variations in counts (414-460) reflect different measurement dates and whether under-construction or recently topped-out structures are included.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    },
+    {
+      "id": "f4d61446-ffef-4919-9681-9b16158942cf",
+      "audit_number": 107,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Physical science",
+      "verification_notes": "Remain inactive under the existing no-negative-answer decision; this material-property fact is also low priority editorially.",
+      "expected": {
+        "question_text": "What is the boiling point of liquid Nitrogen?",
+        "answer_value": "-196",
+        "source_url": "https://en.wikipedia.org/wiki/Liquid_nitrogen; https://sciencenotes.org/liquid-nitrogen-temperature-and-facts/",
+        "answer_context": "Liquid nitrogen has a boiling point of approximately -196°C. More precisely, the temperature is -195.79°C (77 K; -320°F) at standard atmospheric pressure. Some sources cite -195.8°C. Nitrogen can exist as liquid between 63 K and 77.2 K (-346°F and -320.44°F). Slight variations (-195.79°C to -196°C) are due to rounding and measurement precision.",
+        "unit_id": "c42d1058-28a2-4e8c-a39f-840da92b5ca2"
+      }
+    },
+    {
+      "id": "4ab3cac3-e17a-491d-9ace-6945a1146d20",
+      "audit_number": 108,
+      "editorial_status": "needs_review",
+      "editorial_role": "core",
+      "editorial_topic": "Governance and security",
+      "verification_notes": "Important safety topic; fix completed-year versus projection, official reporting scope, denominator, and exclusions. Do not present a contested reported count as unquestioned current truth.",
+      "expected": {
+        "question_text": "What is the current homicide rate per 100k people in El Salvador?",
+        "answer_value": "1.34",
+        "source_url": "https://elsalvadorinfo.net/homicide-rate-in-el-salvador/; https://elsalvadorinenglish.com/2025/07/07/el-salvador-projects-lowest-homicide-rate-in-its-history-crime-no-longer-a-structural-phenomenon/",
+        "answer_context": "As of 2025, El Salvador's homicide rate is 1.34 per 100,000 people. Through January 1-December 10, 2025, the PCN reported 76 homicides (0.22 daily rate), with 287 days without murders. El Salvador is projected to conclude 2025 with 81 homicides total. This represents dramatic transformation from 106.3 per 100k in 2015 (world's highest) and 53.1 per 100k in 2018, to 1.9 in 2024.",
+        "unit_id": "aa8eddac-4c10-4085-a397-f49be42595cd"
+      }
+    },
+    {
+      "id": "c4f0ef90-f821-4c84-993b-f140ee636d0e",
+      "audit_number": 109,
+      "editorial_status": "retired",
+      "editorial_role": "reference",
+      "editorial_topic": "Cities and infrastructure",
+      "verification_notes": "Definition-dependent island-count trivia. Prefer population distribution, urbanization, or a consequential connectivity measure.",
+      "expected": {
+        "question_text": "How many distinct islands make up the nation of Indonesia?",
+        "answer_value": "17508",
+        "source_url": "https://en.wikipedia.org/wiki/Indonesian_archipelago; https://kemlu.go.id/vancouver/en/pages/indonesia_at_a_glance/2016/etc-menu",
+        "answer_context": "The most commonly cited official figure is 17,508 islands according to the Indonesian Coordinating Ministry for Maritime Affairs, with ~6,000 inhabited. However, counts vary significantly: 18,307 (2002 LAPAN survey), 13,466 (2007-2010 Bakorsurtanal), 14,752 (UN official), and ~17,500 (Britannica). Variation stems from different survey methodologies, satellite technologies, and definitions of what constitutes an island. Indonesia is the world's largest archipelagic state.",
+        "unit_id": "f95985ae-a150-4ea7-9e59-2aa563ef06fa"
+      }
+    }
+  ]
+}

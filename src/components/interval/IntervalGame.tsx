@@ -22,6 +22,7 @@ import {
 } from "./player";
 import type { Player, SharedScore } from "./player";
 import { NumberPad } from "./NumberPad";
+import { SourceLinks } from "./SourceLinks";
 import {
   compact,
   fitDomain,
@@ -1056,15 +1057,10 @@ export default function IntervalGame() {
                       <details className="source-detail">
                         <summary>Behind the number</summary>
                         <p>{question.context}</p>
-                        {question.url && (
-                          <a
-                            href={question.url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {question.source} ↗
-                          </a>
-                        )}
+                        <SourceLinks
+                          urls={question.url}
+                          names={question.source}
+                        />
                       </details>
                       <button className="primary" onClick={next}>
                         {index === orderedQuestions.length - 1
@@ -1226,15 +1222,10 @@ export default function IntervalGame() {
                         <b>{quantity(r.question.answer, r.question.unit)}</b>
                       </p>
                       <p>{r.question.context}</p>
-                      {r.question.url && (
-                        <a
-                          href={r.question.url}
-                          target="_blank"
-                          rel="noreferrer"
-                        >
-                          Source ↗
-                        </a>
-                      )}
+                      <SourceLinks
+                        urls={r.question.url}
+                        names={r.question.source}
+                      />
                     </div>
                   </details>
                 ))}

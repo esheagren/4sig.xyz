@@ -40,10 +40,15 @@ try {
     new URL("./003_play_first.sql", import.meta.url),
     "utf8",
   );
+  const editorialSchema = await readFile(
+    new URL("./005_editorial.sql", import.meta.url),
+    "utf8",
+  );
   await transaction(async (client) => {
     await client.query(schema.replace(/^BEGIN;|^COMMIT;/gm, ""));
     await client.query(identitySchema.replace(/^BEGIN;|^COMMIT;/gm, ""));
     await client.query(guestSchema.replace(/^BEGIN;|^COMMIT;/gm, ""));
+    await client.query(editorialSchema.replace(/^BEGIN;|^COMMIT;/gm, ""));
     for (const [table, data] of Object.entries(exported)) {
       await client.query(
         "INSERT INTO legacy.supabase_exports(table_name,exported_at,row_count,sha256,rows) VALUES($1,$2,$3,$4,$5)",

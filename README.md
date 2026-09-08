@@ -81,3 +81,5 @@ The dedicated access checks can run without a database using `npx tsx --test tes
 The repository is linked to Vercel's `4-sigma` project, serving `4sig.xyz`. Run a preview deployment and check `/api/health`, the full play flow, sharing, and profile before deploying production. Vercel injects the environment-specific `DATABASE_URL`. Keep `.env*`, `.vercel`, exports, and database credentials out of git.
 
 See [migration review](docs/postgres-migration.md) for the model changes and migration record.
+
+Question-bank maintenance: [editorial workflow](editorial/README.md) and [September 8 remediation report](docs/audits/2026-09-08-remediation.md).

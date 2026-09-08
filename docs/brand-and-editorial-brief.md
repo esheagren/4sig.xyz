@@ -1,6 +1,6 @@
 # Four Sigma: brand and editorial brief
 
-Working brief, September 8, 2026. Records the founder’s direction and translates it into principles for future question selection, product copy, design, and other materials. The short promise and public positioning below were adopted for the website on September 8, 2026; editorial procedures remain working recommendations.
+Working brief, September 8, 2026. Records the founder’s direction and translates it into principles for future question selection, product copy, design, and other materials. The short promise and public positioning below were adopted for the website on September 8, 2026; the first editorial review workflow was implemented the same day.
 
 ## Purpose
 
@@ -42,7 +42,7 @@ Illustrative subjects, not yet researched questions: urban housing supply, the s
 
 ## Keeping changing facts trustworthy
 
-Treat a recurring quantity as an editorial subject with dated observations, rather than a timeless fact whose answer silently changes. Question records should support a source, measurement period, verification date, definition notes, and a review date appropriate to the source’s release cycle. These are editorial requirements to consider in future data work, not a claim that all fields already exist in the application.
+Treat a recurring quantity as an editorial subject with dated observations, rather than a timeless fact whose answer silently changes. Question records should support a source, measurement period, verification date, definition notes, and a review date appropriate to the source’s release cycle. These fields are enforced for ready questions through the [editorial review workflow](../editorial/README.md). Unreviewed imports are kept outside the playable bank.
 
 Repeat important subjects when the learning value or updated observation justifies it. Refreshing a player’s understanding is part of the purpose. Do not manufacture variety with obscure facts simply to avoid all repetition.
 
