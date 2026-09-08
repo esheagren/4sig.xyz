@@ -35,3 +35,5 @@ Validate with `npm run check`, `npm run lint`, `npm test`, and `npm run build`. 
 The password-protected [question library](https://4sig.xyz/designspace?view=questions) is linked from Designspace. Search by question, place, topic or audit number; filter by review status, topic, core/reference role and review timing. Answers and potentially revealing sources/notes are only fetched when an eye control is clicked. Reveal one question or the current page; changing filters, navigating pages or reopening the library hides them again. This view reads the live bank and does not edit questions or schedules.
 
 The follow-up [gene-unit correction](releases/2026-09-08-gene-units.json) stores a full count of 20,000 genes. Releases can specify `unit_name` to change a question’s unit atomically with its prompt and answer; existing game snapshots retain their original unit and value.
+
+The [sequencing-cost correction](releases/2026-09-08-sequencing-cost.json) replaces Q011’s undated vendor minimum with NHGRI’s May 2022 production-cost benchmark and admits it as ready. Changing facts must name their observation year in the prompt, with a month or date where needed.

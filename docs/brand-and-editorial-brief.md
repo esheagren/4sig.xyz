@@ -44,6 +44,8 @@ Illustrative subjects, not yet researched questions: urban housing supply, the s
 
 Ask for the natural quantity and store its full value: “How many genes …?” with an answer of 20,000 genes, rather than “How many thousands …?” with an answer of 20. Let the interface format large numbers; do not make players convert an answer into an implicit multiplier. Keep units explicit where they define the measure, such as kilometres, percentages or a rate per 100,000 people. Preserve necessary scientific distinctions in plain language, and explain them briefly in the reveal.
 
+For quantities that change over time, put the observation year in the visible question, rather than only in its source or metadata. Use a month or exact date when that distinction affects the answer. Avoid floating references such as “currently,” “latest,” or “last year.” The date must describe the measured quantity; a source’s publication year alone does not establish it.
+
 ## Keeping changing facts trustworthy
 
 Treat a recurring quantity as an editorial subject with dated observations, rather than a timeless fact whose answer silently changes. Question records should support a source, measurement period, verification date, definition notes, and a review date appropriate to the source’s release cycle. These fields are enforced for ready questions through the [editorial review workflow](../editorial/README.md). Unreviewed imports are kept outside the playable bank.

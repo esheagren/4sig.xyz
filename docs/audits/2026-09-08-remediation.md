@@ -49,6 +49,8 @@ World Bank API observations were retrieved September 8, 2026 from the July 13, 2
 | Q086 | What percentage of new passenger cars registered in Norway in 2024 were zero-emission vehicles? | 88.9 % | [Norwegian Road Federation (OFV)](https://ofv.no/bilsalget/bilsalget-i-desember-2024) | 2027-03-08 |
 | Q101 | Approximately what percentage of US electricity generation came from nuclear power in 2024? | 18 % | [US Energy Information Administration](https://www.eia.gov/energyexplained/us-energy-facts/data-and-statistics.php) | 2027-03-08 |
 
+Follow-up: Q011 has also been repaired and admitted through the [sequencing-cost correction](../../editorial/releases/2026-09-08-sequencing-cost.json), using NHGRI’s May 2022 benchmark. The initial inventory and research queue below remain a record of the first pass; this brings the live bank to 25 ready, 41 needing review and 43 retired.
+
 ## Product and data safeguards
 
 - Source lists are rendered as individual links in both round reveals and the final recap. This fixes the 95 active legacy records that packed several URLs into a single broken link, including links in old game snapshots.

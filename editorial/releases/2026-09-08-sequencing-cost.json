@@ -1,0 +1,30 @@
+{
+  "id": "2026-09-08-sequencing-cost",
+  "questions": [
+    {
+      "id": "490e4646-9fbe-42b6-9030-fb2eae2211e2",
+      "audit_number": 11,
+      "editorial_status": "ready",
+      "editorial_role": "core",
+      "editorial_topic": "Health and biology",
+      "verification_notes": "Verified directly from NHGRI Sequencing_Cost_Data_Table_May2022.xls, sheet Data Table: the row dated 2022-05-31 reports Cost per Genome of approximately $524.624684, rounded to $525. The source methodology includes production labor, supplies, amortized sequencing equipment and initial processing; it excludes downstream analysis and other non-production activities. Genome cost is an estimate using a human-sized 3,000 Mb genome and platform-specific coverage assumptions. Replaces the undated $200 manufacturer minimum with an explicitly dated NIH-funded-center production benchmark. This is the May observation, not an annual average or a present-day retail price.",
+      "expected": {
+        "question_text": "What is the cost in USD to sequence a full human genome?",
+        "answer_value": "200",
+        "source_url": "https://www.genome.gov/about-genomics/fact-sheets/Sequencing-Human-Genome-cost; https://3billion.io/blog/whole-genome-sequencing-costs-2024-new-prices-and-future-projections",
+        "answer_context": "As of 2025, sequencing giant Illumina can achieve whole genome sequencing for as little as $200 using their NovaSeq X series platform. This represents a dramatic decrease from $100 million in 2001 and $1 million in 2007. The cost continues to decline as technology advances toward the goal of a $100 genome.",
+        "unit_id": "e1f4f40f-3b40-433a-8b0c-6606b50cddbf"
+      },
+      "question_text": "In May 2022, approximately what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "answer_value": 525,
+      "observation_period": "May 2022",
+      "geography": "NHGRI-funded sequencing centers",
+      "measure_definition": "NHGRI estimated production cost per human-sized genome, in US dollars, rounded to the nearest dollar. Derived from center cost-accounting data and coverage assumptions, not a retail or clinical test price.",
+      "source_name": "NHGRI — DNA Sequencing Costs; NHGRI — May 2022 data table",
+      "source_url": "https://www.genome.gov/about-genomics/fact-sheets/DNA-Sequencing-Costs-Data; https://www.genome.gov/sites/default/files/media/files/2023-05/Sequencing_Cost_Data_Table_May2022.xls",
+      "answer_context": "This benchmark includes sequencing labor, supplies and equipment costs. It excludes downstream interpretation and other non-production work, so a clinical test can cost more. Lower sequencing costs help make larger genomic studies possible.",
+      "verified_at": "2026-09-08",
+      "review_due": "2026-12-08"
+    }
+  ]
+}
