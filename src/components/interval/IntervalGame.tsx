@@ -220,6 +220,7 @@ export default function IntervalGame() {
   );
   const ruler = useRef<HTMLDivElement>(null),
     heading = useRef<HTMLHeadingElement>(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
   const helpDialog = useRef<HTMLDialogElement>(null),
     editDialog = useRef<HTMLDialogElement>(null);
   const lock = useRef(false),
@@ -1286,27 +1287,60 @@ export default function IntervalGame() {
           }}
         >
           <div className="dialog-head">
-            <h2 id="game-menu-title">Menu</h2>
+            <h2
+              id="game-menu-title"
+              className="menu-brand brand"
+              aria-label="Four Sigma"
+            >
+              4<span>σ</span>
+            </h2>
             <button aria-label="Close menu" onClick={() => setHelp(false)}>
               ×
             </button>
           </div>
-          <div className="menu-setting">
-            <div>
-              <span>Sound</span>
-              <p>Soft ruler ticks and touch feedback.</p>
-            </div>
-            <button
-              className="menu-switch"
-              type="button"
-              role="switch"
-              aria-checked={soundOn}
-              aria-label="Sound and vibration"
-              onClick={toggleSound}
+          <p className="menu-value-prop">
+            Four daily questions to test what you know and how sure you are.
+          </p>
+          <button
+            className="menu-settings-button"
+            type="button"
+            aria-expanded={settingsOpen}
+            aria-controls="game-menu-settings"
+            onClick={() => setSettingsOpen((open) => !open)}
+          >
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              aria-hidden="true"
             >
-              <span aria-hidden="true">{soundOn ? "On" : "Off"}</span>
-              <i aria-hidden="true" />
-            </button>
+              <path d="M4 7h5m4 0h7M4 17h11m4 0h1" />
+              <circle cx="11" cy="7" r="2" />
+              <circle cx="17" cy="17" r="2" />
+            </svg>
+            Settings
+          </button>
+          <div id="game-menu-settings" hidden={!settingsOpen}>
+            <div className="menu-setting">
+              <div>
+                <span>Sound</span>
+                <p>Soft ruler ticks and touch feedback.</p>
+              </div>
+              <button
+                className="menu-switch"
+                type="button"
+                role="switch"
+                aria-checked={soundOn}
+                aria-label="Sound and vibration"
+                onClick={toggleSound}
+              >
+                <span aria-hidden="true">{soundOn ? "On" : "Off"}</span>
+                <i aria-hidden="true" />
+              </button>
+            </div>
           </div>
           <details>
             <summary>How to play</summary>
