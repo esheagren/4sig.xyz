@@ -2,6 +2,10 @@
 
 A daily estimation game with four questions. Play immediately: enter an estimate (including `4E5`), then draw your range. Hold the circular ink arrow for half a second to confirm; release early to cancel. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
 
+## Brand and editorial direction
+
+Use the [brand and editorial brief](docs/brand-and-editorial-brief.md) when developing questions, product copy, design, or other materials. Four Sigma centers on carefully selected numbers that help people understand the world; question quality is the core editorial promise.
+
 ## Development
 
 Node 22+, PostgreSQL 15+, and npm are required.
