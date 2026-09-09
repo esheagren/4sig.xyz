@@ -2,7 +2,7 @@ import { Score } from '../../../shared/scoring';
 import { scoreText } from './game';
 import { formatEntry } from './number-entry';
 
-// Broad ranges share a scale; exact and near-miss examples share a labeled detail scale.
+// Keep every answer marker on the same vertical line, including the magnified examples.
 const answer = 1776;
 const examples = [
   { label: 'Wide', lower: 500, upper: 5000 },
@@ -20,13 +20,14 @@ export function ScoringExamples() {
         const score = Score.calculateScore(lower, upper, answer);
         const exact = lower === upper;
         const detail = exact || label === 'Miss';
-        const x = (value: number) => 8 + (detail ? (value - 1774) / 8 : value / 5500) * 284;
+        const answerX = 8 + answer / 5500 * 284;
+        const x = (value: number) => answerX + (value - answer) * (detail ? 32 : 284 / 5500);
         return <li key={label} className={score === 0 ? 'scoring-miss' : 'scoring-hit'}>
           <div className="scoring-example-heading">
             <span>{label} <small>{formatEntry(String(lower))}{!exact && `–${formatEntry(String(upper))}`}</small></span>
             <strong>{scoreText(score)} <small>pts</small></strong>
           </div>
-          {detail && <p className="scoring-detail-label">Zoomed · 1,774–1,782 feet</p>}
+          {detail && <p className="scoring-detail-label">Zoomed view</p>}
           <svg viewBox="0 0 300 32" role="img" aria-label={`${label}: ${lower}${exact ? '' : ` to ${upper}`} feet, ${scoreText(score)} points`}>
             <path className="example-axis" d="M8 16H292" />
             <path className="example-answer-guide" d={`M${x(answer)} 0V32`} />
@@ -38,6 +39,5 @@ export function ScoringExamples() {
         </li>;
       })}
     </ol>
-    <p className="scoring-takeaway">Miss the answer: zero. Contain it: tighter earns more.</p>
   </section>;
 }

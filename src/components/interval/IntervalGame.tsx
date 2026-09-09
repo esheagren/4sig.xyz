@@ -893,11 +893,12 @@ export default function IntervalGame() {
           ) : stage === "scoring" ? (
             <section className="scoring-lesson">
               <h1 ref={heading} tabIndex={-1}>How answers are scored</h1>
+              <p className="scoring-intro">You earn more points for a smaller range that includes the right answer, and zero points if it misses.</p>
               <ScoringExamples />
               <p className="entry-test-invitation">Now take the entry test: 10 initial questions.</p>
               <button className="primary" onClick={() => {
                 tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound();
-              }}>Begin <span>→</span></button>
+              }}>Next <span aria-hidden="true">→</span></button>
             </section>
           ) : stage === "identity" ? (
             authLoading ? (

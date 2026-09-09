@@ -49,7 +49,7 @@
 .interval-app .scoring-miss .example-brackets { stroke: var(--lime); }
 .interval-app .example-answer { fill: var(--blue); }
 .interval-app .example-exact { stroke: var(--blue); fill: none; }
-.interval-app .scoring-takeaway { margin-top: 16px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+.interval-app .scoring-intro { margin: -8px 0 24px; font-size: 13px; color: var(--muted); line-height: 1.5; }
 
 .interval-app .scoring-lesson { padding: 40px 0 24px; }
 .interval-app .scoring-lesson h1 { font: 400 clamp(32px, 7vw, 46px)/1.1 'Newsreader', Georgia, serif; margin: 0 0 24px; }
