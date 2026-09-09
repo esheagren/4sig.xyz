@@ -4,6 +4,9 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import auth from '../api/auth.ts';
 import session from '../api/session.ts';
 import { query } from '../api/_lib/db.ts';
+import { execFileSync } from 'node:child_process';
+import { startGame } from '../api/_lib/session-storage.ts';
+import { onboardingQuestions as legacyQuestions, ONBOARDING_VERSION as legacyVersion } from '../api/_lib/onboarding-data-v1.ts';
 import { onboardingQuestions } from '../api/_lib/onboarding-data.ts';
 
 type Browser = { cookie?: string; ip: string };
@@ -26,9 +29,9 @@ async function call(handler: typeof session, path: string, browser: Browser, bod
   return { status, data };
 }
 
-test('first-ten release has explicit definitions and supported, bounded reference values', () => {
-  assert.equal(onboardingQuestions.length, 10);
-  assert.equal(new Set(onboardingQuestions.map(q => q.id)).size, 10);
+test('first-eight release has explicit definitions and supported, bounded reference values', () => {
+  assert.equal(onboardingQuestions.length, 8);
+  assert.equal(new Set(onboardingQuestions.map(q => q.id)).size, 8);
   for (const q of onboardingQuestions) {
     assert.ok(q.trueValue > 0 && q.trueValue <= (q.max ?? Infinity));
     assert.ok(q.sourceUrl?.startsWith('https://'));
@@ -41,14 +44,14 @@ test('first-ten release has explicit definitions and supported, bounded referenc
   }
 });
 
-test('first ten: concealment, ownership, cross-day resume, identity, daily gating and calibration', async () => {
+test('first eight: concealment, ownership, cross-day resume, identity, daily gating and calibration', async () => {
   const browser: Browser = { ip: 'onboarding-first' };
   const outsider: Browser = { ip: 'onboarding-outsider' };
   const before = (await query('SELECT count(*)::int n FROM users')).rows[0].n;
   const first = await call(session, '/api/session/start', browser);
   assert.equal(first.status, 200);
   assert.equal(first.data.kind, 'onboarding');
-  assert.equal(first.data.questions.length, 10);
+  assert.equal(first.data.questions.length, 8);
   assert.equal((await query('SELECT count(*)::int n FROM users')).rows[0].n, before);
   assert.deepEqual(first.data.judgements, []);
   assert.doesNotMatch(JSON.stringify(first.data), /trueValue|answerContext|sourceUrl|"hit"|"score"/);
@@ -59,8 +62,8 @@ test('first ten: concealment, ownership, cross-day resume, identity, daily gatin
   assert.equal((await call(session, '/api/session/answer', browser, {
     sessionId: first.data.sessionId, questionId: first.data.questions[1].id, lower: 0, upper: 100,
   })).status, 409);
-  for (let i = 0; i < 10; i++) {
-    const payload = { sessionId: first.data.sessionId, questionId: first.data.questions[i].id, lower: 0, upper: i === 8 ? 1 : 100 };
+  for (let i = 0; i < 8; i++) {
+    const payload = { sessionId: first.data.sessionId, questionId: first.data.questions[i].id, lower: 0, upper: i === 6 ? 1 : 100 };
     if (i === 1) assert.equal((await call(session, '/api/session/answer', browser, { ...payload, upper: 101 })).status, 400);
     const responses = await Promise.all([
       call(session, '/api/session/answer', browser, payload),
@@ -85,7 +88,7 @@ test('first ten: concealment, ownership, cross-day resume, identity, daily gatin
   assert.equal((await call(auth, '/api/auth/claim-username', outsider, { username: 'firsttenplayer' })).status, 409);
   const resumed = await call(session, '/api/session/start', browser);
   assert.equal(resumed.data.sessionId, first.data.sessionId, 'claim-step resume without local storage, even across dates');
-  assert.equal(resumed.data.savedAnswers.length, 10);
+  assert.equal(resumed.data.savedAnswers.length, 8);
   assert.deepEqual(resumed.data.judgements, []);
   assert.equal((await call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId })).status, 409);
   await call(auth, '/api/auth/profile', browser, { avatarIcon: 'wave', avatarColor: '#276c66' });
@@ -97,11 +100,11 @@ test('first ten: concealment, ownership, cross-day resume, identity, daily gatin
   assert.equal(finished[0].data.share.id, finished[1].data.share.id);
   assert.equal(finished[0].data.share.kind, 'onboarding');
   assert.equal(finished[0].data.dailyStats, null);
-  assert.equal(finished[0].data.judgements.filter((j: { hit: boolean }) => j.hit).length, 9);
+  assert.equal(finished[0].data.judgements.filter((j: { hit: boolean }) => j.hit).length, 7);
   let user = (await call(auth, '/api/auth/me', browser, {}, 'GET')).data.user;
   assert.equal(user.gamesPlayed, 0);
-  assert.equal(user.questionsAnswered, 10);
-  assert.equal(user.calibrationRate, 0.9);
+  assert.equal(user.questionsAnswered, 8);
+  assert.equal(user.calibrationRate, 0.875);
   assert.equal(user.totalScore, finished[0].data.score);
   assert.equal(user.onboarding.sessionId, first.data.sessionId);
   for (const body of [{}, { playDaily: true }, { practice: true }]) {
@@ -122,9 +125,9 @@ test('first ten: concealment, ownership, cross-day resume, identity, daily gatin
   user = (await call(auth, '/api/auth/me', browser, {}, 'GET')).data.user;
   const dailyHits = dayResult.data.judgements.filter((j: { hit: boolean }) => j.hit).length;
   assert.equal(user.gamesPlayed, 1);
-  assert.equal(user.questionsAnswered, 14);
-  assert.equal(user.calibrationRate, (9 + dailyHits) / 14);
-  assert.equal(user.onboarding.hits, 9, 'original baseline stays fixed');
+  assert.equal(user.questionsAnswered, 12);
+  assert.equal(user.calibrationRate, (7 + dailyHits) / 12);
+  assert.equal(user.onboarding.hits, 7, 'original baseline stays fixed');
   const standings = dayResult.data.dailyStats.todayLeaderboard.filter((r: { username: string }) => r.username === 'FirstTenPlayer');
   assert.equal(standings.length, 1);
   assert.equal(standings[0].score, dayResult.data.score);
@@ -140,5 +143,36 @@ test('first ten: concealment, ownership, cross-day resume, identity, daily gatin
   assert.equal(attached.data.isRanked, false);
   assert.deepEqual(attached.data.judgements, []);
   assert.equal((await call(session, '/api/session/finalize', outsider, { sessionId: duplicate.sessionId })).status, 200);
-  assert.equal((await call(auth, '/api/auth/me', outsider, {}, 'GET')).data.user.questionsAnswered, 14);
+  assert.equal((await call(auth, '/api/auth/me', outsider, {}, 'GET')).data.user.questionsAnswered, 12);
+});
+
+
+test('ten-question games survive the eight-question upgrade and finish with their original baseline', async () => {
+  const browser: Browser = { ip: 'onboarding-legacy' };
+  await call(auth, '/api/auth/claim-username', browser, { username: 'LegacyBaseline' });
+  await call(auth, '/api/auth/profile', browser, { avatarIcon: 'wave', avatarColor: '#276c66' });
+  const userId = (await query("SELECT id FROM users WHERE username='LegacyBaseline'")).rows[0].id;
+  const original = await startGame(userId, '2000-01-01', legacyQuestions, false, 'onboarding', legacyVersion);
+  for (const q of legacyQuestions.slice(0, 8)) {
+    assert.equal((await call(session, '/api/session/answer', browser, {
+      sessionId: original.sessionId, questionId: q.id, lower: 0, upper: q.max ?? 1000,
+    })).status, 200);
+  }
+  execFileSync('npx', ['tsx', 'scripts/postgres/upgrade-onboarding.ts', '/dev/null'], { env: process.env });
+  const resumed = await call(session, '/api/session/start', browser);
+  assert.equal(resumed.data.sessionId, original.sessionId);
+  assert.equal(resumed.data.questions.length, 10);
+  assert.equal(resumed.data.savedAnswers.length, 8);
+  assert.deepEqual(resumed.data.questions.map((q: { id: string }) => q.id), legacyQuestions.map(q => q.id));
+  assert.equal((await call(session, '/api/session/finalize', browser, { sessionId: original.sessionId })).status, 409);
+  for (const q of legacyQuestions.slice(8)) await call(session, '/api/session/answer', browser, {
+    sessionId: original.sessionId, questionId: q.id, lower: 0, upper: q.max ?? 1000,
+  });
+  const completed = await call(session, '/api/session/finalize', browser, { sessionId: original.sessionId });
+  assert.equal(completed.status, 200);
+  assert.equal(completed.data.judgements.length, 10);
+  const user = (await call(auth, '/api/auth/me', browser, {}, 'GET')).data.user;
+  assert.equal(user.onboarding.count, 10);
+  assert.equal(user.onboarding.hits, 10);
+  assert.equal(user.questionsAnswered, 10);
 });

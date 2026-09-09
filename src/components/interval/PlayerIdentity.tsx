@@ -303,7 +303,7 @@ export function PlayerIdentity({
           <h1>
             Make it <em>yours.</em>
           </h1>
-          <p className="identity-ritual">{onboarding ? 'Your first ten are complete. Choose how you will appear on your scorecard.' : 'Give your score a signature.'}</p>
+          <p className="identity-ritual">{onboarding ? 'Your starting calibration is complete. Choose how you will appear on your scorecard.' : 'Give your score a signature.'}</p>
         </div>
       </div>
       <form onSubmit={start}>

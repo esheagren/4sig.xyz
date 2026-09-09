@@ -15,6 +15,7 @@ import "./style.css";
 import "./onboarding.css";
 import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
+import { CalibrationSetup } from "./CalibrationSetup";
 import { WorldviewGrid } from "./WorldviewGrid";
 import { CalibrationScore } from './CalibrationScore';
 import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
@@ -81,6 +82,7 @@ type Stage =
   | "welcome"
   | "scoring"
   | "worldview"
+  | "setup"
   | "identity"
   | "loading"
   | "estimate"
@@ -713,7 +715,7 @@ export default function IntervalGame() {
           results,
           shareUrl,
           player,
-          onboarding ? 'Your first ten' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
+          onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
         ),
       );
       setCopyState("copied");
@@ -852,9 +854,9 @@ export default function IntervalGame() {
           <header className="topbar">
             <span
               className="running-score"
-              aria-label={onboarding ? "Your first ten" : `Score ${scoreText(totalPoints(visibleResults))} points`}
+              aria-label={onboarding ? "Your starting calibration" : `Score ${scoreText(totalPoints(visibleResults))} points`}
             >
-              {onboarding ? <small>{demo ? 'Practice' : 'Your first ten'}</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
+              {onboarding ? <small>{demo ? 'Practice' : 'Starting calibration'}</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
             </span>
             <button
               className="help-button"
@@ -906,10 +908,17 @@ export default function IntervalGame() {
               <h1 ref={heading} tabIndex={-1}>The numbers we focus on.</h1>
               <p className="worldview-intro">We focus on mesofacts: important numbers that shape our world and change over years.</p>
               <WorldviewGrid />
-              <p className="entry-test-invitation">Start with 10 questions to see where you stand.</p>
+              <button className="primary" onClick={() => { setStage("setup"); focusHeading(); }}>
+                Next <span aria-hidden="true">→</span>
+              </button>
+            </section>
+          ) : stage === "setup" ? (
+            <section className="calibration-setup">
+              <h1 ref={heading} tabIndex={-1}>Four questions.<br />Every day.</h1>
+              <CalibrationSetup count={orderedQuestions.length} />
               <button className="primary" onClick={() => {
                 tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound();
-              }}>Next <span aria-hidden="true">→</span></button>
+              }}>Begin <span aria-hidden="true">→</span></button>
             </section>
           ) : stage === "identity" ? (
             authLoading ? (
@@ -962,7 +971,7 @@ export default function IntervalGame() {
             </section>
           ) : stage !== "complete" ? (
             <>
-              {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Your first ten · Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
+              {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
               {demo && !showAnswer && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Move the brackets to a range you’re 95% sure contains the answer. Hold the round arrow to submit.'}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
@@ -1237,12 +1246,12 @@ export default function IntervalGame() {
                 </p>
               )}
               <h1 ref={heading} tabIndex={-1}>
-                {onboarding ? (isRanked ? 'Your starting snapshot' : 'Your first ten · Practice') : isRanked ? "Your score" : "Practice score"}
+                {onboarding ? (isRanked ? 'Your starting snapshot' : 'Your starting calibration · Practice') : isRanked ? "Your score" : "Practice score"}
               </h1>
               <CalibrationScore score={totalPoints(results)} hits={results.filter(r => r.hit).length} count={results.length} initial={onboarding} />
               {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
               {onboarding && <div className="daily-invitation">
-                <p>{dailyAvailable ? 'Four more numbers to explore. Your original ten stay here as your baseline.' : 'Your first ten are complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>
+                <p>{dailyAvailable ? 'Four more numbers to explore. Your starting calibration stays here as your baseline.' : 'Your starting calibration is complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>
                 {dailyAvailable && <button className="primary" onClick={() => void startSession(false, true)}>Play today's four <span>→</span></button>}
                 {(user?.questionsAnswered ?? 0) > results.length && <p className="onboarding-note">Overall: {scoreText(user!.totalScore)} points · {Math.round(user!.calibrationRate * 1000) / 10}% calibration across {user!.questionsAnswered} questions. Target: 95%.</p>}
               </div>}
@@ -1294,7 +1303,7 @@ export default function IntervalGame() {
                     results,
                     shareUrl,
                     player,
-                    onboarding ? 'Your first ten' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
+                    onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
                   )}
                   onFocus={(e) => e.target.select()}
                 />
@@ -1478,7 +1487,7 @@ export default function IntervalGame() {
               reference scale.
             </p>
             <p className="muted menu-edition-note">
-              Start with ten shared questions and a calibration snapshot. Then explore four new numbers each day. Your first daily attempt counts toward your score; replays are practice.
+              Start with eight shared questions and a calibration snapshot. Then explore four new numbers each day. Your first daily attempt counts toward your score; replays are practice.
             </p>
           </section>
           <section
@@ -1546,7 +1555,7 @@ export default function IntervalGame() {
               <>
                 <h3>Make it yours</h3>
                 <p>
-                  After your first ten answers, choose a username, animated symbol,
+                  After your starting questions, choose a username, animated symbol,
                   and color to give your shared score a personality.
                 </p>
                 <button

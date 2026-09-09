@@ -145,12 +145,12 @@ export function ProfilePage() {
                   </div>
                 ))}
               </dl>
-              <p className="onboarding-note">Overall points and calibration include your first ten and ranked daily answers. Daily averages and streaks count daily rounds only.</p>
+              <p className="onboarding-note">Overall points and calibration include your starting calibration and ranked daily answers. Daily averages and streaks count daily rounds only.</p>
               {user.onboarding ? <section>
-                <h2>Your first ten</h2>
+                <h2>Your starting calibration</h2>
                 <CalibrationScore score={user.onboarding.score} hits={user.onboarding.hits} count={user.onboarding.count} initial />
                 <Link className="text-button baseline-link" to="/?onboarding=1">Explore your original answers</Link>
-              </section> : <Link className="text-button baseline-link" to="/?onboarding=1">Take your first ten: establish a calibration baseline</Link>}
+              </section> : <Link className="text-button baseline-link" to="/?onboarding=1">Start with eight questions to find your baseline</Link>}
               <h2>Last 7 days</h2>
               <p className="muted">First attempts only.</p>
               <table className="history-table">

@@ -46,7 +46,7 @@ export function SharedScorePage() {
     };
   }, [score]);
   const text = score
-    ? `4σ · ${score.kind === 'onboarding' ? 'Your first ten' : score.edition}${score.isRanked ? "" : " · Practice"}\n${playerSymbol(score.player.icon)} ${score.player.username} · ${playerLabel(score.player.icon)} / ${colorName(score.player.color)}\n${scoreText(score.score)} pts · ${score.hits.filter(Boolean).length}/${score.hits.length} in range\n${score.hits.map((hit) => (hit ? "■" : "□")).join("")}\nhttps://4sig.xyz/share/${score.id}`
+    ? `4σ · ${score.kind === 'onboarding' ? 'Your starting calibration' : score.edition}${score.isRanked ? "" : " · Practice"}\n${playerSymbol(score.player.icon)} ${score.player.username} · ${playerLabel(score.player.icon)} / ${colorName(score.player.color)}\n${scoreText(score.score)} pts · ${score.hits.filter(Boolean).length}/${score.hits.length} in range\n${score.hits.map((hit) => (hit ? "■" : "□")).join("")}\nhttps://4sig.xyz/share/${score.id}`
     : "";
   return (
     <div className="interval-page">
@@ -84,7 +84,7 @@ export function SharedScorePage() {
                 {playerLabel(score.player.icon)} ·{" "}
                 {colorName(score.player.color)}
               </p>
-              <h1>{score.kind === 'onboarding' ? 'First ten' : score.isRanked ? 'Daily score' : 'Practice score'}</h1>
+              <h1>{score.kind === 'onboarding' ? 'Starting calibration' : score.isRanked ? 'Daily score' : 'Practice score'}</h1>
               <CalibrationScore score={score.score} hits={score.hits.filter(Boolean).length} count={score.hits.length} initial={score.kind === 'onboarding'} />
               <p className="summary-caption">{score.edition}{score.isRanked ? '' : ' · Practice'}</p>
               <div className="share-tiles" aria-label="Round results">

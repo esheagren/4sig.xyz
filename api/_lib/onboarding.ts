@@ -22,6 +22,6 @@ export async function hasDailyHistory(owner: string) {
 }
 export async function getOnboardingQuestions(): Promise<Question[]> {
   const { rows } = await query('SELECT questions FROM onboarding_editions WHERE version=$1', [ONBOARDING_VERSION]);
-  if (!rows[0]) throw new HttpError(503, 'Your first ten are not ready yet. Please try again shortly.');
+  if (!rows[0]) throw new HttpError(503, 'Your starting calibration is not ready yet. Please try again shortly.');
   return rows[0].questions;
 }

@@ -1,4 +1,4 @@
-# Your first ten
+# Your starting calibration
 
 New visitors see a welcome, then an unscored example using the live estimate,
 range, edit-bound and hold-to-confirm controls. The practice asks for the height of One World Trade Center, including its spire,
@@ -13,9 +13,12 @@ at its brackets. Next opens a compact worldview page: nine illustrated topics
 cover technology and AI, health and biotechnology (including biology and longevity), economics and business,
 global development, China and global power, energy and climate, population
 and demography, cities and urbanism, and governance and institutions.
-It introduces the ten-question entry test. Everyone takes the same ten
-questions in the same order. Each submitted interval is locked and saved on the
-server. Scores, truths, sources and hit flags are withheld until all ten answers
+Next opens a final setup page explaining four daily questions and the initial
+calibration, with score and calibration illustrated side by side. Begin starts
+the shared eight-question release; the setup uses the session’s actual count
+so existing ten-question games remain accurate. Everyone on a release takes
+the same questions in the same order. Each submitted interval is locked and saved on the
+server. Scores, truths, sources and hit flags are withheld until all answers
 are saved and the player has chosen a username, pattern and color.
 
 The initial pattern and color are randomized from the existing six choices.
@@ -35,32 +38,38 @@ preserves the original baseline.
 
 Calibration is captured answers / answered questions, not the distance from 95%.
 The scorecard displays the sample count and a 95% target. It does not diagnose
-overconfidence from ten observations or suggest that 100% is automatically bad.
+overconfidence from a small starting sample or suggest that 100% is automatically bad.
 Points retain the existing relative-precision-v1 formula.
 
 For new players, daily rounds unlock on the Pacific calendar day after baseline
 completion. The default returning screen is the baseline scorecard, with a
 button to start or resume today's four and overall progress once available.
 Players with existing daily games keep their flow and can opt into the first
-ten from Profile. `/?onboarding=1` opens the baseline or starts it once.
+calibration from Profile. `/?onboarding=1` opens the baseline or starts it once.
 
 ## Frozen content
 
-`api/_lib/onboarding-data.ts` defines `first-ten-v1`, including dates, source
+`api/_lib/onboarding-data.ts` defines `first-eight-v1`, including dates, source
 links, explanation, units, maximum bounds and glossary definitions. Answers
 never enter the client bundle. The installation script persists an immutable
 release and dedicated `usage_type='onboarding'` question records outside the
 daily pool. Existing glossary components display the definitions; onboarding
 snapshots also preserve their original wording.
 
-The order is median age (2020, UN rounded benchmark), EU multilingualism
-(2023 survey, ages 15+), urbanization (1950, UN 2018 report), agricultural
-employment (2022), US food spending (2024), seaborne goods trade (UNCTAD rounded
+The order is median age (2020, UN rounded benchmark), urbanization (1950, UN 2018 report), agricultural
+employment (2022), seaborne goods trade (UNCTAD rounded
 reference), nuclear electricity (2024), freshwater in ice (USGS reference
 inventory), genome sequencing (May 2022 NHGRI production benchmark), and women
 in national parliaments (1 January 2026). Reference estimates are not presented
 as live measurements. The genome benchmark retains the existing bank's dated
 NHGRI observation. Future revisions must use a new version and question IDs.
+
+`onboarding-data-v1.ts` preserves the original `first-ten-v1` release. The new
+eight-question release omits the EU language survey and US food spending
+questions and uses distinct question and glossary IDs. Migration 008 allows
+both edition lengths; the installer validates existing releases without changing
+them. Existing answers, unfinished games, completed baselines and scores remain
+attached to their original release. New players receive eight questions.
 
 ## Installation
 
