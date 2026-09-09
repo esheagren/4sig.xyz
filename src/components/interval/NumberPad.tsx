@@ -7,7 +7,7 @@ import {
   rawCursor,
 } from "./number-entry";
 
-import { CalculatorPad } from "./CalculatorPad";
+import { calculate } from "./calculator";
 
 type Props = {
   value: string;
@@ -28,6 +28,9 @@ export function NumberPad({
   submitLabel,
 }: Props) {
   const [calculator, setCalculator] = useState(false);
+  const [expression, setExpression] = useState("");
+  const [calculationError, setCalculationError] = useState("");
+  const expressionInput = useRef<HTMLInputElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const inputId = useId(),
     captionId = `${inputId}-caption`;
@@ -39,7 +42,43 @@ export function NumberPad({
       input.current?.setSelectionRange(cursor, cursor);
     });
   }
+  function updateCalculation(next: string) {
+    setExpression(next);
+    try {
+      onChange(String(calculate(next)));
+      setCalculationError("");
+    } catch (e) {
+      onChange("");
+      setCalculationError(next.trim() ? (e instanceof Error ? e.message : "Check your calculation.") : "");
+    }
+  }
+  function toggleCalculator() {
+    if (!calculator) {
+      setExpression(value);
+      setCalculationError("");
+    }
+    setCalculator(!calculator);
+    requestAnimationFrame(() => {
+      const target = calculator ? input.current : expressionInput.current;
+      target?.focus({ preventScroll: true });
+      target?.setSelectionRange(target.value.length, target.value.length);
+    });
+  }
   function press(key: string) {
+    if (calculator) {
+      const target = expressionInput.current;
+      let start = target?.selectionStart ?? expression.length;
+      let end = target?.selectionEnd ?? expression.length;
+      if (key === "Delete" && start === end) start = Math.max(0, start - 1);
+      if (key === "DeleteForward" && start === end) end = Math.min(expression.length, end + 1);
+      const inserted = key.startsWith("Delete") ? "" : key;
+      updateCalculation(expression.slice(0, start) + inserted + expression.slice(end));
+      requestAnimationFrame(() => {
+        target?.focus({ preventScroll: true });
+        target?.setSelectionRange(start + inserted.length, start + inserted.length);
+      });
+      return;
+    }
     const next = editEntry(
       display,
       input.current?.selectionStart ?? display.length,
@@ -49,15 +88,12 @@ export function NumberPad({
     update(next.value, next.cursor);
   }
   const amount = parseAmount(value);
-  if (calculator) return <CalculatorPad initial={value} unit={unit}
-    onCancel={() => { setCalculator(false); requestAnimationFrame(() => input.current?.focus()); }}
-    onUse={(result) => { onChange(result); setCalculator(false); requestAnimationFrame(() => input.current?.focus()); }} />;
   return (
     <form
       className="number-entry"
       onSubmit={(e) => {
         e.preventDefault();
-        onSubmit();
+        if (!calculator || (expression.trim() && !calculationError)) onSubmit();
       }}
     >
       <label className="input-label" htmlFor={inputId}>
@@ -75,7 +111,9 @@ export function NumberPad({
         aria-label={label}
         aria-describedby={captionId}
         value={display}
-        placeholder="0"
+        readOnly={calculator}
+        onFocus={() => { if (calculator) expressionInput.current?.focus({ preventScroll: true }); }}
+        placeholder={calculator ? "—" : "0"}
         onChange={(e) => {
           const next = e.target.value.replaceAll(",", "");
           const cursor = rawCursor(
@@ -86,6 +124,7 @@ export function NumberPad({
         }}
         onKeyDown={(e) => {
           if (
+            !calculator &&
             !e.ctrlKey &&
             !e.metaKey &&
             !e.altKey &&
@@ -97,16 +136,28 @@ export function NumberPad({
           }
         }}
       />
+      {calculator && <div className="calculation-line">
+        <span aria-hidden="true">=</span>
+        <input ref={expressionInput} className="calculation-expression" aria-label="Calculation"
+          aria-describedby={captionId} type="text" inputMode="none" autoComplete="off" spellCheck={false}
+          value={expression} placeholder="Calculation" onChange={e => updateCalculation(e.target.value)} />
+        <button type="button" className="calculation-clear" aria-label="Clear calculation"
+          onClick={() => { updateCalculation(""); expressionInput.current?.focus(); }}>Clear</button>
+      </div>}
       <div
         id={captionId}
-        className={`number-caption ${error ? "error" : ""}`}
+        className={`number-caption ${error || calculationError ? "error" : ""}`}
         aria-live="polite"
       >
-        {error ||
+        {error || calculationError ||
           (Number.isFinite(amount) && /e/i.test(value)
             ? `${compact(amount)} ${unit}`
             : "")}
       </div>
+      {calculator && <div className="calculator-operators" role="group" aria-label="Arithmetic operations">
+        {[["+", "Add"], ["−", "Subtract"], ["×", "Multiply"], ["÷", "Divide"]].map(([key, name]) =>
+          <button key={key} type="button" aria-label={name} onClick={() => press(key)}>{key}</button>)}
+      </div>}
       <div className="keypad">
         {[
           "7",
@@ -139,7 +190,7 @@ export function NumberPad({
               (
                 {
                   Delete: "Delete digit",
-                  Calculator: "Open calculator",
+                  Calculator: calculator ? "Close calculator" : "Open calculator",
                   "000": "Insert three zeros",
                   "→": submitLabel,
                 } as Record<string, string>
@@ -149,11 +200,13 @@ export function NumberPad({
               key === "Delete"
                 ? "Delete digit"
                 : key === "Calculator"
-                  ? "Open calculator"
+                  ? calculator ? "Close calculator" : "Open calculator"
                   : undefined
             }
+            aria-pressed={key === "Calculator" ? calculator : undefined}
+            disabled={key === "→" && calculator && (!expression.trim() || !!calculationError)}
             onClick={() => {
-              if (key === "Calculator") setCalculator(true);
+              if (key === "Calculator") toggleCalculator();
               else if (key !== "→") press(key);
             }}
           >
