@@ -37,7 +37,7 @@ export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShar
   </div>;
   // Sharing status must not replace the SVG nodes being animated.
   return <button className="scorecard-button" onClick={onShare}
-    aria-label={`Copy and share ${data.player.username}'s scorecard: ${data.score.toLocaleString('en-US')} points, ${calibrationText(data.hits)} calibration`}>
+    aria-label={`Share ${data.player.username}'s scorecard: ${data.score.toLocaleString('en-US')} points, ${calibrationText(data.hits)} calibration`}>
     <AnimatedScorecard data={data} variant={variant} />
   </button>;
 });

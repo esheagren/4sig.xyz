@@ -49,6 +49,12 @@ export async function shareScorecard(png: Promise<Blob>, ready: Blob | null, tex
       }
     }
   }
+  return copyScorecard(png, text, gif, url);
+}
+
+/** Explicit Copy never opens the native share sheet. */
+export async function copyScorecard(png: Promise<Blob>, text: string, gif: Blob | null = null, url = GAME_URL): Promise<ShareOutcome> {
+  const caption = shareCaption(text, url);
   if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
     try {
       const canCopyGif = !!gif && typeof ClipboardItem.supports === 'function' && ClipboardItem.supports('image/gif');
@@ -68,7 +74,7 @@ export async function shareScorecard(png: Promise<Blob>, ready: Blob | null, tex
     } catch { /* Save the GIF and copy its accompanying link when image copying is unavailable. */ }
   }
   let linked = false;
-  try { await navigator.clipboard.writeText(caption); linked = true; } catch { /* The explicit Copy link control remains available. */ }
+  try { await navigator.clipboard.writeText(caption); linked = true; } catch { /* Show a selectable caption when clipboard access is unavailable. */ }
   saveScorecard(gif ?? await png);
   return linked ? 'downloaded-linked' : 'downloaded';
 }

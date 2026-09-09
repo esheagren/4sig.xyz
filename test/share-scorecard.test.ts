@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { GAME_URL, shareScorecard } from '../src/lib/share-scorecard.js';
+import { GAME_URL, shareScorecard, copyScorecard } from '../src/lib/share-scorecard.js';
 
 test('native sharing prefers the animated file and explicitly includes the game URL; cancellation does not copy or download', async () => {
   const original = Object.getOwnPropertyDescriptor(globalThis, 'navigator');
@@ -40,13 +40,13 @@ test('GIF-capable clipboards receive the animation, actual score and exact resul
     result = 'data:image/gif;base64,R0lGODlh'; onload?: () => void;
     readAsDataURL() { this.onload?.(); }
   }
-  Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { clipboard: { write: async (items: unknown[]) => assert.equal(items.length, 1) } } });
+  Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { share: async () => assert.fail('Copy must not open the share sheet'), canShare: () => true, clipboard: { write: async (items: unknown[]) => assert.equal(items.length, 1) } } });
   Object.defineProperty(globalThis, 'ClipboardItem', { configurable: true, value: FakeClipboardItem });
   Object.defineProperty(globalThis, 'FileReader', { configurable: true, value: FakeFileReader });
   try {
     const png = new Blob(['PNG'], { type: 'image/png' }), gif = new Blob(['GIF89a-selected-halo'], { type: 'image/gif' });
     const url = 'https://4sig.xyz/share/real-score';
-    assert.equal(await shareScorecard(Promise.resolve(png), png, 'real_player · 4321.5 pts · 50% calibration', gif, url), 'copied-gif');
+    assert.equal(await copyScorecard(Promise.resolve(png), 'real_player · 4321.5 pts · 50% calibration', gif, url), 'copied-gif');
     assert.equal(await (await formats['image/gif']).text(), 'GIF89a-selected-halo');
     const caption = await (await formats['text/plain']).text();
     assert.match(caption, /4321.5 pts/); assert.ok(caption.includes(url)); assert.ok(caption.includes(GAME_URL));

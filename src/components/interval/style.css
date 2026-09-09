@@ -2145,3 +2145,11 @@
 .interval-app .motion-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .interval-app .scorecard-preview { cursor: default; }
+
+.interval-app .scorecard-share-options { margin-top: 10px; padding: 8px 16px 14px; border: 1px solid var(--line); border-radius: 8px; background: #f9f4ec; }
+.interval-app .scorecard-copy-option { display: flex; align-items: center; justify-content: space-between; gap: 16px; width: 100%; min-height: 48px; padding: 8px 0; border: 0; background: transparent; color: var(--ink); text-align: left; font: inherit; cursor: pointer; }
+.interval-app .scorecard-copy-option:hover:not(:disabled) { color: var(--blue); }
+.interval-app .scorecard-copy-option:focus-visible { outline: 2px solid var(--blue); outline-offset: 3px; border-radius: 2px; }
+.interval-app .scorecard-copy-option:disabled { opacity: .55; cursor: default; }
+.interval-app .scorecard-share-options .scorecard-extras { margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--line); }
+.interval-app .scorecard-preparing { margin: 12px 0 0; color: var(--muted); font-size: 12px; }
