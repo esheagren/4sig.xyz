@@ -1,6 +1,6 @@
 import { query } from "./db.js";
 import { HttpError } from "./http.js";
-import { normalizeColor, normalizeIcon } from "../../shared/player-profile.js";
+import { normalizeColor, normalizeIcon, normalizeStyle } from "../../shared/player-profile.js";
 import type { SharedScore } from "../../shared/player-profile.js";
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 export async function getSharedScore(id: unknown): Promise<SharedScore> {
@@ -30,7 +30,7 @@ export async function prepareShare(
   sessionId: string,
 ): Promise<SharedScore> {
   const { rows } = await query(
-    `SELECT u.username,u.avatar_icon,u.avatar_color FROM completed_games g JOIN users u ON u.id=g.user_id WHERE g.id=$1 AND g.user_id=$2`,
+    `SELECT u.username,u.avatar_icon,u.avatar_color,u.scorecard_style FROM completed_games g JOIN users u ON u.id=g.user_id WHERE g.id=$1 AND g.user_id=$2`,
     [sessionId, userId],
   );
   if (!rows[0]) throw new HttpError(404, "Complete your game before sharing.");
@@ -39,6 +39,7 @@ export async function prepareShare(
     username: u.username,
     icon: normalizeIcon(u.avatar_icon),
     color: normalizeColor(u.avatar_color),
+    style: normalizeStyle(u.scorecard_style, u.avatar_icon),
   };
   const inserted = await query(
     `INSERT INTO result_shares(session_id,player) VALUES($1,$2) ON CONFLICT(session_id) DO NOTHING RETURNING id`,

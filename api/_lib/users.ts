@@ -1,5 +1,5 @@
 import { validIcon } from "./player-profile.js";
-import { validPlayerColor } from "../../shared/player-profile.js";
+import { validPlayerColor, validPlayerStyle, styleIcon, normalizeIcon } from "../../shared/player-profile.js";
 import { query } from "./db.js";
 import { HttpError } from "./http.js";
 import type { User } from "./types.js";
@@ -47,6 +47,7 @@ export async function getUserById(id: string): Promise<User | null> {
     id: row.id,
     avatarIcon: row.avatar_icon,
     avatarColor: row.avatar_color,
+    scorecardStyle: row.scorecard_style,
     hasPersonality: row.identity_chosen,
     deviceId: null,
     authId: null,
@@ -86,6 +87,7 @@ export async function updateUserProfile(
     displayName?: unknown;
     avatarIcon?: unknown;
     avatarColor?: unknown;
+    scorecardStyle?: unknown;
     timezone?: unknown;
     themePreference?: unknown;
   },
@@ -115,17 +117,24 @@ export async function updateUserProfile(
     !validPlayerColor(updates.avatarColor)
   )
     throw new HttpError(400, "Choose a valid color.");
+  if (updates.scorecardStyle !== undefined && !validPlayerStyle(updates.scorecardStyle))
+    throw new HttpError(400, 'Choose an available style.');
+  if (validPlayerStyle(updates.scorecardStyle) && updates.avatarIcon !== undefined &&
+      styleIcon(updates.scorecardStyle) !== normalizeIcon(updates.avatarIcon))
+    throw new HttpError(400, 'Choose a style that matches your pattern.');
+  const avatarIcon = validPlayerStyle(updates.scorecardStyle) ? styleIcon(updates.scorecardStyle) : updates.avatarIcon;
   await query(
-    `UPDATE users SET username=COALESCE($2,username), timezone=COALESCE($3,timezone),theme_preference=COALESCE($4,theme_preference),avatar_icon=COALESCE($5,avatar_icon),avatar_color=COALESCE($6,avatar_color),identity_chosen=identity_chosen OR $5 IS NOT NULL OR $6 IS NOT NULL WHERE id=$1`,
+    `UPDATE users SET username=COALESCE($2,username), timezone=COALESCE($3,timezone),theme_preference=COALESCE($4,theme_preference),avatar_icon=COALESCE($5,avatar_icon),avatar_color=COALESCE($6,avatar_color),scorecard_style=CASE WHEN $7::text IS NOT NULL THEN $7 WHEN $5::text IS NOT NULL AND $5 <> avatar_icon THEN NULL ELSE scorecard_style END,identity_chosen=identity_chosen OR $5 IS NOT NULL OR $6 IS NOT NULL OR $7 IS NOT NULL WHERE id=$1`,
     [
       id,
       updates.displayName ?? null,
       updates.timezone ?? null,
       updates.themePreference ?? null,
-      updates.avatarIcon ?? null,
+      avatarIcon ?? null,
       typeof updates.avatarColor === "string"
         ? updates.avatarColor.toLowerCase()
         : null,
+      updates.scorecardStyle ?? null,
     ],
   );
   return (await getUserById(id))!;

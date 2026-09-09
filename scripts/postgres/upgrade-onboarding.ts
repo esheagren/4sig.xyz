@@ -18,6 +18,7 @@ try {
     }
     const migration = await readFile(new URL('./008_onboarding_eight.sql', import.meta.url), 'utf8');
     await client.query(migration.replace(/^BEGIN;\s*$/m, '').replace(/^COMMIT;\s*$/m, ''));
+    await client.query(await readFile(new URL('./009_scorecard_style.sql', import.meta.url), 'utf8'));
     for (const [version, questions] of [[legacyVersion, legacyQuestions], [ONBOARDING_VERSION, onboardingQuestions]] as const) {
       const { rows } = await client.query('SELECT questions FROM onboarding_editions WHERE version=$1', [version]);
       if (rows[0]) {

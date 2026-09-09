@@ -3,6 +3,7 @@
 export interface User {
   avatarIcon?: string | null;
   avatarColor?: string | null;
+  scorecardStyle?: string | null;
   hasPersonality?: boolean;
   sessionCount?: number;
   questionsAnswered?: number;

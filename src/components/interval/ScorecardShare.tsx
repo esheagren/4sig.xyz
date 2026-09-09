@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ScorecardData, ScorecardVariant } from '../../../shared/scorecard';
-import { GAME_URL, saveScorecard, scorecardPng, shareScorecard } from '../../lib/share-scorecard';
+import { GAME_URL, saveScorecard, scorecardPng, shareScorecard, shareCaption } from '../../lib/share-scorecard';
 import { ScoreCard } from './ScoreCard';
 
-export function ScorecardShare({ data, text, variant = 'ink' }: { data: ScorecardData; text: string; variant?: ScorecardVariant }) {
+export function ScorecardShare({ data, text, url = GAME_URL, variant = 'ink' }: { data: ScorecardData; text: string; url?: string; variant?: ScorecardVariant }) {
   const [status, setStatus] = useState('');
   const [fallback, setFallback] = useState(false);
   const [preparing, setPreparing] = useState(true);
@@ -25,21 +25,22 @@ export function ScorecardShare({ data, text, variant = 'ink' }: { data: Scorecar
   }, [data, retry, variant]);
   async function copy() {
     if (sharing) return;
-    if (preparing && typeof navigator.share === 'function' && typeof navigator.canShare === 'function') { setStatus('Preparing your animation. Tap again in a moment.'); return; }
+    if (preparing) { setStatus('Preparing your animation. Tap again in a moment.'); return; }
     const cached = image.current?.data === data ? image.current : null;
     setSharing(true); setFallback(false);
     try {
-      const outcome = await shareScorecard(cached?.png ?? scorecardPng(data, variant), cached?.ready ?? null, text, cached?.gif ?? null);
+      const outcome = await shareScorecard(cached?.png ?? scorecardPng(data, variant), cached?.ready ?? null, text, cached?.gif ?? null, url);
       if (outcome === 'cancelled') return;
-      setStatus(outcome === 'shared' ? 'Card and link sent to the share sheet.' : outcome === 'copied' ? 'Card and link copied.' : outcome === 'downloaded-linked' ? 'Card saved. Link copied.' : 'Card saved. Copy the link below.');
+      setFallback(outcome === 'downloaded');
+      setStatus(outcome === 'shared' ? 'Card and link sent to the share sheet.' : outcome === 'copied-gif' ? 'GIF, score and link copied.' : outcome === 'copied-saved-gif' ? 'Image, score and link copied. Animated GIF saved—attach it to keep it moving.' : outcome === 'copied' ? 'Still image, score and link copied.' : outcome === 'downloaded-linked' ? 'Card saved. Score and link copied—paste them and attach the file.' : 'Card saved. Copy your score and link below.');
     } catch { setFallback(true); setStatus('Select and copy your score and link below.'); }
     finally { setSharing(false); }
   }
   async function copyLink() {
-    try { await navigator.clipboard.writeText(GAME_URL); setStatus('Link copied.'); setFallback(false); }
+    try { await navigator.clipboard.writeText(shareCaption(text, url)); setStatus('Score and link copied.'); setFallback(false); }
     catch { setFallback(true); setStatus('Select and copy the link below.'); }
   }
-  const waitingForShare = preparing && typeof navigator.share === 'function' && typeof navigator.canShare === 'function';
+  const waitingForShare = preparing;
   return <>
     <ScoreCard data={data} variant={variant} onShare={() => void copy()} />
     <div className="share-actions scorecard-share-actions">
@@ -48,7 +49,7 @@ export function ScorecardShare({ data, text, variant = 'ink' }: { data: Scorecar
       </button>
     </div>
     <div className="scorecard-extras">
-      <button className="text-button" onClick={() => void copyLink()}>Copy link</button>
+      <button className="text-button" onClick={() => void copyLink()}>Copy score and link</button>
       <button className="text-button" disabled={preparing} onClick={() => {
         if (image.current?.gif) { saveScorecard(image.current.gif); setStatus('Animated GIF saved.'); }
         else setRetry(value => value + 1);
@@ -56,6 +57,6 @@ export function ScorecardShare({ data, text, variant = 'ink' }: { data: Scorecar
     </div>
     <p className="copy-status" role="status">{status}</p>
     {fallback && <textarea className="share-fallback" aria-label="Shareable score and link" readOnly
-      value={`${text}\nPlay: ${GAME_URL}`} onFocus={event => event.target.select()} />}
+      value={shareCaption(text, url)} onFocus={event => event.target.select()} />}
   </>;
 }

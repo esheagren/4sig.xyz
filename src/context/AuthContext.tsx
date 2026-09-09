@@ -14,6 +14,7 @@ interface User {
   isAnonymous: boolean;
   avatarIcon?: string | null;
   avatarColor?: string | null;
+  scorecardStyle?: string | null;
   hasPersonality?: boolean;
   sessionCount: number;
   questionsAnswered?: number;

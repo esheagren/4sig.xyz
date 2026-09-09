@@ -1,3 +1,5 @@
+import { playerScorecard } from '../../../shared/ink-collection';
+import { normalizeStyle } from '../../../shared/player-profile';
 import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   CSSProperties,
@@ -237,13 +239,13 @@ export default function IntervalGame() {
     : "https://4sig.xyz/";
   const initialPlayer: Partial<Player> = {
     ...(!user?.isAnonymous && user ? { username: user.displayName } : {}),
-    ...(user?.hasPersonality ? { icon: normalizeIcon(user.avatarIcon), color: normalizeColor(user.avatarColor) } : {}),
+    ...(user?.hasPersonality ? { icon: normalizeIcon(user.avatarIcon), style: normalizeStyle(user.scorecardStyle, user.avatarIcon), color: normalizeColor(user.avatarColor) } : {}),
   };
-  const cardData = useMemo<ScorecardData | null>(() => player ? {
+  const cardData = useMemo<ScorecardData | null>(() => player ? playerScorecard({
     player, score: totalPoints(results), hits: results.map(result => result.hit),
     label: onboarding ? 'STARTING CALIBRATION' : edition,
     practice: !isRanked,
-  } : null, [player, results, onboarding, edition, isRanked]);
+  }) : null, [player, results, onboarding, edition, isRanked]);
   const ruler = useRef<HTMLDivElement>(null),
     heading = useRef<HTMLHeadingElement>(null);
   const [menuTab, setMenuTab] = useState<
@@ -627,7 +629,7 @@ export default function IntervalGame() {
         setPlayer({
           username: user.displayName,
           icon: normalizeIcon(user.avatarIcon),
-          color: normalizeColor(user.avatarColor),
+          style: normalizeStyle(user.scorecardStyle, user.avatarIcon), color: normalizeColor(user.avatarColor),
         });
       void lifecycleActions.current.startSession();
     }
@@ -658,6 +660,7 @@ export default function IntervalGame() {
     const data = await request("auth/profile", {
       avatarIcon: chosen.icon,
       avatarColor: chosen.color,
+      scorecardStyle: chosen.style,
     });
     if (!validPlayerIcon(data.user?.avatarIcon))
       throw new Error("Your personality could not be saved.");
@@ -665,6 +668,7 @@ export default function IntervalGame() {
       username: data.user.displayName,
       icon: data.user.avatarIcon,
       color: normalizeColor(data.user.avatarColor),
+      style: normalizeStyle(data.user.scorecardStyle, data.user.avatarIcon),
     });
     void refreshUser();
     await finalizeScore();
@@ -870,6 +874,7 @@ export default function IntervalGame() {
                   key={user.id}
                   initial={initialPlayer}
                   onboarding={onboarding}
+                  score={{ score: totalPoints(results), hits: results.map(result => result.hit), label: onboarding ? 'STARTING CALIBRATION' : edition, practice: !isRanked }}
                   onStart={startPlayer}
                 />
                 {user.isAnonymous && (
@@ -1154,7 +1159,7 @@ export default function IntervalGame() {
               <h1 className="sr-only" ref={heading} tabIndex={-1}>
                 {onboarding ? 'Your starting snapshot' : 'Your score'}
               </h1>
-              {cardData && player && <ScorecardShare data={cardData} text={makeShareText(results, shareUrl, player,
+              {cardData && player && <ScorecardShare data={cardData} url={shareUrl} text={makeShareText(results, shareUrl, player,
                 onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? '' : ' · Practice'))} />}
               {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
               {onboarding && <div className="daily-invitation">

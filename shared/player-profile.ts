@@ -37,7 +37,18 @@ export const playerIcons = [
   },
 ] as const;
 export type PlayerIcon = (typeof playerIcons)[number]["id"];
-export type Player = { username: string; icon: PlayerIcon; color: string };
+export type PlayerStyle = PlayerIcon | 'halo' | 'horizon';
+export function validPlayerStyle(style: unknown): style is PlayerStyle {
+  return validPlayerIcon(style) || style === 'halo' || style === 'horizon';
+}
+export function styleIcon(style: PlayerStyle): PlayerIcon {
+  return style === 'halo' ? 'orbit' : style === 'horizon' ? 'wave' : style;
+}
+export function normalizeStyle(style: unknown, icon: unknown): PlayerStyle {
+  const pattern = normalizeIcon(icon);
+  return validPlayerStyle(style) && styleIcon(style) === pattern ? style : pattern;
+}
+export type Player = { username: string; icon: PlayerIcon; color: string; style?: PlayerStyle };
 export const playerColors = [
   { label: "Rust", value: "#ad4128" },
   { label: "Cobalt", value: "#355c9b" },

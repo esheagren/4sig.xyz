@@ -2139,3 +2139,9 @@
 .interval-app .scorecard-extras { display: flex; justify-content: space-between; gap: 16px; margin-top: 14px; }
 .interval-app .scorecard-extras button { font-size: 12px; }
 .interval-app .scorecard-share-actions button:disabled, .interval-app .scorecard-extras button:disabled { cursor: default; opacity: .55; }
+
+.interval-app .identity-scorecard-preview { margin: 22px 0 0; }
+.interval-app .identity-scorecard-preview .scorecard-button { width: 100%; }
+.interval-app .motion-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.interval-app .scorecard-preview { cursor: default; }

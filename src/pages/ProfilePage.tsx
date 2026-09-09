@@ -1,3 +1,4 @@
+import { normalizeStyle, type PlayerStyle } from '../../shared/player-profile';
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
@@ -17,7 +18,8 @@ export function ProfilePage() {
     Array<{ date: string; userScore: number; avgScore: number }>
   >([]);
   const [icon, setIcon] = useState<PlayerIcon>("orbit"),
-    [color, setColor] = useState(normalizeColor(null));
+    [color, setColor] = useState(normalizeColor(null)),
+    [style, setStyle] = useState<PlayerStyle>('orbit');
   const [authOpen, setAuthOpen] = useState(false),
     [editing, setEditing] = useState(false),
     [username, setUsername] = useState(""),
@@ -48,6 +50,7 @@ export function ProfilePage() {
           displayName: username,
           avatarIcon: icon,
           avatarColor: color,
+          scorecardStyle: style,
         }),
       });
       const data = await r.json();
@@ -103,7 +106,9 @@ export function ProfilePage() {
                   <PersonalityPicker
                     icon={icon}
                     color={color}
-                    onChange={(i, c) => {
+                    style={style}
+                    onChange={(i, c, s) => {
+                      setStyle(s);
                       setIcon(i);
                       setColor(c);
                     }}
@@ -124,6 +129,7 @@ export function ProfilePage() {
                     setUsername(user.displayName);
                     setIcon(normalizeIcon(user.avatarIcon));
                     setColor(normalizeColor(user.avatarColor));
+                    setStyle(normalizeStyle(user.scorecardStyle, user.avatarIcon));
                     setEditing(true);
                   }}
                 >

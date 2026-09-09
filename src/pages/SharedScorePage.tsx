@@ -1,3 +1,4 @@
+import { playerScorecard } from '../../shared/ink-collection';
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -45,8 +46,8 @@ export function SharedScorePage() {
   const text = score
     ? `4σ · ${score.kind === 'onboarding' ? 'Your starting calibration' : score.edition}${score.isRanked ? "" : " · Practice"}\n${playerSymbol(score.player.icon)} ${score.player.username} · ${playerLabel(score.player.icon)} / ${colorName(score.player.color)}\n${scoreText(score.score)} pts · ${score.hits.filter(Boolean).length}/${score.hits.length} in range\n${score.hits.map((hit) => (hit ? "■" : "□")).join("")}\nhttps://4sig.xyz/share/${score.id}`
     : "";
-  const card = useMemo<ScorecardData | null>(() => score ? { player: score.player, score: score.score, hits: score.hits,
-    label: score.kind === 'onboarding' ? 'STARTING CALIBRATION' : score.edition, practice: !score.isRanked } : null, [score]);
+  const card = useMemo<ScorecardData | null>(() => score ? playerScorecard({ player: score.player, score: score.score, hits: score.hits,
+    label: score.kind === 'onboarding' ? 'STARTING CALIBRATION' : score.edition, practice: !score.isRanked }) : null, [score]);
   return (
     <div className="interval-page">
       <div
@@ -57,7 +58,7 @@ export function SharedScorePage() {
           {score ? (
             <section className="summary">
               <h1 className="sr-only">{score.player.username}’s scorecard</h1>
-              {card && <ScorecardShare data={card} text={text} />}
+              {card && <ScorecardShare data={card} text={text} url={`https://4sig.xyz/share/${score.id}`} />}
               <p className="shared-promise">
                 A better sense of the world, four numbers at a time.
               </p>

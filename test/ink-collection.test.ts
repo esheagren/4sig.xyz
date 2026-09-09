@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { inkCollection, inkStyles, stylesForPattern } from '../shared/ink-collection.js';
+import { inkCollection, inkStyles, stylesForPattern, playerScorecard } from '../shared/ink-collection.js';
 import { playerIcons, playerColors } from '../shared/player-profile.js';
 import { scorecardSvg } from '../shared/scorecard.js';
 
@@ -34,4 +34,18 @@ test('every pattern has a matching style and preview choices change identity wit
     assert.equal(card.player.username, 'my_name'); assert.equal(card.player.color, '#795078');
     assert.deepEqual(card.design, inkCollection()[index].design);
   });
+});
+
+test('real scorecards preserve results and selected colors in every family composition', () => {
+  for (const style of inkStyles) {
+    const card = playerScorecard({ player: { username: 'real_player', icon: style.icon, color: '#795078', style: style.id },
+      score: 4321.5, hits: [true, false, true, false], label: '2026-09-09', practice: true });
+    assert.equal(card.design!.layout, style.layout);
+    assert.equal(card.player.color, '#795078');
+    const svg = scorecardSvg(card);
+    assert.match(svg, /4,321.5/); assert.match(svg, /50%/); assert.match(svg, /real_player/);
+    assert.doesNotMatch(svg, /1,286.4/);
+  }
+  const legacy = playerScorecard({ player: { username: 'legacy', icon: 'wave', color: '#355c9b' }, score: 10, hits: [true], label: 'test' });
+  assert.equal(legacy.design!.layout, 'band');
 });

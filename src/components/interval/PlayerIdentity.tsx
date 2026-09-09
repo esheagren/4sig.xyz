@@ -1,4 +1,8 @@
-import { memo, useEffect, useId, useRef, useState } from "react";
+import { inkStyles, playerScorecard } from '../../../shared/ink-collection';
+import { normalizeStyle, type PlayerStyle } from '../../../shared/player-profile';
+import type { ScorecardData } from '../../../shared/scorecard';
+import { ScoreCard } from './ScoreCard';
+import { memo, useEffect, useId, useMemo, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import {
   playerIcons,
@@ -90,12 +94,14 @@ export function PersonalityPicker({
   icon,
   color,
   onChange,
+  style,
   disabled = false,
   children,
 }: {
   icon: PlayerIcon;
   color: string;
-  onChange: (icon: PlayerIcon, color: string) => void;
+  style?: PlayerStyle;
+  onChange: (icon: PlayerIcon, color: string, style: PlayerStyle) => void;
   disabled?: boolean;
   children?: ReactNode;
 }) {
@@ -128,8 +134,8 @@ export function PersonalityPicker({
             disabled={disabled}
             aria-expanded={open}
             aria-controls={`${id}-patterns`}
-            aria-label={`Change pattern and color: ${playerIcons.find((p) => p.id === icon)!.label}`}
-            title="Change pattern and color"
+            aria-label={`Change style and color: ${inkStyles.find((p) => p.id === normalizeStyle(style, icon))!.name}`}
+            title="Change style and color"
             onClick={() => setOpen(!open)}
           >
             <PlayerMark icon={icon} color={color} />
@@ -143,28 +149,28 @@ export function PersonalityPicker({
         hidden={compact && !open}
       >
         <fieldset className="motion-picker" disabled={disabled}>
-          <legend>Your pattern</legend>
+          <legend>Your style</legend>
           <div className="motion-options">
-            {playerIcons.map((item) => (
+            {inkStyles.map((item) => (
               <label key={item.id}>
                 <input
                   type="radio"
                   name={`${id}-pattern`}
-                  checked={icon === item.id}
+                  checked={normalizeStyle(style, icon) === item.id}
                   onChange={() => {
-                    onChange(item.id, color);
+                    onChange(item.icon, color, item.id);
                   }}
                 />
                 <span>
-                  <PlayerMark icon={item.id} color={color} />
-                  <strong>{item.label}</strong>
+                  <PlayerMark icon={item.icon} color={color} />
+                  <strong>{item.name}</strong>
                 </span>
               </label>
             ))}
           </div>
         </fieldset>
         <div className="pattern-caption">
-          <p>{playerIcons.find((p) => p.id === icon)!.description}</p>
+          <p>{inkStyles.find((p) => p.id === normalizeStyle(style, icon))!.description}</p>
         </div>
         <div className="pattern-color-section">
           <fieldset className="color-picker" disabled={disabled}>
@@ -179,7 +185,7 @@ export function PersonalityPicker({
                     name={`${id}-color`}
                     checked={color === c.value}
                     onChange={() => {
-                      onChange(icon, c.value);
+                      onChange(icon, c.value, normalizeStyle(style, icon));
                     }}
                     aria-label={c.label}
                   />
@@ -199,9 +205,10 @@ export function PersonalityPicker({
 function identityDraft(initial: Partial<Player>): Player {
   try {
     const stored = JSON.parse(sessionStorage.getItem('four_sigma_identity_draft') ?? 'null');
-    if (stored && !initial.icon) return { username: initial.username ?? stored.username ?? '', icon: normalizeIcon(stored.icon), color: normalizeColor(stored.color) };
+    if (stored && !initial.icon) return { username: initial.username ?? stored.username ?? '', icon: normalizeIcon(stored.icon), color: normalizeColor(stored.color), style: normalizeStyle(stored.style, stored.icon) };
   } catch { /* Storage is optional. */ }
   return { username: initial.username ?? '',
+    style: initial.style,
     icon: initial.icon ?? playerIcons[Math.floor(Math.random() * playerIcons.length)].id,
     color: initial.color ?? playerColors[Math.floor(Math.random() * playerColors.length)].value };
 }
@@ -209,20 +216,24 @@ function identityDraft(initial: Partial<Player>): Player {
 export function PlayerIdentity({
   initial,
   onStart,
+  score,
   onboarding = false,
 }: {
   initial: Partial<Player>;
+  score?: Omit<ScorecardData, 'player' | 'design'>;
   onboarding?: boolean;
   onStart: (player: Player) => Promise<void>;
 }) {
   const [draft] = useState(() => identityDraft(initial));
   const [username, setUsername] = useState(draft.username),
     [icon, setIcon] = useState<PlayerIcon>(draft.icon),
-    [color, setColor] = useState(draft.color);
+    [color, setColor] = useState(draft.color),
+    [style, setStyle] = useState(normalizeStyle(draft.style, draft.icon));
+  const preview = useMemo(() => score ? playerScorecard({ ...score, player: { username: username || 'your_name', icon, color, style } }) : null, [score, username, icon, color, style]);
   const [availability, setAvailability] = useState<{ name: string; state: 'checking' | 'available' | 'taken' | 'error' }>({name: '', state: 'checking'});
   useEffect(() => {
-    try { sessionStorage.setItem('four_sigma_identity_draft', JSON.stringify({ username, icon, color })); } catch { /* Optional. */ }
-  }, [username, icon, color]);
+    try { sessionStorage.setItem('four_sigma_identity_draft', JSON.stringify({ username, icon, color, style })); } catch { /* Optional. */ }
+  }, [username, icon, color, style]);
   useEffect(() => {
     const name = username.trim();
     if (initial.username || !validUsername(name)) return;
@@ -251,7 +262,7 @@ export function PlayerIdentity({
     setPending(true);
     setError("");
     try {
-      await onStart({ username: name, icon, color });
+      await onStart({ username: name, icon, color, style });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not start. Try again.");
     } finally {
@@ -273,8 +284,10 @@ export function PlayerIdentity({
         <PersonalityPicker
           icon={icon}
           color={color}
+          style={style}
           disabled={pending}
-          onChange={(i, c) => {
+          onChange={(i, c, s) => {
+            setStyle(s);
             setIcon(i);
             setColor(c);
           }}
@@ -312,6 +325,7 @@ export function PlayerIdentity({
         )}
         {!initial.username && validUsername(username.trim()) && <p className={
           'username-availability ' + checked} role="status">{checked === 'available' ? 'Username available' : checked === 'taken' ? 'That username is already taken.' : checked === 'error' ? 'Availability check unavailable. Submit to try again.' : 'Checking availability...'}</p>}
+        {preview && <div className="identity-scorecard-preview"><ScoreCard data={preview} /></div>}
         <p id="identity-error" className="identity-error" role="status">
           {error}
         </p>

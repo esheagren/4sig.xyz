@@ -323,6 +323,12 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     ).status,
     400,
   );
+  assert.equal((await call(auth, '/api/auth/profile', a, { avatarIcon: 'orbit', scorecardStyle: 'halo' })).status, 200);
+  assert.equal((await call(auth, '/api/auth/me', a, {}, 'GET')).data.user.scorecardStyle, 'halo');
+  assert.equal((await query('SELECT scorecard_style FROM users WHERE id=$1', [id])).rows[0].scorecard_style, 'halo');
+  assert.equal((await call(auth, '/api/auth/profile', a, { avatarIcon: 'wave', scorecardStyle: 'halo' })).status, 400);
+  assert.equal((await call(auth, '/api/auth/profile', a, { avatarIcon: 'orbit', scorecardStyle: 'bogus' })).status, 400);
+  assert.equal((await call(auth, '/api/auth/profile', a, { avatarIcon: 'orbit' })).data.user.scorecardStyle, 'halo', 'old clients preserve the chosen companion style');
   await assert.rejects(prepareShare(id, game.sessionId), /Complete your game/);
   const finished = await Promise.all([
     call(session, "/api/session/finalize", a, { sessionId: game.sessionId }),
@@ -336,7 +342,8 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     finished[1].data.share.id,
     "concurrent completion creates one immutable share",
   );
-  assert.equal(shared.player.icon, "braid");
+  assert.equal(shared.player.icon, "orbit");
+  assert.equal(shared.player.style, "halo");
   assert.equal(shared.player.color, "#abc123");
   assert.deepEqual(
     shared.hits,
@@ -363,6 +370,7 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
   assert.deepEqual(Object.keys(publicScore.data.player).sort(), [
     "color",
     "icon",
+    "style",
     "username",
   ]);
   assert.equal(
@@ -383,13 +391,16 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     userApi,
     "/api/user/profile",
     a,
-    { avatarIcon: "wave", avatarColor: "#795078" },
+    { avatarIcon: "wave", avatarColor: "#795078", scorecardStyle: "horizon" },
     "PATCH",
   );
   assert.equal(
     (await call(auth, "/api/auth/me", a, {}, "GET")).data.user.avatarColor,
     "#795078",
   );
+  assert.equal((await call(auth, '/api/auth/me', a, {}, 'GET')).data.user.scorecardStyle, 'horizon');
+  assert.equal((await getSharedScore(shared.id)).player.style, 'halo', 'shared style is immutable');
+  assert.equal((await call(auth, '/api/auth/profile', a, { avatarIcon: 'spiral' })).data.user.scorecardStyle, null, 'changing the pattern resets an incompatible style');
   assert.equal(
     (await getSharedScore(shared.id)).player.color,
     "#abc123",

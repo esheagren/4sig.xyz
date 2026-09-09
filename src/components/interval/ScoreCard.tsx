@@ -29,8 +29,12 @@ const AnimatedScorecard = memo(function AnimatedScorecard({ data, variant }: { d
 });
 
 export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShare }: {
-  data: ScorecardData; variant?: ScorecardVariant; onShare: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  data: ScorecardData; variant?: ScorecardVariant; onShare?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
+  if (!onShare) return <div className="scorecard-button scorecard-preview" role="img"
+    aria-label={`${data.player.username}'s scorecard: ${data.score.toLocaleString('en-US')} points, ${calibrationText(data.hits)} calibration`}>
+    <AnimatedScorecard data={data} variant={variant} />
+  </div>;
   // Sharing status must not replace the SVG nodes being animated.
   return <button className="scorecard-button" onClick={onShare}
     aria-label={`Copy and share ${data.player.username}'s scorecard: ${data.score.toLocaleString('en-US')} points, ${calibrationText(data.hits)} calibration`}>

@@ -1,4 +1,4 @@
-import type { PlayerIcon } from './player-profile.js';
+import { normalizeStyle, type PlayerIcon } from './player-profile.js';
 import type { InkDesign } from './ink-exploration.js';
 import { scorecardStudy } from './scorecard-study.js';
 import type { ScorecardData } from './scorecard.js';
@@ -21,3 +21,10 @@ export function inkCollection(username = 'erik', color?: string): ScorecardData[
   }));
 }
 export function stylesForPattern(icon: PlayerIcon): InkStyleId[] { return inkStyles.filter(style => style.icon === icon).map(style => style.id); }
+
+/** Apply the chosen composition to real results, without replacing any score data. */
+export function playerScorecard(data: ScorecardData): ScorecardData {
+  const style = inkStyles.find(item => item.id === normalizeStyle(data.player.style, data.player.icon))!;
+  return { ...data, design: { seed: 'INK-FAMILY-01', collection: true, layout: style.layout,
+    surface: style.surface, scale: style.scale, type: 'sans', angle: style.angle } };
+}
