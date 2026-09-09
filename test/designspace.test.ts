@@ -130,7 +130,12 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     assert.equal((scorecards.body.match(/<svg xmlns=/g) ?? []).length, 3);
     assert.match(scorecards.body, /1,286.4/);
     assert.match(scorecards.body, /87.5%/);
-    assert.doesNotMatch(scorecards.body, /__CARD_|__NONCE__/);
+    assert.doesNotMatch(scorecards.body, /__CARD_|__NONCE__|__SCORECARD_BOOTSTRAP__/);
+    assert.match(scorecards.body, /id="scorecard-studies"/);
+    assert.match(scorecards.headers["content-security-policy"], /worker-src 'self'/);
+    assert.match(scorecards.headers["content-security-policy"], /img-src data: blob:/);
+    assert.ok(scorecards.body.indexOf('01 · Ink') < scorecards.body.indexOf('02 · Paper'));
+    assert.match(scorecards.body, /designspace-scorecards/);
     const scorecardNonce = /script nonce="([^"]+)"/.exec(scorecards.body)?.[1];
     assert.ok(scorecards.headers["content-security-policy"].includes(`'nonce-${scorecardNonce}'`));
     const lockedCards = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards");

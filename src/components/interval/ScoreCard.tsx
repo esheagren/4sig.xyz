@@ -2,9 +2,7 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 import { calibrationText, scorecardSvg, type ScorecardData, type ScorecardVariant } from '../../../shared/scorecard';
 import { patternFrame } from './patterns';
 
-export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShare }: {
-  data: ScorecardData; variant?: ScorecardVariant; onShare: (event: React.MouseEvent<HTMLButtonElement>) => void;
-}) {
+const AnimatedScorecard = memo(function AnimatedScorecard({ data, variant }: { data: ScorecardData; variant: ScorecardVariant }) {
   const root = useRef<HTMLSpanElement>(null);
   const svg = useMemo(() => scorecardSvg(data, variant), [data, variant]);
   useEffect(() => {
@@ -27,8 +25,15 @@ export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShar
     observer.observe(root.current!); reduced.addEventListener('change', sync); document.addEventListener('visibilitychange', sync); sync();
     return () => { cancelAnimationFrame(frame); observer.disconnect(); reduced.removeEventListener('change', sync); document.removeEventListener('visibilitychange', sync); };
   }, [svg, data.player.icon]);
+  return <span ref={root} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
+});
+
+export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShare }: {
+  data: ScorecardData; variant?: ScorecardVariant; onShare: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}) {
+  // Sharing status must not replace the SVG nodes being animated.
   return <button className="scorecard-button" onClick={onShare}
     aria-label={`Copy and share ${data.player.username}'s scorecard: ${data.score.toLocaleString('en-US')} points, ${calibrationText(data.hits)} calibration`}>
-    <span ref={root} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />
+    <AnimatedScorecard data={data} variant={variant} />
   </button>;
 });

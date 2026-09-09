@@ -10,6 +10,7 @@ import {
   validDesignToken,
 } from "./_lib/designspace-auth.js";
 import { scorecardSvg } from '../shared/scorecard.js';
+import { scorecardStudy } from '../shared/scorecard-study.js';
 import { questionLibrary, questionAnswers } from "./_lib/question-library.js";
 import { HttpError, prepare } from "./_lib/http.js";
 
@@ -34,7 +35,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Referrer-Policy", "same-origin");
   res.setHeader(
     "Content-Security-Policy",
-    `default-src 'none'; script-src 'nonce-${nonce}'; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src data:; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`,
+    `default-src 'none'; script-src 'nonce-${nonce}'${view === 'scorecards' ? " 'self'" : ''}; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src data:${view === 'scorecards' ? " blob:; worker-src 'self'" : ''}; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`,
   );
   try {
     if (!prepare(req, res)) return;
@@ -123,9 +124,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       "utf8",
     ).replaceAll("__NONCE__", nonce);
     if (view === 'scorecards') {
-      const sample = { player: { username: 'erik', icon: 'spiral' as const, color: '#276c66' }, score: 1286.4,
-        hits: [true, true, false, true, true, true, true, true], label: 'STARTING CALIBRATION' };
-      for (const variant of ['paper', 'ink', 'emblem'] as const) page = page.replace(`__CARD_${variant.toUpperCase()}__`, scorecardSvg(sample, variant));
+      const bootstrap = process.env.NODE_ENV === 'production'
+        ? "import('/assets/designspace-scorecards.js');"
+        : "import('/@react-refresh').then(({default: runtime}) => { runtime.injectIntoGlobalHook(window); window.$RefreshReg$ = () => {}; window.$RefreshSig$ = () => type => type; window.__vite_plugin_react_preamble_installed__ = true; return import('/src/designspace-scorecards.tsx'); });";
+      page = page.replace('__SCORECARD_BOOTSTRAP__', bootstrap);
+      for (const variant of ['paper', 'ink', 'emblem'] as const) page = page.replace(`__CARD_${variant.toUpperCase()}__`, scorecardSvg(scorecardStudy, variant));
     }
     return res.status(200).send(page);
   } catch (error) {

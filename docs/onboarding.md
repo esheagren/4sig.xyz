@@ -128,5 +128,9 @@ image access fails, the card downloads and the caption/link is copied if allowed
 If image creation fails, selectable score/link text remains available.
 
 `shared/scorecard.ts` defines every image frame used on screen and in exports.
-Protected Designspace retains paper, ink, and emblem studies at
-`/designspace?view=scorecards`; the game uses Ink. Studies use sample results.
+Protected Designspace uses the same animated card and share controls at
+`/designspace?view=scorecards`, with Ink first and Paper and Emblem for comparison.
+Preview name, pattern, and color controls change only the sample, not the player's
+profile. All three versions export matching PNGs/GIFs and include the game link.
+The protected page loads a dedicated Vite entry, with workers and blob images
+allowed only in the scorecard study's CSP. The game continues to use Ink.
