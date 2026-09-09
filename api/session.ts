@@ -6,6 +6,7 @@ import {
   saveAnswer,
   finishGame,
   readGame,
+  resumeGame,
 } from "./_lib/session-storage.js";
 import {
   getDailyStats,
@@ -48,7 +49,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           if (!id) continue;
           await attachGuestGame(auth.userId, id, guest);
           try {
-            const resumed = await readGame(id, auth.userId);
+            const resumed = await resumeGame(id, auth.userId);
             if (!resumed.completed && (resumed.kind === 'onboarding' || (!body.onboarding && resumed.edition === edition))) return res.json(resumed);
           } catch (error) {
             if (!(error instanceof HttpError && error.status === 404))
@@ -58,7 +59,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       }
       const baseline = await onboardingForOwner(owner);
       if (baseline && (!baseline.completed_at || (!body.playDaily && !body.practice) || baseline.completed_day >= edition)) {
-        return res.json({ ...await readGame(baseline.id, owner), dailyAvailable: !!baseline.completed_at && baseline.completed_day < edition });
+        return res.json({ ...await resumeGame(baseline.id, owner), dailyAvailable: !!baseline.completed_at && baseline.completed_day < edition });
       }
       // Rollout switch affects new starts only; unfinished baseline games still resume.
       if (!baseline && process.env.FOUR_SIGMA_ONBOARDING !== 'off' &&

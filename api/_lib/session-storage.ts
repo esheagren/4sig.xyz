@@ -4,6 +4,7 @@ import type { PoolClient, QueryResultRow } from "pg";
 import type { Question, Judgement } from "./types.js";
 import { HttpError } from "./http.js";
 import { Score } from "./scoring.js";
+import { ONBOARDING_VERSION } from './onboarding-data.js';
 const isUuid = (s: unknown): s is string =>
   typeof s === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
@@ -12,6 +13,36 @@ const ownerColumn = (owner: string) =>
   owner.startsWith("guest:") ? "guest_session_hash" : "user_id";
 const ownerKey = (owner: string) =>
   owner.startsWith("guest:") ? owner.slice(6) : owner;
+
+// A visitor may have opened the tutorial before the current release was published.
+// Refresh only untouched quizzes; a submitted answer fixes the original release.
+export async function resumeGame(id: string, owner: string) {
+  if (!isUuid(id)) throw new HttpError(404, 'Game not found.');
+  return transaction(async client => {
+    const { rows } = await client.query(
+      `SELECT kind,onboarding_version,completed_at FROM game_sessions
+       WHERE id=$1 AND ${ownerColumn(owner)}=$2 FOR UPDATE`, [id, ownerKey(owner)],
+    );
+    if (!rows[0]) throw new HttpError(404, 'Game not found.');
+    const game = rows[0];
+    if (game.kind === 'onboarding' && !game.completed_at && game.onboarding_version !== ONBOARDING_VERSION) {
+      const answered = await client.query('SELECT 1 FROM game_answers WHERE session_id=$1 LIMIT 1', [id]);
+      if (!answered.rowCount) {
+        const edition = await client.query('SELECT questions FROM onboarding_editions WHERE version=$1', [ONBOARDING_VERSION]);
+        if (!edition.rows[0]) throw new HttpError(503, 'Your starting calibration is not ready yet. Please try again shortly.');
+        const questions: Question[] = edition.rows[0].questions;
+        await client.query('DELETE FROM game_questions WHERE session_id=$1', [id]);
+        for (const [position, question] of questions.entries()) {
+          await client.query('INSERT INTO game_questions(session_id,question_id,position,snapshot) VALUES($1,$2,$3,$4)',
+            [id, question.id, position, JSON.stringify(question)]);
+        }
+        await client.query('UPDATE game_sessions SET onboarding_version=$2 WHERE id=$1', [id, ONBOARDING_VERSION]);
+      }
+    }
+    return readGame(id, owner, client);
+  });
+}
+
 export async function startGame(
   userId: string,
   edition: string,

@@ -1,11 +1,8 @@
 export function CalibrationSetup({ count }: { count: number }) {
   return <>
-    <div className="daily-four" aria-hidden="true">
-      {[1, 2, 3, 4].map(n => <span key={n}>{n}</span>)}
-    </div>
-    <p className="setup-intro">This is a daily question game. Everyone gets the same four new questions each day.</p>
-    <h2>First, find your starting point.</h2>
-    <p className="setup-intro">Start with our {count}-question quiz to get your initial score and calibration.</p>
+    <p className="setup-intro">Come back each day for four new questions, the same for everyone.</p>
+    <h2>But first, we need to find your starting point.</h2>
+    <p className="setup-intro">We all start with the same {count}-question quiz to find out what we know and how sure we should be.</p>
     <div className="setup-measures">
       <div>
         <svg viewBox="0 0 120 72" aria-hidden="true">

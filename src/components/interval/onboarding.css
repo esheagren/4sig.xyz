@@ -75,10 +75,8 @@
 
 .interval-app .calibration-setup { padding: 36px 0 24px; }
 .interval-app .calibration-setup h1 { font: 400 clamp(36px, 8vw, 48px)/1.08 'Newsreader', Georgia, serif; margin: 0 0 24px; }
-.interval-app .daily-four { display: flex; gap: 10px; margin-bottom: 16px; }
-.interval-app .daily-four span { display: grid; place-items: center; width: 42px; height: 48px; border: 1px solid var(--blue); border-radius: 5px; color: var(--blue); font: 20px var(--mono); }
 .interval-app .setup-intro { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 0 0 24px; }
-.interval-app .calibration-setup h2 { font: 400 27px/1.15 'Newsreader', Georgia, serif; margin: 32px 0 12px; }
+.interval-app .calibration-setup h2 { font: 400 27px/1.15 'Newsreader', Georgia, serif; margin: 32px 0 12px; text-wrap: balance; }
 .interval-app .setup-measures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 28px 0; border-block: 1px solid var(--line); }
 .interval-app .setup-measures > div { padding: 24px 16px 22px; }
 .interval-app .setup-measures > div + div { border-left: 1px solid var(--line); }

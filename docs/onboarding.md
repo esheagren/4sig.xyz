@@ -15,8 +15,10 @@ global development, China and global power, energy and climate, population
 and demography, cities and urbanism, and governance and institutions.
 Next opens a final setup page explaining four daily questions and the initial
 calibration, with score and calibration illustrated side by side. Begin starts
-the shared eight-question release; the setup uses the session’s actual count
-so existing ten-question games remain accurate. Everyone on a release takes
+the shared eight-question release. Untouched older quizzes switch to the
+current release when resumed, under the same session lock used to save answers.
+Once any answer is submitted, the quiz keeps its original questions; the setup
+uses the actual session count. Everyone on a release takes
 the same questions in the same order. Each submitted interval is locked and saved on the
 server. Scores, truths, sources and hit flags are withheld until all answers
 are saved and the player has chosen a username, pattern and color.
@@ -68,8 +70,8 @@ NHGRI observation. Future revisions must use a new version and question IDs.
 eight-question release omits the EU language survey and US food spending
 questions and uses distinct question and glossary IDs. Migration 008 allows
 both edition lengths; the installer validates existing releases without changing
-them. Existing answers, unfinished games, completed baselines and scores remain
-attached to their original release. New players receive eight questions.
+them. Existing answers, quizzes with submitted answers, completed baselines and scores
+remain attached to their original release. New players receive eight questions.
 
 ## Installation
 

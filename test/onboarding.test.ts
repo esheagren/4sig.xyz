@@ -176,3 +176,38 @@ test('ten-question games survive the eight-question upgrade and finish with thei
   assert.equal(user.onboarding.hits, 10);
   assert.equal(user.questionsAnswered, 10);
 });
+
+test('untouched legacy quizzes resume as eight questions for guests and signed-in players', async () => {
+  for (const signedIn of [false, true]) {
+    const browser: Browser = { ip: `untouched-${signedIn}` };
+    let owner: string;
+    if (signedIn) {
+      await call(auth, '/api/auth/claim-username', browser, { username: 'UntouchedLegacy' });
+      owner = (await query("SELECT id FROM users WHERE username='UntouchedLegacy'")).rows[0].id;
+    } else {
+      const fresh = (await call(session, '/api/session/start', browser)).data;
+      const row = (await query('SELECT guest_session_hash FROM game_sessions WHERE id=$1', [fresh.sessionId])).rows[0];
+      owner = `guest:${row.guest_session_hash}`;
+      await query('DELETE FROM game_sessions WHERE id=$1', [fresh.sessionId]);
+    }
+    const original = await startGame(owner, '2000-01-01', legacyQuestions, false, 'onboarding', legacyVersion);
+    assert.equal(original.questions.length, 10);
+    const resumes = await Promise.all([
+      call(session, '/api/session/start', browser, { resumeId: original.sessionId }),
+      call(session, '/api/session/start', browser, { resumeId: original.sessionId }),
+    ]);
+    for (const resumed of resumes) {
+      assert.equal(resumed.status, 200);
+      assert.equal(resumed.data.sessionId, original.sessionId);
+      assert.equal(resumed.data.questions.length, 8);
+      assert.deepEqual(resumed.data.questions.map((q: { id: string }) => q.id), onboardingQuestions.map(q => q.id));
+      assert.deepEqual(resumed.data.savedAnswers, []);
+      assert.doesNotMatch(JSON.stringify(resumed.data), /trueValue|answerContext|sourceUrl|"hit"|"score"/);
+    }
+    const answer = await call(session, '/api/session/answer', browser, {
+      sessionId: original.sessionId, questionId: onboardingQuestions[0].id, lower: 0, upper: 100,
+    });
+    assert.equal(answer.status, 200);
+    assert.equal(answer.data.savedAnswers.length, 1);
+  }
+});
