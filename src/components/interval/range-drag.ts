@@ -1,6 +1,13 @@
 import { precise } from "./game";
 import type { Bounds } from "./game";
 
+// Keep the estimate fixed, including digits beyond the ruler's display precision.
+export function moveBound(bounds: Bounds, part: "lower" | "upper", value: number, min = 0, max = 1e100): Bounds {
+  return { ...bounds, [part]: part === "lower"
+    ? Math.max(min, Math.min(bounds.estimate, precise(value)))
+    : Math.min(max, Math.max(bounds.estimate, precise(value))) };
+}
+
 export type DragState = {
   bounds: Bounds;
   domain: [number, number];
@@ -73,16 +80,7 @@ export function stepDrag(
   const value =
     next.domain[0] +
     Math.max(0, Math.min(1, ratio)) * (next.domain[1] - next.domain[0]);
-  next.bounds[state.part] = upper
-    ? Math.min(max, next.domain[1], Math.max(next.bounds.lower, precise(value)))
-    : Math.max(
-        min,
-        next.domain[0],
-        Math.min(next.bounds.upper, precise(value)),
-      );
-  next.bounds.estimate = Math.max(
-    next.bounds.lower,
-    Math.min(next.bounds.upper, next.bounds.estimate),
-  );
+  next.bounds = moveBound(next.bounds, state.part, value, min, max);
+  if (next.bounds[state.part] === next.bounds.estimate) next.cue = "At your estimate";
   return next;
 }

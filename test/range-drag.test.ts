@@ -6,7 +6,7 @@ import {
   resizeBounds,
   validBounds,
 } from "../src/components/interval/game.js";
-import { startDrag, stepDrag } from "../src/components/interval/range-drag.js";
+import { moveBound, startDrag, stepDrag } from "../src/components/interval/range-drag.js";
 import type { DragState } from "../src/components/interval/range-drag.js";
 
 function hold(
@@ -99,16 +99,16 @@ test("dragging remains finite at very small and large scales, and long frames ca
   }
 });
 
-test("handles cannot cross even when a typed bound has more precision than the ruler", () => {
+test("handles stop at the fixed estimate without rounding its precision", () => {
   const exact = 12.34567890123;
   const upper = stepDrag(
-    startDrag({ lower: exact, estimate: 15, upper: 18 }, [0, 20], "upper"),
+    startDrag({ lower: 5, estimate: exact, upper: 18 }, [0, 20], "upper"),
     0,
     0,
     true,
   );
   const lower = stepDrag(
-    startDrag({ lower: 5, estimate: 10, upper: exact }, [0, 20], "lower"),
+    startDrag({ lower: 5, estimate: exact, upper: 18 }, [0, 20], "lower"),
     1,
     0,
     true,
@@ -117,4 +117,31 @@ test("handles cannot cross even when a typed bound has more precision than the r
   assert.equal(lower.bounds.lower, exact);
   assert.ok(validBounds(upper.bounds, 1e100, 0));
   assert.ok(validBounds(lower.bounds, 1e100, 0));
+});
+
+
+test("both handles close exactly onto the estimate and can reopen independently", () => {
+  for (const estimate of [0, 1e-100, 12.34567890123, 1440, 1e99]) {
+    let b = initialBounds(estimate, 1e100, 0);
+    const domain = fitDomain(b, 1e100, 0);
+    b = stepDrag(startDrag(b, domain, "lower"), 1, 0, true).bounds;
+    b = stepDrag(startDrag(b, domain, "upper"), 0, 0, true).bounds;
+    assert.deepEqual(b, { lower: estimate, estimate, upper: estimate });
+    const opened = stepDrag(startDrag(b, domain, "upper"), 1, 0, true).bounds;
+    assert.ok(opened.upper > estimate);
+    assert.equal(opened.lower, estimate);
+    assert.equal(opened.estimate, estimate);
+    if (estimate > 0) {
+      const lower = stepDrag(startDrag(b, domain, "lower"), 0, 0, true).bounds;
+      assert.ok(lower.lower < estimate);
+      assert.equal(lower.estimate, estimate);
+    }
+  }
+});
+
+test("keyboard-sized moves clamp at the estimate and never push it", () => {
+  const b = { lower: 20, estimate: 50, upper: 80 };
+  assert.deepEqual(moveBound(b, "lower", 100), { ...b, lower: 50 });
+  assert.deepEqual(moveBound(b, "upper", 0), { ...b, upper: 50 });
+  assert.deepEqual(moveBound(b, "lower", -5), { ...b, lower: 0 });
 });

@@ -26,6 +26,7 @@ import type { Player, SharedScore } from "./player";
 import { QuestionText } from "./QuestionText";
 import type { GlossaryAnnotation } from "../../lib/glossary";
 import { NumberPad } from "./NumberPad";
+import { formatEntry } from "./number-entry";
 import { SourceLinks } from "./SourceLinks";
 import {
   compact,
@@ -34,7 +35,6 @@ import {
   makeShareText,
   parseAmount,
   points,
-  precise,
   quantity,
   scoreText,
   totalPoints,
@@ -43,7 +43,7 @@ import {
 import type { Bounds } from "./game";
 import { HoldToConfirm } from "./HoldToConfirm";
 import { rulerScale } from "./ruler-scale";
-import { startDrag, stepDrag } from "./range-drag";
+import { moveBound, startDrag, stepDrag } from "./range-drag";
 import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
 
 // The current question bank is curated for nonnegative quantities.
@@ -216,7 +216,7 @@ export default function IntervalGame() {
   const [assisted, setAssisted] = useState(false),
     [error, setError] = useState(""),
     [help, setHelp] = useState(false);
-  const [editing, setEditing] = useState<"lower" | "upper" | null>(null),
+  const [editing, setEditing] = useState<"lower" | "upper" | "estimate" | null>(null),
     [editText, setEditText] = useState("");
   const [player, setPlayer] = useState<Player | null>(null);
   const [share, setShare] = useState<SharedScore | null>(null);
@@ -303,12 +303,21 @@ export default function IntervalGame() {
   }
   function saveBound() {
     if (!editing) return;
-    const value = parseAmount(editText),
-      b = { ...bounds, [editing]: value };
-    b.estimate = Math.max(b.lower, Math.min(b.upper, b.estimate));
+    const value = parseAmount(editText);
+    if (editing === "estimate") {
+      if (!Number.isFinite(value) || value < RANGE_MIN || value > (question.max ?? 1e100)) {
+        setError("Enter an estimate within the question’s units.");
+        return;
+      }
+      updateBounds(initialBounds(value, question.max, RANGE_MIN));
+      setText(String(value));
+      setEditing(null);
+      return;
+    }
+    const b = { ...bounds, [editing]: value };
     if (!validBounds(b, question.max, RANGE_MIN)) {
       setError(
-        `Bounds must be at or above 0, with lower no greater than upper${question.max ? `, at or below ${question.max}` : ""}.`,
+        `Keep the lower bound at or below your estimate and the upper bound at or above it${question.max ? `, between 0 and ${question.max}` : ", and at or above 0"}.`,
       );
       return;
     }
@@ -411,13 +420,8 @@ export default function IntervalGame() {
       ((["ArrowRight", "ArrowUp"].includes(e.key) ? 1 : -1) *
         (domain[1] - domain[0])) /
       50;
-    const b = {
-      ...bounds,
-      [part]: precise(
-        Math.max(domain[0], Math.min(domain[1], bounds[part] + delta)),
-      ),
-    };
-    b.estimate = Math.max(b.lower, Math.min(b.upper, b.estimate));
+    const b = moveBound(bounds, part,
+      Math.max(domain[0], Math.min(domain[1], bounds[part] + delta)), RANGE_MIN, question.max);
     if (validBounds(b, question.max, RANGE_MIN)) {
       feedback.enabled = soundOn;
       feedback.unlock();
@@ -795,7 +799,7 @@ export default function IntervalGame() {
           Object.keys(v).sort().join() !== "lower,upper"
         )
           throw new Error("Expected lower and upper.");
-        const b = { ...v, estimate: (v.lower + v.upper) / 2 };
+        const b = { ...v, estimate: s.stage === "range" ? s.bounds.estimate : (v.lower + v.upper) / 2 };
         if (
           !q ||
           !["estimate", "range"].includes(s.stage) ||
@@ -877,7 +881,7 @@ export default function IntervalGame() {
               <h1 ref={heading} tabIndex={-1}>You have the controls.</h1>
               <p>A day contains 1,440 minutes. Your range was {quantity(bounds.lower, 'minutes')} to {quantity(bounds.upper, 'minutes')}.</p>
               <p>{bounds.lower <= 1440 && bounds.upper >= 1440 ? 'Your range contained the answer.' : 'The answer fell outside your range.'} Over time, aim to contain the answer about 19 times out of 20.</p>
-              <p>A narrower range earns more points when it contains the answer. For your first ten, the answers and your score will be revealed together at the end.</p>
+              <p>This one you can calculate. The next ones take judgment.</p>
               <button className="primary" onClick={() => { tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound(); }}>Begin question one <span>→</span></button>
             </section>
           ) : stage === "identity" ? (
@@ -932,7 +936,7 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Your first ten · Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
-              {demo && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Drag the L and U brackets, or tap a bound to type it. Hold the round arrow for half a second to submit.'}</p>}
+              {demo && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Know it exactly? Bring both brackets to the dot. Otherwise, leave room for uncertainty. Hold the round arrow to submit.'}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
                   <QuestionText
@@ -977,9 +981,14 @@ export default function IntervalGame() {
               ) : (
                 <>
                   <section
-                    className={`instrument ${showAnswer ? "locked" : ""}`}
+                    className={`instrument ${showAnswer ? "locked" : ""} ${bounds.lower === bounds.upper ? "exact-range" : ""}`}
                     aria-label="Your range"
                   >
+                    <button className="estimate-anchor-label" disabled={!editable}
+                      onClick={() => { setEditText(String(bounds.estimate)); setError(""); setEditing("estimate"); }}
+                      aria-label={`Edit estimate, ${formatEntry(String(bounds.estimate))} ${question.unit}`}>
+                      Your estimate <strong>{formatEntry(String(bounds.estimate))} {question.unit}</strong>
+                    </button>
                     <div className="readings">
                       {(["lower", "upper"] as const).map((part) => (
                         <button
@@ -993,7 +1002,7 @@ export default function IntervalGame() {
                           }}
                           aria-label={`Edit ${part} bound, ${quantity(bounds[part], question.unit)}`}
                         >
-                          <strong>{compact(bounds[part])}</strong>
+                          <strong>{bounds.lower === bounds.upper ? formatEntry(String(bounds[part])) : compact(bounds[part])}</strong>
                         </button>
                       ))}
                     </div>
@@ -1021,31 +1030,28 @@ export default function IntervalGame() {
                           className="anchor-mark"
                           style={{ left: `${clipped(bounds.estimate)}%` }}
                         >
-                          ◆
+                          ●
                         </div>
                         {(["lower", "upper"] as const).map((part) => (
                           <button
                             key={part}
-                            className={`handle ${part}`}
+                            className={`handle ${part} ${bounds[part] === bounds.estimate ? "at-anchor" : ""}`}
                             style={{ left: `${clipped(bounds[part])}%` }}
                             role="slider"
                             aria-label={`Drag ${part} bound`}
                             aria-valuemin={
                               part === "lower"
                                 ? Math.min(domain[0], bounds.lower)
-                                : bounds.lower
+                                : bounds.estimate
                             }
                             aria-valuemax={
                               part === "upper"
                                 ? (question.max ??
                                   Math.max(domain[1], bounds.upper))
-                                : bounds.upper
+                                : bounds.estimate
                             }
                             aria-valuenow={bounds[part]}
-                            aria-valuetext={quantity(
-                              bounds[part],
-                              question.unit,
-                            )}
+                            aria-valuetext={`${quantity(bounds[part], question.unit)}${bounds[part] === bounds.estimate ? ", at your estimate" : ""}`}
                             disabled={!editable}
                             onPointerDown={(e) => drag(e, part)}
                             onKeyDown={(e) => keyMove(e, part)}
@@ -1088,7 +1094,8 @@ export default function IntervalGame() {
                     {editable && (
                       <>
                         <div className="range-cue" role="status">
-                          {dragCue}
+                          {bounds.lower === bounds.upper
+                            ? `Exactly ${formatEntry(String(bounds.estimate))} ${question.unit}` : dragCue}
                         </div>
                       </>
                     )}
@@ -1564,7 +1571,7 @@ export default function IntervalGame() {
           }}
         >
           <div className="dialog-head">
-            <h2>Edit {editing} bound</h2>
+            <h2>Edit {editing}{editing !== "estimate" && " bound"}</h2>
             <button
               aria-label="Cancel bound edit"
               onClick={() => {
@@ -1583,10 +1590,10 @@ export default function IntervalGame() {
                 setError("");
               }}
               onSubmit={saveBound}
-              label={`${editing === "lower" ? "Lower" : "Upper"} bound`}
+              label={editing === "estimate" ? "Your estimate" : `${editing === "lower" ? "Lower" : "Upper"} bound`}
               unit={question.unit}
               error={error}
-              submitLabel="Save bound"
+              submitLabel={editing === "estimate" ? "Save estimate" : "Save bound"}
             />
           )}
         </dialog>
