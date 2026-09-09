@@ -6,15 +6,18 @@ export type ScorecardData = { player: Player; score: number; hits: boolean[]; la
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]!);
 export const calibrationText = (hits: boolean[]) => hits.length ? `${Math.round(hits.filter(Boolean).length / hits.length * 1000) / 10}%` : '—';
 
-/** One self-contained SVG for the live card, exported PNG and design studies. */
-export function scorecardSvg(data: ScorecardData, variant: ScorecardVariant = 'paper'): string {
+/** One self-contained SVG for the live card, exported PNG/GIF and design studies. */
+export function scorecardSvg(data: ScorecardData, variant: ScorecardVariant = 'ink', phase = .125): string {
   const dark = variant === 'ink', emblem = variant === 'emblem';
   const paper = dark ? '#352a25' : '#f6f0e6', ink = dark ? '#f6f0e6' : '#352a25';
   const muted = dark ? '#c5b8a8' : '#786b60', line = dark ? '#64554b' : '#d6c8b5';
-  const color = normalizeColor(data.player.color), icon = normalizeIcon(data.player.icon);
+  const chosenColor = normalizeColor(data.player.color), icon = normalizeIcon(data.player.icon);
+  // Lift dark identity colors so every pattern remains visible on Ink.
+  const color = dark ? '#' + chosenColor.slice(1).match(/../g)!.map(channel =>
+    Math.round(parseInt(channel, 16) * .65 + 255 * .35).toString(16).padStart(2, '0')).join('') : chosenColor;
   const score = Math.max(0, data.score).toLocaleString('en-US', { maximumFractionDigits: 1 });
   const rate = calibrationText(data.hits), count = data.hits.filter(Boolean).length;
-  const pattern = `<g data-scorecard-pattern="" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round">${patternFrame(icon, .125)}</g>`;
+  const pattern = `<g data-scorecard-pattern="" fill="none" stroke="currentColor" stroke-width=".8" stroke-linecap="round" stroke-linejoin="round">${patternFrame(icon, phase)}</g>`;
   const marks = data.hits.map((hit, i) => `<rect x="${64 + i * 30}" y="626" width="18" height="18" rx="2" fill="${hit ? ink : 'none'}" stroke="${hit ? ink : muted}" stroke-width="2"/>`).join('');
   const metricY = emblem ? 550 : 418, labelY = emblem ? 592 : 466;
   return `<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720">

@@ -2136,3 +2136,6 @@
 .interval-app .scorecard-button:focus-visible { outline: 2px solid var(--blue); outline-offset: 5px; }
 .interval-app .scorecard-share-actions { margin: 18px 0 0; }
 .interval-app .scorecard-share-actions .primary { margin-top: 0; }
+.interval-app .scorecard-extras { display: flex; justify-content: space-between; gap: 16px; margin-top: 14px; }
+.interval-app .scorecard-extras button { font-size: 12px; }
+.interval-app .scorecard-share-actions button:disabled, .interval-app .scorecard-extras button:disabled { cursor: default; opacity: .55; }

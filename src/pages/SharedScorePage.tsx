@@ -1,8 +1,7 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
-import { ScoreCard } from "../components/interval/ScoreCard";
-import { scorecardPng, shareScorecard } from "../lib/share-scorecard";
+import { ScorecardShare } from "../components/interval/ScorecardShare";
 import type { ScorecardData } from "../../shared/scorecard";
 import {
   colorName,
@@ -15,9 +14,7 @@ import { scoreText } from "../components/interval/game";
 export function SharedScorePage() {
   const { id } = useParams();
   const [score, setScore] = useState<SharedScore | null>(null),
-    [error, setError] = useState(""),
-    [status, setStatus] = useState(""),
-    [fallback, setFallback] = useState(false);
+    [error, setError] = useState("");
   useEffect(() => {
     const abort = new AbortController();
     void fetch("/api/share?id=" + encodeURIComponent(id ?? ""), {
@@ -50,20 +47,6 @@ export function SharedScorePage() {
     : "";
   const card = useMemo<ScorecardData | null>(() => score ? { player: score.player, score: score.score, hits: score.hits,
     label: score.kind === 'onboarding' ? 'STARTING CALIBRATION' : score.edition, practice: !score.isRanked } : null, [score]);
-  const image = useRef<{ data: ScorecardData; png: Promise<Blob>; ready: Blob | null } | null>(null);
-  useEffect(() => {
-    if (!card) return;
-    const entry = { data: card, png: scorecardPng(card), ready: null as Blob | null }; image.current = entry;
-    void entry.png.then(blob => { entry.ready = blob; }).catch(() => { if (image.current === entry) image.current = null; });
-  }, [card]);
-  async function copy() {
-    if (!card) return;
-    try {
-      const cached = image.current?.data === card ? image.current : null;
-      const outcome = await shareScorecard(cached?.png ?? scorecardPng(card), cached?.ready ?? null, text);
-      if (outcome !== 'cancelled') setStatus(outcome === 'shared' ? 'Scorecard shared.' : outcome === 'copied' ? 'Scorecard copied. Ready to paste.' : 'Scorecard image saved.');
-    } catch { setFallback(true); }
-  }
   return (
     <div className="interval-page">
       <div
@@ -74,22 +57,7 @@ export function SharedScorePage() {
           {score ? (
             <section className="summary">
               <h1 className="sr-only">{score.player.username}’s scorecard</h1>
-              {card && <ScoreCard data={card} onShare={() => void copy()} />}
-              <div className="share-actions scorecard-share-actions">
-                <button className="primary" onClick={() => void copy()}>Copy and Share<span aria-hidden="true">↗</span></button>
-              </div>
-              <p className="copy-status" role="status">
-                {status}
-              </p>
-              {fallback && (
-                <textarea
-                  className="share-fallback"
-                  aria-label="Shareable score"
-                  readOnly
-                  value={text}
-                  onFocus={(e) => e.target.select()}
-                />
-              )}
+              {card && <ScorecardShare data={card} text={text} />}
               <p className="shared-promise">
                 A better sense of the world, four numbers at a time.
               </p>

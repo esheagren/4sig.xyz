@@ -19,6 +19,7 @@
     "csv-parse": "^6.1.0",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
+    "gifenc": "^1.0.3",
     "pg": "^8.23.0",
     "posthog-js": "^1.298.1",
     "posthog-node": "^5.14.0",

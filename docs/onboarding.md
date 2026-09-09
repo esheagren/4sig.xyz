@@ -114,12 +114,19 @@ daily API suite, then runs the onboarding suite with it enabled.
 
 Completed calibration and daily games, including shared-score links, show one
 scorecard with the player's name and pattern, points, calibration, and hit marks.
-Only the background pattern animates; reduced-motion settings render a still.
-Clicking the card or **Copy and Share** shares a 1920 × 1440 PNG and the score
-link through native file sharing when available, otherwise copies image and text
-to the clipboard. If image copying is unavailable, it downloads the PNG; if image
-creation fails, the existing selectable score text remains available.
+Only the background pattern animates; reduced-motion settings keep the on-screen
+card still. **Copy and Share** sends a looping GIF, score caption, and an explicit
+`https://4sig.xyz/` URL through native sharing when supported. GIF preparation
+loads only on results screens, streams one frame at a time through a worker,
+and stops when the card unmounts. The GIF is 960 × 720, 160 frames, and 16 seconds.
 
-`shared/scorecard.ts` defines the self-contained image used both on screen and in
-exports. Protected Designspace has paper, ink, and emblem studies at
-`/designspace?view=scorecards`; the game uses paper. Studies use sample results.
+Clipboard sharing includes a 1920 × 1440 PNG, plain-text caption with score and
+game links, and rich HTML containing the image and game link. The receiving app
+chooses which representation to paste; image-only apps may omit the link.
+**Copy link** and **Save GIF** provide explicit alternatives. When clipboard
+image access fails, the card downloads and the caption/link is copied if allowed.
+If image creation fails, selectable score/link text remains available.
+
+`shared/scorecard.ts` defines every image frame used on screen and in exports.
+Protected Designspace retains paper, ink, and emblem studies at
+`/designspace?view=scorecards`; the game uses Ink. Studies use sample results.

@@ -2,7 +2,7 @@ import { memo, useEffect, useMemo, useRef } from 'react';
 import { calibrationText, scorecardSvg, type ScorecardData, type ScorecardVariant } from '../../../shared/scorecard';
 import { patternFrame } from './patterns';
 
-export const ScoreCard = memo(function ScoreCard({ data, variant = 'paper', onShare }: {
+export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShare }: {
   data: ScorecardData; variant?: ScorecardVariant; onShare: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   const root = useRef<HTMLSpanElement>(null);

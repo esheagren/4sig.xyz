@@ -17,8 +17,7 @@ import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
 import { CalibrationSetup } from "./CalibrationSetup";
 import { WorldviewGrid } from "./WorldviewGrid";
-import { ScoreCard } from './ScoreCard';
-import { scorecardPng, shareScorecard } from '../../lib/share-scorecard';
+import { ScorecardShare } from './ScorecardShare';
 import type { ScorecardData } from '../../../shared/scorecard';
 import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
 import {
@@ -240,29 +239,11 @@ export default function IntervalGame() {
     ...(!user?.isAnonymous && user ? { username: user.displayName } : {}),
     ...(user?.hasPersonality ? { icon: normalizeIcon(user.avatarIcon), color: normalizeColor(user.avatarColor) } : {}),
   };
-  const [copyToast, setCopyToast] = useState<{
-    x: number;
-    y: number;
-    key: number;
-  } | null>(null);
-  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null),
-    copySequence = useRef(0);
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "shared" | "downloaded" | "fallback">(
-    "idle",
-  );
   const cardData = useMemo<ScorecardData | null>(() => player ? {
     player, score: totalPoints(results), hits: results.map(result => result.hit),
     label: onboarding ? 'STARTING CALIBRATION' : edition,
     practice: !isRanked,
   } : null, [player, results, onboarding, edition, isRanked]);
-  const cardImage = useRef<{ data: ScorecardData; png: Promise<Blob>; ready: Blob | null } | null>(null);
-  useEffect(() => {
-    if (stage !== 'complete' || !cardData) return;
-    const entry = { data: cardData, png: scorecardPng(cardData), ready: null as Blob | null };
-    cardImage.current = entry;
-    void entry.png.then(blob => { entry.ready = blob; }).catch(() => { if (cardImage.current === entry) cardImage.current = null; });
-  }, [stage, cardData]);
-  const copyMessage = copyState === 'shared' ? 'Scorecard shared' : copyState === 'downloaded' ? 'Scorecard image saved' : 'Scorecard copied';
   const ruler = useRef<HTMLDivElement>(null),
     heading = useRef<HTMLHeadingElement>(null);
   const [menuTab, setMenuTab] = useState<
@@ -664,17 +645,8 @@ export default function IntervalGame() {
     }
   }, [authLoading, user, stage, sessionId]);
   function restart() {
-    if (copyTimer.current) clearTimeout(copyTimer.current);
-    setCopyToast(null);
-    setCopyState("idle");
     void startSession(true);
   }
-  useEffect(
-    () => () => {
-      if (copyTimer.current) clearTimeout(copyTimer.current);
-    },
-    [],
-  );
   async function startPlayer(chosen: Player) {
     if (!user)
       throw new Error("Could not connect to your account. Please reload.");
@@ -696,39 +668,6 @@ export default function IntervalGame() {
     });
     void refreshUser();
     await finalizeScore();
-  }
-  async function copy(e: React.MouseEvent<HTMLButtonElement>) {
-    if (!player) return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.max(
-      85,
-      Math.min(
-        window.innerWidth - 85,
-        e.detail ? e.clientX : rect.left + rect.width / 2,
-      ),
-    );
-    const y = Math.max(
-      54,
-      Math.min(window.innerHeight - 30, e.detail ? e.clientY : rect.top),
-    );
-    try {
-      if (!cardData) return;
-      const cached = cardImage.current?.data === cardData ? cardImage.current : null;
-      const outcome = await shareScorecard(cached?.png ?? scorecardPng(cardData), cached?.ready ?? null,
-        makeShareText(results, shareUrl, player,
-          onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? '' : ' · Practice')));
-      if (outcome === 'cancelled') return;
-      setCopyState(outcome);
-      setCopyToast({ x, y, key: ++copySequence.current });
-      if (copyTimer.current) clearTimeout(copyTimer.current);
-      copyTimer.current = setTimeout(() => {
-        setCopyToast(null);
-        setCopyState("idle");
-      }, 1800);
-    } catch {
-      setCopyState("fallback");
-      setCopyToast(null);
-    }
   }
   const stateRef = useRef({
     index,
@@ -1215,49 +1154,8 @@ export default function IntervalGame() {
               <h1 className="sr-only" ref={heading} tabIndex={-1}>
                 {onboarding ? 'Your starting snapshot' : 'Your score'}
               </h1>
-              {cardData && <ScoreCard data={cardData} onShare={copy} />}
-              <div className="share-actions scorecard-share-actions">
-                <button className="primary" onClick={copy}>
-                  Copy and Share<span aria-hidden="true">↗</span>
-                </button>
-              </div>
-              <p className="copy-status" role="status">
-                {["copied", "shared", "downloaded"].includes(copyState) ? (
-                  <span>{copyMessage}{copyState === "copied" ? ". Ready to paste." : "."}</span>
-                ) : copyState === "fallback" ? (
-                  "Select and copy your score below."
-                ) : (
-                  ""
-                )}
-              </p>
-              {copyToast && (
-                <div
-                  key={copyToast.key}
-                  className="copy-toast"
-                  style={{ left: copyToast.x, top: copyToast.y }}
-                  aria-hidden="true"
-                >
-                  {player && (
-                    <PlayerMark icon={player.icon} color={player.color} />
-                  )}
-                  <span>{copyMessage}</span>
-                  <span>✓</span>
-                </div>
-              )}
-              {copyState === "fallback" && player && (
-                <textarea
-                  className="share-fallback"
-                  aria-label="Shareable score"
-                  readOnly
-                  value={makeShareText(
-                    results,
-                    shareUrl,
-                    player,
-                    onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
-                  )}
-                  onFocus={(e) => e.target.select()}
-                />
-              )}
+              {cardData && player && <ScorecardShare data={cardData} text={makeShareText(results, shareUrl, player,
+                onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? '' : ' · Practice'))} />}
               {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
               {onboarding && <div className="daily-invitation">
                 <p>{dailyAvailable ? 'Four more numbers to explore. Your starting calibration stays here as your baseline.' : 'Your starting calibration is complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>
