@@ -58,3 +58,21 @@ test("inserting and replacing within grouped numbers preserves the editing posit
   });
   assert.deepEqual(editEntry("1,234", 0, 5, "8"), { value: "8", cursor: 1 });
 });
+
+import { calculate } from '../src/components/interval/calculator.js';
+
+test('calculator handles time conversions, precedence, decimals and signed scientific values', () => {
+  assert.equal(calculate('24 × 60'), 1440);
+  assert.equal(calculate('2 + 3 × 4'), 14);
+  assert.equal(calculate('1440 ÷ 24'), 60);
+  assert.equal(calculate('0.1 + 0.2'), 0.3);
+  assert.equal(calculate('1,000 − 250'), 750);
+  assert.equal(calculate('4e-5 * -2'), -0.00008);
+  assert.equal(calculate('10 / 2 / 5'), 1);
+  assert.equal(calculate('24 × 60 + 30'), 1470);
+});
+
+test('calculator rejects unfinished, executable and out-of-range expressions', () => {
+  for (const expression of ['', '24 ×', '2 / 0', '1e100 * 10', '1e-100 / 10', 'Math.random()', '2;alert(1)', '2 3'])
+    assert.throws(() => calculate(expression));
+});

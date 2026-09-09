@@ -2119,3 +2119,7 @@
 .interval-app .source-links a {
   overflow-wrap: anywhere;
 }
+
+.interval-app .calculator-keypad .calculator-equals { grid-column: 2 / 5; background: var(--lime); color: #fff9ee; }
+.interval-app .calculator-actions { display: flex; align-items: center; gap: 20px; margin-top: 16px; }
+.interval-app .calculator-actions .primary { flex: 1; }

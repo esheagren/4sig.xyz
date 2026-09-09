@@ -865,12 +865,9 @@ export default function IntervalGame() {
           {stage === 'welcome' ? (
             <section className="onboarding-welcome">
               <div className="brand" aria-label="Four Sigma">4<span>σ</span></div>
-              <p className="onboarding-eyebrow">YOUR FIRST TEN</p>
-              <h1 ref={heading} tabIndex={-1}>How well do you know your world?</h1>
-              <p>Ten questions about people, power, nature, and technology.</p>
-              <p>You do not need exact answers. Choose a range you are 95% sure contains the answer.</p>
-              <p className="onboarding-note">Everyone starts with the same ten. First, try the controls with an unscored example.</p>
-              <button className="primary" onClick={() => { setDemo(true); resetRound(); }}>Start my first ten <span>→</span></button>
+              <h1 ref={heading} tabIndex={-1}>Welcome to 4 Sigma.</h1>
+              <p>Make sense of the numbers shaping our world—and find out how sure you should be.</p>
+              <button className="primary" onClick={() => { setDemo(true); resetRound(); }}>Let’s play <span>→</span></button>
             </section>
           ) : stage === 'practice-complete' ? (
             <section className="onboarding-welcome">

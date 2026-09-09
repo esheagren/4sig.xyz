@@ -1,4 +1,4 @@
-import { useId, useRef } from "react";
+import { useId, useRef, useState } from "react";
 import { compact, parseAmount } from "./game";
 import {
   displayCursor,
@@ -6,6 +6,8 @@ import {
   formatEntry,
   rawCursor,
 } from "./number-entry";
+
+import { CalculatorPad } from "./CalculatorPad";
 
 type Props = {
   value: string;
@@ -25,6 +27,7 @@ export function NumberPad({
   error,
   submitLabel,
 }: Props) {
+  const [calculator, setCalculator] = useState(false);
   const input = useRef<HTMLInputElement>(null);
   const inputId = useId(),
     captionId = `${inputId}-caption`;
@@ -46,6 +49,9 @@ export function NumberPad({
     update(next.value, next.cursor);
   }
   const amount = parseAmount(value);
+  if (calculator) return <CalculatorPad initial={value} unit={unit}
+    onCancel={() => { setCalculator(false); requestAnimationFrame(() => input.current?.focus()); }}
+    onUse={(result) => { onChange(result); setCalculator(false); requestAnimationFrame(() => input.current?.focus()); }} />;
   return (
     <form
       className="number-entry"
@@ -110,7 +116,7 @@ export function NumberPad({
           "4",
           "5",
           "6",
-          "E",
+          "Calculator",
           "1",
           "2",
           "3",
@@ -125,7 +131,7 @@ export function NumberPad({
             className={
               key === "→"
                 ? "enter-key"
-                : ["E", "Delete", "000"].includes(key)
+                : ["Calculator", "Delete", "000"].includes(key)
                   ? `function-key ${key.toLowerCase()}-key`
                   : ""
             }
@@ -133,7 +139,7 @@ export function NumberPad({
               (
                 {
                   Delete: "Delete digit",
-                  E: "Exponent",
+                  Calculator: "Open calculator",
                   "000": "Insert three zeros",
                   "→": submitLabel,
                 } as Record<string, string>
@@ -142,16 +148,21 @@ export function NumberPad({
             title={
               key === "Delete"
                 ? "Delete digit"
-                : key === "E"
-                  ? "Scientific notation: 4E5 = 400,000"
+                : key === "Calculator"
+                  ? "Open calculator"
                   : undefined
             }
-            disabled={key === "E" && (!value || /e/i.test(value))}
             onClick={() => {
-              if (key !== "→") press(key);
+              if (key === "Calculator") setCalculator(true);
+              else if (key !== "→") press(key);
             }}
           >
-            {key === "Delete" ? (
+            {key === "Calculator" ? (
+              <svg width="23" height="26" viewBox="0 0 24 28" fill="none" stroke="currentColor" strokeWidth="1.6" aria-hidden="true">
+                <rect x="3" y="2" width="18" height="24" rx="3" />
+                <path d="M7 7h10v4H7zM7 16h2m6 0h2M7 21h2m6 0h2" />
+              </svg>
+            ) : key === "Delete" ? (
               <svg
                 width="24"
                 height="24"
