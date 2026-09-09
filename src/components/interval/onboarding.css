@@ -25,3 +25,6 @@
   .interval-app .onboarding-welcome { padding-top: 32px; }
   .interval-app .calibration-scorecard > div { padding: 16px 8px; }
 }
+
+.interval-app .onboarding-welcome .welcome-heading { display: flex; align-items: baseline; gap: .25em; font-size: clamp(30px, 7vw, 64px); white-space: nowrap; }
+.interval-app .welcome-heading .brand { flex-shrink: 0; font-size: 1.4em; letter-spacing: -.08em; }

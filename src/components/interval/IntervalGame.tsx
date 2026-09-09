@@ -864,8 +864,10 @@ export default function IntervalGame() {
         <main>
           {stage === 'welcome' ? (
             <section className="onboarding-welcome">
-              <h1 ref={heading} tabIndex={-1}>Welcome to</h1>
-              <div className="brand" aria-label="Four Sigma">4<span>σ</span></div>
+              <h1 className="welcome-heading" ref={heading} tabIndex={-1}>
+                <span>Welcome to</span>
+                <span className="brand" aria-label="Four Sigma">4<span>σ</span></span>
+              </h1>
               <p>Make sense of the numbers shaping our world—and find out how sure you should be.</p>
               <button className="primary" onClick={() => { setDemo(true); resetRound(); }}>Let’s play <span>→</span></button>
             </section>
