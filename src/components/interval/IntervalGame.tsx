@@ -158,7 +158,6 @@ export default function IntervalGame() {
   const [isRanked, setRanked] = useState(true);
   const [onboarding, setOnboarding] = useState(false),
     [demo, setDemo] = useState(false),
-    [savedCount, setSavedCount] = useState(0),
     [dailyAvailable, setDailyAvailable] = useState(false);
   const finalizing = useRef(false);
   const [standings, setStandings] = useState<Standings | null>(null),
@@ -468,19 +467,11 @@ export default function IntervalGame() {
         lower: bounds.lower,
         upper: bounds.upper,
       });
-      if (onboarding) {
-        const count = data.savedAnswers?.length;
-        if (!Number.isInteger(count) || count < index + 1) throw new Error('Your answer could not be confirmed. Try again.');
-        setSavedCount(count);
-        if (count === orderedQuestions.length) finish();
-        else { setIndex(count); resetRound(); }
-        capture('onboarding_answer_saved', { sessionId, questionId: question.id, position: count });
-        return;
-      }
       if (!data.judgement)
         throw new Error("Your answer could not be confirmed. Try again.");
       setResults((r) => [...r, toResult(data.judgement)]);
       setStage("sweeping");
+      if (onboarding) capture('onboarding_answer_saved', { sessionId, questionId: question.id, position: index + 1 });
       capture("answer_submitted", {
         sessionId,
         questionId: question.id,
@@ -598,7 +589,6 @@ export default function IntervalGame() {
       const saved: Result[] = (data.judgements ?? []).map(toResult);
       setResults(saved);
       const answered = data.savedAnswers?.length ?? saved.length;
-      setSavedCount(answered);
       setIndex(Math.min(answered, data.questions.length - 1));
       if (data.completed || answered === data.questions.length) {
         if (!user || user.isAnonymous || !user.hasPersonality) {
@@ -1178,7 +1168,7 @@ export default function IntervalGame() {
                         else next();
                       }}>
                         {demo ? "Next" : index === orderedQuestions.length - 1
-                          ? "See score"
+                          ? onboarding ? "See summary" : "See score"
                           : "Next number"}{" "}
                         <span>→</span>
                       </button>
@@ -1189,7 +1179,6 @@ export default function IntervalGame() {
               <ol className={onboarding ? 'progress onboarding-progress' : 'progress'} aria-label="Round progress">
                 {(demo ? [] : orderedQuestions).map((q, i) => {
                   const r = visibleResults[i];
-                  if (onboarding) return <li key={q.id} className={i === index ? 'current' : i < savedCount ? 'done' : ''} aria-current={i === index ? 'step' : undefined}><span>{i + 1}</span><span className="sr-only">{i < savedCount ? 'Range saved' : i === index ? 'Current question' : 'Upcoming question'}</span></li>;
                   return (
                     <li
                       key={q.id}

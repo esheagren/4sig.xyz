@@ -44,7 +44,7 @@ test('first-eight release has explicit definitions and supported, bounded refere
   }
 });
 
-test('first eight: concealment, ownership, cross-day resume, identity, daily gating and calibration', async () => {
+test('first eight: per-answer reveal, ownership, cross-day resume, identity, daily gating and calibration', async () => {
   const browser: Browser = { ip: 'onboarding-first' };
   const outsider: Browser = { ip: 'onboarding-outsider' };
   const before = (await query('SELECT count(*)::int n FROM users')).rows[0].n;
@@ -72,14 +72,21 @@ test('first eight: concealment, ownership, cross-day resume, identity, daily gat
     for (const r of responses) {
       assert.equal(r.status, 200);
       assert.equal(r.data.savedAnswers.length, i + 1);
-      assert.doesNotMatch(JSON.stringify(r.data), /trueValue|answerContext|sourceUrl|"hit"|"score"/);
+      assert.equal(r.data.judgement.questionId, onboardingQuestions[i].id);
+      assert.equal(r.data.judgement.trueValue, onboardingQuestions[i].trueValue);
+      assert.equal(r.data.judgement.sourceUrl, onboardingQuestions[i].sourceUrl);
+      assert.equal(typeof r.data.judgement.score, 'number');
+      assert.equal(r.data.judgement.hit, i !== 6);
+      assert.equal(r.data.judgements, undefined, 'answer response only reveals this submitted question');
     }
     assert.equal((await call(session, '/api/session/answer', browser, { ...payload, lower: 1 })).status, 409);
     if (i === 4) await query("UPDATE game_sessions SET edition='2000-01-01' WHERE id=$1", [first.data.sessionId]);
     const resumed = await call(session, '/api/session/start', browser);
     assert.equal(resumed.data.sessionId, first.data.sessionId);
     assert.equal(resumed.data.savedAnswers.length, i + 1);
-    assert.deepEqual(resumed.data.judgements, []);
+    assert.equal(resumed.data.judgements.length, i + 1);
+    assert.deepEqual(resumed.data.judgements.map((j: { questionId: string }) => j.questionId), onboardingQuestions.slice(0, i + 1).map(q => q.id));
+    assert.doesNotMatch(JSON.stringify(resumed.data.questions), /trueValue|answerContext|sourceUrl|"hit"|"score"/, 'question list never contains future answers');
   }
   assert.equal((await call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId })).status, 401);
   const claimed = await call(auth, '/api/auth/claim-username', browser, { username: 'FirstTenPlayer' });
@@ -89,7 +96,7 @@ test('first eight: concealment, ownership, cross-day resume, identity, daily gat
   const resumed = await call(session, '/api/session/start', browser);
   assert.equal(resumed.data.sessionId, first.data.sessionId, 'claim-step resume without local storage, even across dates');
   assert.equal(resumed.data.savedAnswers.length, 8);
-  assert.deepEqual(resumed.data.judgements, []);
+  assert.equal(resumed.data.judgements.length, 8);
   assert.equal((await call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId })).status, 409);
   await call(auth, '/api/auth/profile', browser, { avatarIcon: 'wave', avatarColor: '#276c66' });
   const finished = await Promise.all([
@@ -141,7 +148,7 @@ test('first eight: concealment, ownership, cross-day resume, identity, daily gat
   await call(auth, '/api/auth/login', outsider, { email: 'firstten@example.invalid', password: 'A-long-test-password-123' });
   const attached = await call(session, '/api/session/start', outsider, { resumeId: duplicate.sessionId });
   assert.equal(attached.data.isRanked, false);
-  assert.deepEqual(attached.data.judgements, []);
+  assert.equal(attached.data.judgements.length, 8);
   assert.equal((await call(session, '/api/session/finalize', outsider, { sessionId: duplicate.sessionId })).status, 200);
   assert.equal((await call(auth, '/api/auth/me', outsider, {}, 'GET')).data.user.questionsAnswered, 12);
 });

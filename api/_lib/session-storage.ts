@@ -100,7 +100,6 @@ export async function readGame(
   id: unknown,
   userId: string,
   client?: PoolClient,
-  revealForFinalization = false,
 ) {
   if (!isUuid(id)) throw new HttpError(404, "Game not found.");
   const run = client ? client.query.bind(client) : query;
@@ -136,8 +135,8 @@ export async function readGame(
     savedAnswers: items.filter((r) => r.lower_bound !== null).map((r) => ({
       questionId: r.question_id, lower: Number(r.lower_bound), upper: Number(r.upper_bound),
     })),
-    judgements: rows[0].kind === 'onboarding' && !rows[0].completed_at && !revealForFinalization
-      ? [] : items.filter((r) => r.lower_bound !== null).map(judgement),
+    // Only locked answers are revealed, for both daily and calibration games.
+    judgements: items.filter((r) => r.lower_bound !== null).map(judgement),
   };
 }
 export async function saveAnswer(
@@ -213,7 +212,7 @@ export async function finishGame(userId: string, id: unknown) {
       [id, userId],
     );
     if (!rows[0]) throw new HttpError(404, "Game not found.");
-    const game = await readGame(id, userId, client, true);
+    const game = await readGame(id, userId, client);
     if (game.judgements.length !== game.questions.length)
       throw new HttpError(409, "Answer every question before finishing.");
     await client.query(

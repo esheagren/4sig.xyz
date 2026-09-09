@@ -20,8 +20,11 @@ current release when resumed, under the same session lock used to save answers.
 Once any answer is submitted, the quiz keeps its original questions; the setup
 uses the actual session count. Everyone on a release takes
 the same questions in the same order. Each submitted interval is locked and saved on the
-server. Scores, truths, sources and hit flags are withheld until all answers
-are saved and the player has chosen a username, pattern and color.
+server. Each submission reveals that question’s correct value, points and source
+using the same ruler animation as daily play. Next advances to the next question;
+the final reveal leads to a summary of score and calibration, after choosing
+a username, pattern and color. Unanswered questions stay concealed. Resuming
+a game restores its submitted results and continues from the next question.
 
 The initial pattern and color are randomized from the existing six choices.
 The pattern button sits left of the username. Availability checks are debounced;

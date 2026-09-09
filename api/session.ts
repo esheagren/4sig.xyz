@@ -73,16 +73,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (action === "answer") {
       const judgement = await saveAnswer(owner, body.sessionId, body.questionId, body.lower, body.upper);
       const game = await readGame(body.sessionId, owner);
-      // Scores, hit flags, citations and truths stay on the server until finalization.
-      if (game.kind === 'onboarding') return res.json({ success: true, savedAnswers: game.savedAnswers });
-      return res.json({ success: true, judgement });
+      return res.json({ success: true, judgement, savedAnswers: game.savedAnswers });
     }
     if (action === "finalize") {
       const user = await requireUser(req);
       if (!(await getUserById(user.userId))?.hasPersonality)
         throw new HttpError(
           409,
-          "Choose your pattern and color before revealing your score.",
+          "Choose your pattern and color to finish your scorecard.",
         );
       await attachGuestGame(user.userId, body.sessionId, await guestOwner(req));
       const result = await finishGame(user.userId, body.sessionId);
