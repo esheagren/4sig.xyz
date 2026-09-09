@@ -1,4 +1,4 @@
-import { useId, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { compact, parseAmount } from "./game";
 import {
   displayCursor,
@@ -87,6 +87,23 @@ export function NumberPad({
     );
     update(next.value, next.cursor);
   }
+  // Keep headings accessible on navigation, while letting desktop users simply type.
+  useEffect(() => {
+    function startTyping(event: KeyboardEvent) {
+      if (event.defaultPrevented || event.ctrlKey || event.metaKey || event.altKey || event.isComposing) return;
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (target?.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
+      const openDialog = document.querySelector('dialog[open]');
+      if (openDialog && !openDialog.contains(input.current)) return;
+      if (!(calculator ? /^[0-9.eE+*/−×÷-]$/ : /^[0-9.eE+-]$/).test(event.key)) return;
+      event.preventDefault();
+      // Focus synchronously so consecutive physical key presses reach the field.
+      (calculator ? expressionInput.current : input.current)?.focus({ preventScroll: true });
+      press(event.key);
+    }
+    document.addEventListener('keydown', startTyping);
+    return () => document.removeEventListener('keydown', startTyping);
+  });
   const amount = parseAmount(value);
   return (
     <form

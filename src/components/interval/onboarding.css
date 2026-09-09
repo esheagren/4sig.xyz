@@ -55,3 +55,5 @@
 .interval-app .scoring-lesson h1 { font: 400 clamp(32px, 7vw, 46px)/1.1 'Newsreader', Georgia, serif; margin: 0 0 24px; }
 .interval-app .scoring-lesson .scoring-examples { padding-top: 0; margin-top: 0; border-top: 0; }
 .interval-app .entry-test-invitation { font-size: 15px; line-height: 1.5; margin: 28px 0 20px; }
+
+.interval-app .scoring-detail-label { margin: 8px 0 0; font: 10px var(--mono); color: var(--muted); }
