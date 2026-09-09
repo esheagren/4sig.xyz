@@ -32,6 +32,26 @@ Validate with `npm run check`, `npm run lint`, `npm test`, and `npm run build`. 
 
 ## Browsing the bank
 
+Production database settings are stored in the Vercel `4-sigma` project. A local
+checkout may have no `.env` or `.vercel` directory even when the Vercel CLI is
+signed in. Check `vercel whoami` and `vercel project ls` before concluding that
+production access is unavailable. For an audit, link a private temporary
+directory to that project, pull its production environment there, query in a
+read-only transaction, and remove the temporary environment file afterward.
+Never print or commit connection values.
+
+The [September 9 wording review](wording-review-2026-09-09.json) covers all 127
+production records: 109 main-bank records and 18 records across the two
+calibration versions. Live wording and review states matched the committed releases. It tightens 19 of the 25
+ready questions and the calibration prompts; review and retired states remain
+unchanged. Display-only revisions in `api/_lib/question-copy.ts` apply to the
+question library, games and reveals, including existing snapshots. Glossary
+offsets are recalculated for the shorter text. These edits preserve answers,
+sources, units and observation periods; changes to those still require a new
+verified data release. The production inventory was read through Vercel’s `4-sigma` connection settings
+in a read-only database transaction. This was a copy review, not renewed factual
+verification.
+
 The password-protected [question library](https://4sig.xyz/designspace?view=questions) is linked from Designspace. Search by question, place, topic or audit number; filter by review status, topic, core/reference role and review timing. Answers and potentially revealing sources/notes are only fetched when an eye control is clicked. Reveal one question or the current page; changing filters, navigating pages or reopening the library hides them again. This view reads the live bank and does not edit questions or schedules.
 
 The follow-up [gene-unit correction](releases/2026-09-08-gene-units.json) stores a full count of 20,000 genes. Releases can specify `unit_name` to change a question’s unit atomically with its prompt and answer; existing game snapshots retain their original unit and value.

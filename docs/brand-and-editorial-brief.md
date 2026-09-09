@@ -42,6 +42,16 @@ Illustrative subjects, not yet researched questions: urban housing supply, the s
 
 ## Wording and units
 
+Ask the question directly. Avoid “approximately,” “about how many,” “according
+to,” and source or report preambles when the reveal already supplies that
+information. Keep the observation date and any qualifier needed to define the
+answer: “by volume,” “at market exchange rates,” an age group, or a rate’s
+denominator. Keep a named organization when it defines the population or sample,
+such as refugees under UNHCR’s mandate or web traffic measured by Imperva.
+Put publication dates, source credentials, rounding notes and benchmark
+explanations in the source/context below the answer. Removing words must not
+turn a measured sample into a claim about the whole world.
+
 Ask for the natural quantity and store its full value: “How many genes …?” with an answer of 20,000 genes, rather than “How many thousands …?” with an answer of 20. Let the interface format large numbers; do not make players convert an answer into an implicit multiplier. Keep units explicit where they define the measure, such as kilometres, percentages or a rate per 100,000 people. Preserve necessary scientific distinctions in plain language, and explain them briefly in the reveal.
 
 For quantities that change over time, put the observation year in the visible question, rather than only in its source or metadata. Use a month or exact date when that distinction affects the answer. Avoid floating references such as “currently,” “latest,” or “last year.” The date must describe the measured quantity; a source’s publication year alone does not establish it.

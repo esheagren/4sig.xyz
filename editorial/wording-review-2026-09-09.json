@@ -1,0 +1,1100 @@
+{
+  "date": "2026-09-09",
+  "scope": "All 127 production question records read from the 4-sigma Vercel production database on 2026-09-09: 109 main-bank records and 18 records across the eight- and ten-question calibration releases. Live prompts and statuses match the committed releases. Wording review only; no renewed factual verification.",
+  "counts": {
+    "bank": 109,
+    "ready": 25,
+    "needs_review": 41,
+    "retired": 43,
+    "ready_reworded": 19,
+    "distinct_wording_overrides": 25,
+    "production_records": 127,
+    "production_records_with_display_changes": 32
+  },
+  "records": [
+    {
+      "id": "3e0a16fd-132e-46a7-a5a8-e05dee149186",
+      "audit_number": 1,
+      "status": "needs_review",
+      "prompt": "How many living species have been scientifically described and catalogued as of 2025?",
+      "display_prompt": "How many living species have been scientifically described and catalogued as of 2025?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "aebe46a2-a2ed-43a2-bd90-1ce4a57ca150",
+      "audit_number": 2,
+      "status": "needs_review",
+      "prompt": "What percentage of global electricity generation came from renewable sources in 2024?",
+      "display_prompt": "What percentage of global electricity generation came from renewable sources in 2024?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "396a8fb1-d0be-463f-a3f2-251909657f8a",
+      "audit_number": 3,
+      "status": "needs_review",
+      "prompt": "What is the incarceration rate per 100,000 people in the United States as of 2025?",
+      "display_prompt": "What is the incarceration rate per 100,000 people in the United States as of 2025?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "dfead12a-2751-4788-ab45-174f13cb67aa",
+      "audit_number": 4,
+      "status": "ready",
+      "prompt": "Approximately how many genes in the human genome code for proteins?",
+      "display_prompt": "How many genes in the human genome code for proteins?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "6597b4e9-424f-4d6c-a2b9-4e569265de6d",
+      "audit_number": 5,
+      "status": "ready",
+      "prompt": "Approximately what share of world GDP did China account for in 2024, at market exchange rates?",
+      "display_prompt": "What share of world GDP did China account for in 2024, at market exchange rates?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "887b564c-bc2d-450e-bf4b-4b4cbe891448",
+      "audit_number": 6,
+      "status": "retired",
+      "prompt": "What is the total length in kilometers of the Trans-Siberian Railway?",
+      "display_prompt": "What is the total length in kilometers of the Trans-Siberian Railway?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "b4fb7199-5785-424c-a395-60ad129e1a14",
+      "audit_number": 7,
+      "status": "needs_review",
+      "prompt": "What is the current median age in years in Japan?",
+      "display_prompt": "What is the current median age in years in Japan?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "1e66fc4d-13e0-4cab-9247-c4a588d8ba6a",
+      "audit_number": 8,
+      "status": "needs_review",
+      "prompt": "How many Nobel Prizes have been awarded to women from 1901 through 2024?",
+      "display_prompt": "How many Nobel Prizes have been awarded to women from 1901 through 2024?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "d1ebc954-164b-4e04-a45c-4c4ac9c0bba1",
+      "audit_number": 9,
+      "status": "ready",
+      "prompt": "How many people per square kilometre did Singapore have in 2024?",
+      "display_prompt": "How many people per square kilometre did Singapore have in 2024?",
+      "decision": "Already direct; retain the qualifiers defining the quantity."
+    },
+    {
+      "id": "2597594b-ea42-433c-a4c1-09ccc577db68",
+      "audit_number": 10,
+      "status": "ready",
+      "prompt": "Approximately how many children per woman did the global fertility rate imply in 2023?",
+      "display_prompt": "What was the global fertility rate in 2023, in children per woman?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "490e4646-9fbe-42b6-9030-fb2eae2211e2",
+      "audit_number": 11,
+      "status": "ready",
+      "prompt": "In May 2022, approximately what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "display_prompt": "In May 2022, what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "76df7595-e5e8-4241-b532-490eab5f4e2c",
+      "audit_number": 12,
+      "status": "retired",
+      "prompt": "What is the current spot price of a kilogram of enriched uranium?",
+      "display_prompt": "What is the current spot price of a kilogram of enriched uranium?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "f913e918-ec5b-493c-a53a-3898d0d8c7c9",
+      "audit_number": 13,
+      "status": "ready",
+      "prompt": "What was South Africa’s Gini coefficient in the World Bank’s 2022 estimate, on a scale from 0 to 1?",
+      "display_prompt": "What was South Africa’s Gini coefficient in 2022, on a scale from 0 to 1?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "0bd2fca1-3265-4b5a-a568-a30dacba8aea",
+      "audit_number": 14,
+      "status": "retired",
+      "prompt": "How many confirmed exoplanets have been cataloged by NASA as of December 2025?",
+      "display_prompt": "How many confirmed exoplanets have been cataloged by NASA as of December 2025?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "ec174a81-6e73-47bd-a702-6c32fbbfb135",
+      "audit_number": 15,
+      "status": "needs_review",
+      "prompt": "What is the current percentage of global electricity generation provided by solar photovoltaics?",
+      "display_prompt": "What is the current percentage of global electricity generation provided by solar photovoltaics?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "0de70862-f061-4bcf-a538-aad9a556331b",
+      "audit_number": 16,
+      "status": "needs_review",
+      "prompt": "What is the median age of the population in Niger?",
+      "display_prompt": "What is the median age of the population in Niger?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "382fa80d-089a-4325-bbc7-b96b61071eae",
+      "audit_number": 17,
+      "status": "retired",
+      "prompt": "What is the median age of the population in Japan?",
+      "display_prompt": "What is the median age of the population in Japan?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "c8108aac-5ad4-421c-a8b8-1b6a9ded007f",
+      "audit_number": 18,
+      "status": "ready",
+      "prompt": "About how many gene-editing clinical trials did CRISPR Medicine News track in February 2025?",
+      "display_prompt": "How many gene-editing clinical trials did CRISPR Medicine News track in February 2025?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "edab299a-a721-4c8d-8a6f-255646b05465",
+      "audit_number": 19,
+      "status": "ready",
+      "prompt": "What was the effective federal funds rate on the last day of 2024?",
+      "display_prompt": "What was the effective federal funds rate on the last day of 2024?",
+      "decision": "Already direct; retain the qualifiers defining the quantity."
+    },
+    {
+      "id": "6d8f9967-d998-4bf4-9092-296c0ff4e5fa",
+      "audit_number": 20,
+      "status": "ready",
+      "prompt": "Approximately how many kilometres of high-speed railway were operating in China at the end of 2024?",
+      "display_prompt": "How many kilometres of high-speed railway were operating in China at the end of 2024?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "3a81ece4-a9c0-4242-8e2d-e85f6a38e076",
+      "audit_number": 21,
+      "status": "ready",
+      "prompt": "What was the annual average atmospheric CO₂ concentration at Mauna Loa in 2024?",
+      "display_prompt": "What was the annual average atmospheric CO₂ concentration at Mauna Loa in 2024?",
+      "decision": "Already direct; retain the qualifiers defining the quantity."
+    },
+    {
+      "id": "0b091f38-feae-4fdc-9f07-952203e7a0b8",
+      "audit_number": 22,
+      "status": "needs_review",
+      "prompt": "How many living languages are currently cataloged?",
+      "display_prompt": "How many living languages are currently cataloged?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "c142cea2-e8e0-4994-8358-2d986d2260e2",
+      "audit_number": 23,
+      "status": "retired",
+      "prompt": "What is the average number of mutations per generation in the human germline?",
+      "display_prompt": "What is the average number of mutations per generation in the human germline?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "f360bca6-317d-4f56-8f33-da9d9dc7fe39",
+      "audit_number": 24,
+      "status": "needs_review",
+      "prompt": "What is the current installed capacity of wind energy in Texas in gigawatts?",
+      "display_prompt": "What is the current installed capacity of wind energy in Texas in gigawatts?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "1e15c9c3-bb3d-4ce2-b9f9-11e1771ad95b",
+      "audit_number": 25,
+      "status": "ready",
+      "prompt": "Approximately what percentage of Dutch land lies below sea level, according to PBL?",
+      "display_prompt": "What percentage of Dutch land lies below sea level?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "82018e54-fc2c-4722-9346-1597e5d88100",
+      "audit_number": 26,
+      "status": "retired",
+      "prompt": "How many people currently live within the Circle of Illumination (daylight) right now?",
+      "display_prompt": "How many people currently live within the Circle of Illumination (daylight) right now?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "f723fb58-ac9b-4d60-a42b-44b912641fbf",
+      "audit_number": 27,
+      "status": "needs_review",
+      "prompt": "What is the total tonnage of plastic estimated to be floating in the Great Pacific Garbage Patch?",
+      "display_prompt": "What is the total tonnage of plastic estimated to be floating in the Great Pacific Garbage Patch?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "57b13253-0cb4-4fb9-81d1-632f0e2a71be",
+      "audit_number": 28,
+      "status": "needs_review",
+      "prompt": "What is the current yield on the US 10-Year Treasury note?",
+      "display_prompt": "What is the current yield on the US 10-Year Treasury note?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "e3b3301c-8fe3-46c1-86e9-a1a7ace818d5",
+      "audit_number": 29,
+      "status": "needs_review",
+      "prompt": "How many distinct active satellites are currently tracked in Low Earth Orbit?",
+      "display_prompt": "How many distinct active satellites are currently tracked in Low Earth Orbit?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "0b418c08-74c2-4b37-8eaf-90d64940f732",
+      "audit_number": 30,
+      "status": "needs_review",
+      "prompt": "What is the average latency in milliseconds between New York and London via the fastest fiber optic cable?",
+      "display_prompt": "What is the average latency in milliseconds between New York and London via the fastest fiber optic cable?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "a8d275a9-f273-476a-af70-9d903ee2f544",
+      "audit_number": 31,
+      "status": "ready",
+      "prompt": "Approximately what was male life expectancy at birth in Sierra Leone in 2023?",
+      "display_prompt": "What was male life expectancy at birth in Sierra Leone in 2023?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "a22e6d17-698a-48af-bc87-6be988dbae7a",
+      "audit_number": 32,
+      "status": "needs_review",
+      "prompt": "What is the current number of unicorn companies (startups valued over $1B)?",
+      "display_prompt": "What is the current number of unicorn companies (startups valued over $1B)?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "c76389bc-23e4-4475-969c-2d605abe4587",
+      "audit_number": 33,
+      "status": "ready",
+      "prompt": "In Gallup’s July 2023 poll, what percentage of US adults described themselves as vegetarian?",
+      "display_prompt": "In July 2023, what percentage of US adults described themselves as vegetarian?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "0f3ad19b-3ec3-4e00-ab9a-e01b1fa27161",
+      "audit_number": 34,
+      "status": "retired",
+      "prompt": "What is the current exchange rate between the Euro and the Indian Rupee?",
+      "display_prompt": "What is the current exchange rate between the Euro and the Indian Rupee?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "b07fe366-3160-4ca7-8c00-58cd72c06e94",
+      "audit_number": 35,
+      "status": "needs_review",
+      "prompt": "What is the total number of Wikipedia articles in the English language?",
+      "display_prompt": "What is the total number of Wikipedia articles in the English language?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "ec7d796e-c025-42b6-a812-0239cf8bd36d",
+      "audit_number": 36,
+      "status": "retired",
+      "prompt": "What is the atomic mass of the unstable isotope Technetium-99m?",
+      "display_prompt": "What is the atomic mass of the unstable isotope Technetium-99m?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "7aacb178-66ef-4bbe-94ba-2eefa06f24de",
+      "audit_number": 37,
+      "status": "ready",
+      "prompt": "How many twenty-foot equivalent units of containers did the Port of Singapore handle in 2024?",
+      "display_prompt": "How many twenty-foot equivalent units did the Port of Singapore handle in 2024?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "cbd07b91-7959-4e65-9c97-63af9e962574",
+      "audit_number": 38,
+      "status": "retired",
+      "prompt": "What is the current effective tax rate paid by the median of American households?",
+      "display_prompt": "What is the current effective tax rate paid by the median of American households?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "6c62656c-31aa-4caa-b8fc-29a57520832c",
+      "audit_number": 39,
+      "status": "retired",
+      "prompt": "What is the Shannon entropy (in bits) of a standard deck of 52 playing cards?",
+      "display_prompt": "What is the Shannon entropy (in bits) of a standard deck of 52 playing cards?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "b849058e-a2f7-4b06-be9f-6f5a562ce362",
+      "audit_number": 40,
+      "status": "needs_review",
+      "prompt": "What is the distance to the Voyager 1 probe in Astronomical Units right now?",
+      "display_prompt": "What is the distance to the Voyager 1 probe in Astronomical Units right now?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "a7678325-444d-46b3-9843-12557494f22b",
+      "audit_number": 41,
+      "status": "ready",
+      "prompt": "Approximately what share of world GDP did the United States account for in 2024, at market exchange rates?",
+      "display_prompt": "What share of world GDP did the United States account for in 2024, at market exchange rates?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "f6b2854d-5bb5-40a0-a27c-13cdb4e027b4",
+      "audit_number": 42,
+      "status": "retired",
+      "prompt": "How many billionaires are there in Mumbai?",
+      "display_prompt": "How many billionaires are there in Mumbai?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "59489469-6dfe-4e95-abac-ed636fb1c952",
+      "audit_number": 43,
+      "status": "retired",
+      "prompt": "What is the current price per kilogram of saffron on the global market?",
+      "display_prompt": "What is the current price per kilogram of saffron on the global market?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "295c45b5-3551-4712-af69-6a41b80b94a8",
+      "audit_number": 44,
+      "status": "retired",
+      "prompt": "What is the total number of fatalities recorded in the Battle of Antietam?",
+      "display_prompt": "What is the total number of fatalities recorded in the Battle of Antietam?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "7bc65f34-f070-4335-849d-db37ade07ed7",
+      "audit_number": 45,
+      "status": "retired",
+      "prompt": "How many distinct chess positions are possible after 3 moves?",
+      "display_prompt": "How many distinct chess positions are possible after 3 moves?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "17fc681e-fa6d-41a4-bc35-1f5289480d91",
+      "audit_number": 46,
+      "status": "retired",
+      "prompt": "What is the current number of active monthly users on WeChat?",
+      "display_prompt": "What is the current number of active monthly users on WeChat?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "f4dc6271-8879-4050-a6a5-253e0d16b92e",
+      "audit_number": 47,
+      "status": "needs_review",
+      "prompt": "What is the average height of a Dutch male born in 2000?",
+      "display_prompt": "What is the average height of a Dutch male born in 2000?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "d3723888-4569-4cb9-a2b9-1efd202c5cbb",
+      "audit_number": 48,
+      "status": "ready",
+      "prompt": "About how many nuclear warheads did the Federation of American Scientists estimate France had in July 2025?",
+      "display_prompt": "How many nuclear warheads was France estimated to have in July 2025?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "33ebe4f4-400a-47b0-87a3-27739a723e85",
+      "audit_number": 49,
+      "status": "needs_review",
+      "prompt": "What is the percentage of global caloric intake provided by rice?",
+      "display_prompt": "What is the percentage of global caloric intake provided by rice?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "1e8318c8-28c0-4671-b290-3202b0a0a258",
+      "audit_number": 50,
+      "status": "retired",
+      "prompt": "What is the number of UNESCO World Heritage Sites in Italy?",
+      "display_prompt": "What is the number of UNESCO World Heritage Sites in Italy?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "1f57b72c-2f54-40bb-9152-5d3239349138",
+      "audit_number": 51,
+      "status": "needs_review",
+      "prompt": "What is the current prevalence of myopia in urban Asian teenagers?",
+      "display_prompt": "What is the current prevalence of myopia in urban Asian teenagers?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "ce9615c1-17f7-4dec-8d0f-bac50333a100",
+      "audit_number": 52,
+      "status": "needs_review",
+      "prompt": "How many milliseconds does it take for light to travel from the Moon to Earth?",
+      "display_prompt": "How many milliseconds does it take for light to travel from the Moon to Earth?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "3da4f0e9-6b9e-465f-aa22-6d1cb68e7c27",
+      "audit_number": 53,
+      "status": "ready",
+      "prompt": "What was South Korea’s total fertility rate in the provisional figures for 2024?",
+      "display_prompt": "What was South Korea’s provisional total fertility rate for 2024?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "141c480a-921a-4101-bff3-ac74ab97107d",
+      "audit_number": 54,
+      "status": "needs_review",
+      "prompt": "What is the estimated number of synapses in the average adult human brain?",
+      "display_prompt": "What is the estimated number of synapses in the average adult human brain?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "cf18371c-ac0e-4a58-a149-9b523fe6cb88",
+      "audit_number": 55,
+      "status": "retired",
+      "prompt": "What is the melting point of Tungsten in degrees Celsius?",
+      "display_prompt": "What is the melting point of Tungsten in degrees Celsius?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "fdcb81d1-e000-45cf-b49b-8152dab8769f",
+      "audit_number": 56,
+      "status": "needs_review",
+      "prompt": "What is the current population density of Manila in people per square kilometer?",
+      "display_prompt": "What is the current population density of Manila in people per square kilometer?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "5ca5a076-fb51-411d-b867-278566fd6970",
+      "audit_number": 57,
+      "status": "needs_review",
+      "prompt": "How many patents were granted by the USPTO last year?",
+      "display_prompt": "How many patents were granted by the USPTO last year?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "2c382f45-c39f-4ecc-81a9-ffd66fd6932f",
+      "audit_number": 58,
+      "status": "retired",
+      "prompt": "How many prime numbers are there below 1,000,000?",
+      "display_prompt": "How many prime numbers are there below 1,000,000?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "72ae7693-7798-48e1-9265-8941cd874ceb",
+      "audit_number": 59,
+      "status": "ready",
+      "prompt": "After Rwanda’s 2024 election, what percentage of seats in its lower house were held by women?",
+      "display_prompt": "After Rwanda’s 2024 election, what percentage of seats in its lower house were held by women?",
+      "decision": "Already direct; retain the qualifiers defining the quantity."
+    },
+    {
+      "id": "b10b3725-2432-40f1-a9d1-d28881544933",
+      "audit_number": 60,
+      "status": "needs_review",
+      "prompt": "How many distinct indigenous groups are recognized in Brazil?",
+      "display_prompt": "How many distinct indigenous groups are recognized in Brazil?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "99c379ed-c89c-463b-8095-cdf87511ad03",
+      "audit_number": 61,
+      "status": "retired",
+      "prompt": "What is the lethal dose (LD50) of botulinum toxin in nanograms per kilogram?",
+      "display_prompt": "What is the lethal dose (LD50) of botulinum toxin in nanograms per kilogram?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "72260cef-b998-40a5-b90c-c0650064bf14",
+      "audit_number": 62,
+      "status": "needs_review",
+      "prompt": "What is the current market capitalization of the largest publicly traded company in the world?",
+      "display_prompt": "What is the current market capitalization of the largest publicly traded company in the world?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "9816f67f-deed-4475-9125-fef4ce27c253",
+      "audit_number": 63,
+      "status": "needs_review",
+      "prompt": "How many distinct subway stations are there in the New York City Transit system?",
+      "display_prompt": "How many distinct subway stations are there in the New York City Transit system?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "9d44cddc-e027-42aa-8024-4adb998d05df",
+      "audit_number": 64,
+      "status": "needs_review",
+      "prompt": "What is the current price of a standard shipping container from Shanghai to Los Angeles?",
+      "display_prompt": "What is the current price of a standard shipping container from Shanghai to Los Angeles?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "3315ad95-b0cf-405b-974b-581396ea67da",
+      "audit_number": 65,
+      "status": "retired",
+      "prompt": "How many Nobel Prizes have been awarded to Japanese nationals?",
+      "display_prompt": "How many Nobel Prizes have been awarded to Japanese nationals?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "d5186ee3-92c5-4d78-b916-00d72171f196",
+      "audit_number": 66,
+      "status": "ready",
+      "prompt": "About how many refugees were under UNHCR’s mandate at the end of 2024?",
+      "display_prompt": "How many refugees were under UNHCR’s mandate at the end of 2024?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "203ca96c-20db-434d-ad1e-d295a554240e",
+      "audit_number": 67,
+      "status": "needs_review",
+      "prompt": "How many active aircraft carriers does the Indian Navy currently operate?",
+      "display_prompt": "How many active aircraft carriers does the Indian Navy currently operate?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "90300df7-a6d0-458e-9f49-e0bd5fda8daf",
+      "audit_number": 68,
+      "status": "retired",
+      "prompt": "How many documented cases of hyperthymesia (highly superior autobiographical memory) exist?",
+      "display_prompt": "How many documented cases of hyperthymesia (highly superior autobiographical memory) exist?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "86c27c62-854a-4581-8632-a37d3c8d41c7",
+      "audit_number": 69,
+      "status": "needs_review",
+      "prompt": "How many years is it estimated the longest-lived vertebrate (Greenland Shark) lives for?",
+      "display_prompt": "How many years is it estimated the longest-lived vertebrate (Greenland Shark) lives for?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "bcf42117-9ef4-4756-826e-dafd392f2ae4",
+      "audit_number": 70,
+      "status": "needs_review",
+      "prompt": "What is the percentage of the French population that smokes daily?",
+      "display_prompt": "What is the percentage of the French population that smokes daily?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "9f0dd4be-0118-43cc-9f8c-8c387b6cfc7c",
+      "audit_number": 71,
+      "status": "needs_review",
+      "prompt": "What is the depth of the Mariana Trench in meters?",
+      "display_prompt": "What is the depth of the Mariana Trench in meters?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "6dfd0e9b-ac36-44a8-a8ad-2a1bd88cb6df",
+      "audit_number": 72,
+      "status": "retired",
+      "prompt": "How many verified supercentenarians (people over 110) are currently alive?",
+      "display_prompt": "How many verified supercentenarians (people over 110) are currently alive?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "4af2ae40-2210-4e9c-a842-6dfa13a6de45",
+      "audit_number": 73,
+      "status": "retired",
+      "prompt": "How many lines of code are in the Linux Kernel as of the latest stable release?",
+      "display_prompt": "How many lines of code are in the Linux Kernel as of the latest stable release?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "53ac3dae-3cc4-4c3f-8598-f4c247461953",
+      "audit_number": 74,
+      "status": "ready",
+      "prompt": "What was Spain’s annual unemployment rate in 2024, according to the ILO estimate?",
+      "display_prompt": "What was Spain’s annual unemployment rate in 2024?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "a1ee5802-983a-4cad-8f17-e5c04f527749",
+      "audit_number": 75,
+      "status": "retired",
+      "prompt": "How many distinct bird species have been recorded in Colombia?",
+      "display_prompt": "How many distinct bird species have been recorded in Colombia?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "effd23bd-7ede-4e8a-8fff-af240cb43476",
+      "audit_number": 76,
+      "status": "retired",
+      "prompt": "What is the current price of a first-class stamp in the UK?",
+      "display_prompt": "What is the current price of a first-class stamp in the UK?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "c58405a5-d624-4f8c-9867-e8c6e600e07e",
+      "audit_number": 77,
+      "status": "ready",
+      "prompt": "Approximately what percentage of dry air is nitrogen, by volume?",
+      "display_prompt": "What percentage of dry air is nitrogen, by volume?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "78d133e2-43dd-4254-90f9-36fa08d4b19c",
+      "audit_number": 78,
+      "status": "ready",
+      "prompt": "As of September 2026, how many amendments had been ratified to the US Constitution?",
+      "display_prompt": "As of September 2026, how many amendments had been ratified to the US Constitution?",
+      "decision": "Already direct; retain the qualifiers defining the quantity."
+    },
+    {
+      "id": "a740ef6d-81a3-4300-97bb-534fa5aab55f",
+      "audit_number": 79,
+      "status": "needs_review",
+      "prompt": "What is the current debt-to-GDP ratio of Japan?",
+      "display_prompt": "What is the current debt-to-GDP ratio of Japan?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "18d1a9d1-38e8-4246-9874-93f739285424",
+      "audit_number": 80,
+      "status": "retired",
+      "prompt": "What is the estimated number of neurons in the enteric nervous system (the \"gut brain\")?",
+      "display_prompt": "What is the estimated number of neurons in the enteric nervous system (the \"gut brain\")?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "d41324d8-1d57-45c2-9c72-275aa4184f78",
+      "audit_number": 81,
+      "status": "needs_review",
+      "prompt": "How many active volcanoes are there worldwide?",
+      "display_prompt": "How many active volcanoes are there worldwide?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "4e597016-e7e7-4d45-afd6-8c5c7ea0be80",
+      "audit_number": 82,
+      "status": "needs_review",
+      "prompt": "What is the half-life of Carbon-14 in years?",
+      "display_prompt": "What is the half-life of Carbon-14 in years?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "bf6193f7-e025-4c82-9951-886cd1f205f4",
+      "audit_number": 83,
+      "status": "ready",
+      "prompt": "In Imperva’s 2024 web-traffic analysis, what percentage of traffic came from automated bots?",
+      "display_prompt": "In 2024, what percentage of the web traffic measured by Imperva came from automated bots?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "86cb6579-325b-49b6-9123-5c79e4710b64",
+      "audit_number": 84,
+      "status": "retired",
+      "prompt": "How many distinct moves were played in the longest recorded tournament chess game?",
+      "display_prompt": "How many distinct moves were played in the longest recorded tournament chess game?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "21ea1816-2aea-4974-8f4b-2e19b92026bf",
+      "audit_number": 85,
+      "status": "retired",
+      "prompt": "How many distinct phonemes are in the Rotokas language (known for the smallest inventory)?",
+      "display_prompt": "How many distinct phonemes are in the Rotokas language (known for the smallest inventory)?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "42e9ce1c-61b4-4786-8efc-05f223b25849",
+      "audit_number": 86,
+      "status": "ready",
+      "prompt": "What percentage of new passenger cars registered in Norway in 2024 were zero-emission vehicles?",
+      "display_prompt": "What percentage of new passenger cars registered in Norway in 2024 were zero-emission vehicles?",
+      "decision": "Already direct; retain the qualifiers defining the quantity."
+    },
+    {
+      "id": "f3d89d0c-6296-434c-93c4-58bc8e140d93",
+      "audit_number": 87,
+      "status": "retired",
+      "prompt": "How many active oil rigs are currently operating in the Permian Basin?",
+      "display_prompt": "How many active oil rigs are currently operating in the Permian Basin?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "43c2da73-9b46-4631-b5c4-dacf9001b5d4",
+      "audit_number": 88,
+      "status": "needs_review",
+      "prompt": "What is the current inflation rate in Argentina?",
+      "display_prompt": "What is the current inflation rate in Argentina?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "e10f3990-2918-4486-ba5f-208d7ee1f78c",
+      "audit_number": 89,
+      "status": "retired",
+      "prompt": "What is the modal number of years of education for a woman in Bangladesh?",
+      "display_prompt": "What is the modal number of years of education for a woman in Bangladesh?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "2d587b02-c6e0-42b6-8f0c-1f6d66d7b766",
+      "audit_number": 90,
+      "status": "retired",
+      "prompt": "How many distinct Lego bricks have been manufactured since the company's inception?",
+      "display_prompt": "How many distinct Lego bricks have been manufactured since the company's inception?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "a15850b9-4b10-4ffe-8cca-0cd9705b423a",
+      "audit_number": 91,
+      "status": "retired",
+      "prompt": "What is the escape velocity of the Moon in km/s?",
+      "display_prompt": "What is the escape velocity of the Moon in km/s?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "b6a6cb9d-a9af-40fc-9b88-eb8d1d43bf5e",
+      "audit_number": 92,
+      "status": "retired",
+      "prompt": "How many distinct amino acids are encoded by the standard genetic code?",
+      "display_prompt": "How many distinct amino acids are encoded by the standard genetic code?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "147d2cbf-961f-43e7-91e7-5652fe615271",
+      "audit_number": 93,
+      "status": "needs_review",
+      "prompt": "What is the percentage of the world's population that is lactose intolerant?",
+      "display_prompt": "What is the percentage of the world's population that is lactose intolerant?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "4f972e6e-f087-4361-9424-7feae028e19b",
+      "audit_number": 94,
+      "status": "retired",
+      "prompt": "What is the speed of sound in steel in meters per second?",
+      "display_prompt": "What is the speed of sound in steel in meters per second?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "4bc8730b-527a-40f5-98e0-563bc30cccba",
+      "audit_number": 95,
+      "status": "retired",
+      "prompt": "How many confirmed impact craters are on the Earth's surface?",
+      "display_prompt": "How many confirmed impact craters are on the Earth's surface?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "4dfa49cd-fbbe-4914-a410-a57a43c12c3e",
+      "audit_number": 96,
+      "status": "needs_review",
+      "prompt": "What is the percentage of global greenhouse gas emissions attributed to cement production?",
+      "display_prompt": "What is the percentage of global greenhouse gas emissions attributed to cement production?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "a54ec1f3-c836-4171-9100-b8a73a876af3",
+      "audit_number": 97,
+      "status": "needs_review",
+      "prompt": "What is the number of active subscribers to the New York Times Digital edition?",
+      "display_prompt": "What is the number of active subscribers to the New York Times Digital edition?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "31681b25-59d4-4545-8c6c-d4869ca38e23",
+      "audit_number": 98,
+      "status": "retired",
+      "prompt": "How many distinct functional groups are in the molecule Vancomycin?",
+      "display_prompt": "How many distinct functional groups are in the molecule Vancomycin?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "c4385909-e5cd-43a0-88a7-9b3a3a628397",
+      "audit_number": 99,
+      "status": "retired",
+      "prompt": "What is the total number of bones in the adult human body?",
+      "display_prompt": "What is the total number of bones in the adult human body?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "818aa760-c7b0-4909-87c7-8b87d9b7f0a1",
+      "audit_number": 100,
+      "status": "retired",
+      "prompt": "How many confirmed moons orbit Jupiter?",
+      "display_prompt": "How many confirmed moons orbit Jupiter?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "a1b5ddc6-979c-4e00-8a42-75fcaa85ceda",
+      "audit_number": 101,
+      "status": "ready",
+      "prompt": "Approximately what percentage of US electricity generation came from nuclear power in 2024?",
+      "display_prompt": "What percentage of US electricity generation came from nuclear power in 2024?",
+      "decision": "Tighten wording; retain the measure and dated observation."
+    },
+    {
+      "id": "c53e3ded-cce7-48fa-9907-c99e710b3128",
+      "audit_number": 102,
+      "status": "retired",
+      "prompt": "How many distinct characters are in the Unicode 15.0 standard?",
+      "display_prompt": "How many distinct characters are in the Unicode 15.0 standard?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "ee3ca74e-2509-400c-a444-a01ed67710ee",
+      "audit_number": 103,
+      "status": "retired",
+      "prompt": "What is the current cost of a 1-year subscription to the Bloomberg Terminal?",
+      "display_prompt": "What is the current cost of a 1-year subscription to the Bloomberg Terminal?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "a534a49e-5655-4897-bac3-02042508f9cc",
+      "audit_number": 104,
+      "status": "retired",
+      "prompt": "How many confirmed shipwrecks are estimated to be on the ocean floor?",
+      "display_prompt": "How many confirmed shipwrecks are estimated to be on the ocean floor?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "b4e8f416-0ff1-4da7-a8ff-1f0a639d53a4",
+      "audit_number": 105,
+      "status": "needs_review",
+      "prompt": "What is the current R0 (reproduction number) of the most prevalent flu strain?",
+      "display_prompt": "What is the current R0 (reproduction number) of the most prevalent flu strain?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "74730f32-49c2-4bbf-bf3e-975abd3b207b",
+      "audit_number": 106,
+      "status": "needs_review",
+      "prompt": "How many distinct skyscrapers (over 150m) are in Shenzhen?",
+      "display_prompt": "How many distinct skyscrapers (over 150m) are in Shenzhen?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "f4d61446-ffef-4919-9681-9b16158942cf",
+      "audit_number": 107,
+      "status": "retired",
+      "prompt": "What is the boiling point of liquid Nitrogen?",
+      "display_prompt": "What is the boiling point of liquid Nitrogen?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "4ab3cac3-e17a-491d-9ace-6945a1146d20",
+      "audit_number": 108,
+      "status": "needs_review",
+      "prompt": "What is the current homicide rate per 100k people in El Salvador?",
+      "display_prompt": "What is the current homicide rate per 100k people in El Salvador?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    },
+    {
+      "id": "c4f0ef90-f821-4c84-993b-f140ee636d0e",
+      "audit_number": 109,
+      "status": "retired",
+      "prompt": "How many distinct islands make up the nation of Indonesia?",
+      "display_prompt": "How many distinct islands make up the nation of Indonesia?",
+      "decision": "Keep excluded. Existing factual/editorial review remains required; do not invent observation dates or silently broaden the measure."
+    }
+  ],
+  "wording_changes": [
+    {
+      "before": "Approximately how many genes in the human genome code for proteins?",
+      "after": "How many genes in the human genome code for proteins?"
+    },
+    {
+      "before": "Approximately what share of world GDP did China account for in 2024, at market exchange rates?",
+      "after": "What share of world GDP did China account for in 2024, at market exchange rates?"
+    },
+    {
+      "before": "Approximately how many children per woman did the global fertility rate imply in 2023?",
+      "after": "What was the global fertility rate in 2023, in children per woman?"
+    },
+    {
+      "before": "In May 2022, approximately what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "after": "In May 2022, what did it cost in US dollars to sequence a human genome at NIH-funded centers?"
+    },
+    {
+      "before": "What was South Africa’s Gini coefficient in the World Bank’s 2022 estimate, on a scale from 0 to 1?",
+      "after": "What was South Africa’s Gini coefficient in 2022, on a scale from 0 to 1?"
+    },
+    {
+      "before": "About how many gene-editing clinical trials did CRISPR Medicine News track in February 2025?",
+      "after": "How many gene-editing clinical trials did CRISPR Medicine News track in February 2025?"
+    },
+    {
+      "before": "Approximately how many kilometres of high-speed railway were operating in China at the end of 2024?",
+      "after": "How many kilometres of high-speed railway were operating in China at the end of 2024?"
+    },
+    {
+      "before": "Approximately what percentage of Dutch land lies below sea level, according to PBL?",
+      "after": "What percentage of Dutch land lies below sea level?"
+    },
+    {
+      "before": "Approximately what was male life expectancy at birth in Sierra Leone in 2023?",
+      "after": "What was male life expectancy at birth in Sierra Leone in 2023?"
+    },
+    {
+      "before": "In Gallup’s July 2023 poll, what percentage of US adults described themselves as vegetarian?",
+      "after": "In July 2023, what percentage of US adults described themselves as vegetarian?"
+    },
+    {
+      "before": "How many twenty-foot equivalent units of containers did the Port of Singapore handle in 2024?",
+      "after": "How many twenty-foot equivalent units did the Port of Singapore handle in 2024?"
+    },
+    {
+      "before": "Approximately what share of world GDP did the United States account for in 2024, at market exchange rates?",
+      "after": "What share of world GDP did the United States account for in 2024, at market exchange rates?"
+    },
+    {
+      "before": "About how many nuclear warheads did the Federation of American Scientists estimate France had in July 2025?",
+      "after": "How many nuclear warheads was France estimated to have in July 2025?"
+    },
+    {
+      "before": "What was South Korea’s total fertility rate in the provisional figures for 2024?",
+      "after": "What was South Korea’s provisional total fertility rate for 2024?"
+    },
+    {
+      "before": "About how many refugees were under UNHCR’s mandate at the end of 2024?",
+      "after": "How many refugees were under UNHCR’s mandate at the end of 2024?"
+    },
+    {
+      "before": "What was Spain’s annual unemployment rate in 2024, according to the ILO estimate?",
+      "after": "What was Spain’s annual unemployment rate in 2024?"
+    },
+    {
+      "before": "Approximately what percentage of dry air is nitrogen, by volume?",
+      "after": "What percentage of dry air is nitrogen, by volume?"
+    },
+    {
+      "before": "In Imperva’s 2024 web-traffic analysis, what percentage of traffic came from automated bots?",
+      "after": "In 2024, what percentage of the web traffic measured by Imperva came from automated bots?"
+    },
+    {
+      "before": "Approximately what percentage of US electricity generation came from nuclear power in 2024?",
+      "after": "What percentage of US electricity generation came from nuclear power in 2024?"
+    },
+    {
+      "before": "In 2020, approximately what was the median age of the world's population?",
+      "after": "In 2020, what was the median age of the world's population?"
+    },
+    {
+      "before": "In the 2023 EU survey, what percentage of people aged 15 and over said they could hold a conversation in a language other than their mother tongue?",
+      "after": "In 2023, what percentage of people aged 15 and over in the EU said they could hold a conversation in a language other than their mother tongue?"
+    },
+    {
+      "before": "According to the UN's 2018 urbanization report, approximately what percentage of the world's population lived in urban areas in 1950?",
+      "after": "What percentage of the world's population lived in urban areas in 1950?"
+    },
+    {
+      "before": "According to UNCTAD's maritime trade benchmark, approximately what percentage of international trade in goods is carried by sea, by volume?",
+      "after": "What percentage of international trade in goods is carried by sea, by volume?"
+    },
+    {
+      "before": "In 2024, approximately what percentage of the world's electricity was generated by nuclear power?",
+      "after": "In 2024, what percentage of the world's electricity was generated by nuclear power?"
+    },
+    {
+      "before": "In the USGS global water inventory, what percentage of Earth's freshwater is held in ice caps, glaciers and permanent snow?",
+      "after": "What percentage of Earth's freshwater is held in ice caps, glaciers and permanent snow?"
+    }
+  ],
+  "calibration_records": [
+    {
+      "id": "40a00002-0000-4000-8000-000000000001",
+      "prompt": "In 2020, approximately what was the median age of the world's population?",
+      "display_prompt": "In 2020, what was the median age of the world's population?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00002-0000-4000-8000-000000000002",
+      "prompt": "According to the UN's 2018 urbanization report, approximately what percentage of the world's population lived in urban areas in 1950?",
+      "display_prompt": "What percentage of the world's population lived in urban areas in 1950?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00002-0000-4000-8000-000000000003",
+      "prompt": "In 2022, what percentage of the world's employed people worked in agriculture, forestry and fishing?",
+      "display_prompt": "In 2022, what percentage of the world's employed people worked in agriculture, forestry and fishing?",
+      "decision": "Already direct; keep the date and measure."
+    },
+    {
+      "id": "40a00002-0000-4000-8000-000000000004",
+      "prompt": "According to UNCTAD's maritime trade benchmark, approximately what percentage of international trade in goods is carried by sea, by volume?",
+      "display_prompt": "What percentage of international trade in goods is carried by sea, by volume?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00002-0000-4000-8000-000000000005",
+      "prompt": "In 2024, approximately what percentage of the world's electricity was generated by nuclear power?",
+      "display_prompt": "In 2024, what percentage of the world's electricity was generated by nuclear power?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00002-0000-4000-8000-000000000006",
+      "prompt": "In the USGS global water inventory, what percentage of Earth's freshwater is held in ice caps, glaciers and permanent snow?",
+      "display_prompt": "What percentage of Earth's freshwater is held in ice caps, glaciers and permanent snow?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00002-0000-4000-8000-000000000007",
+      "prompt": "In May 2022, approximately what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "display_prompt": "In May 2022, what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00002-0000-4000-8000-000000000008",
+      "prompt": "On 1 January 2026, what percentage of seats in national parliaments worldwide were held by women?",
+      "display_prompt": "On 1 January 2026, what percentage of seats in national parliaments worldwide were held by women?",
+      "decision": "Already direct; keep the date and measure."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000001",
+      "prompt": "In 2020, approximately what was the median age of the world's population?",
+      "display_prompt": "In 2020, what was the median age of the world's population?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000002",
+      "prompt": "In the 2023 EU survey, what percentage of people aged 15 and over said they could hold a conversation in a language other than their mother tongue?",
+      "display_prompt": "In 2023, what percentage of people aged 15 and over in the EU said they could hold a conversation in a language other than their mother tongue?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000003",
+      "prompt": "According to the UN's 2018 urbanization report, approximately what percentage of the world's population lived in urban areas in 1950?",
+      "display_prompt": "What percentage of the world's population lived in urban areas in 1950?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000004",
+      "prompt": "In 2022, what percentage of the world's employed people worked in agriculture, forestry and fishing?",
+      "display_prompt": "In 2022, what percentage of the world's employed people worked in agriculture, forestry and fishing?",
+      "decision": "Already direct; keep the date and measure."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000005",
+      "prompt": "In 2024, what percentage of total US food spending went to food away from home?",
+      "display_prompt": "In 2024, what percentage of total US food spending went to food away from home?",
+      "decision": "Already direct; keep the date and measure."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000006",
+      "prompt": "According to UNCTAD's maritime trade benchmark, approximately what percentage of international trade in goods is carried by sea, by volume?",
+      "display_prompt": "What percentage of international trade in goods is carried by sea, by volume?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000007",
+      "prompt": "In 2024, approximately what percentage of the world's electricity was generated by nuclear power?",
+      "display_prompt": "In 2024, what percentage of the world's electricity was generated by nuclear power?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000008",
+      "prompt": "In the USGS global water inventory, what percentage of Earth's freshwater is held in ice caps, glaciers and permanent snow?",
+      "display_prompt": "What percentage of Earth's freshwater is held in ice caps, glaciers and permanent snow?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000009",
+      "prompt": "In May 2022, approximately what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "display_prompt": "In May 2022, what did it cost in US dollars to sequence a human genome at NIH-funded centers?",
+      "decision": "Tighten the prompt; preserve the observation, source and score."
+    },
+    {
+      "id": "40a00001-0000-4000-8000-000000000010",
+      "prompt": "On 1 January 2026, what percentage of seats in national parliaments worldwide were held by women?",
+      "display_prompt": "On 1 January 2026, what percentage of seats in national parliaments worldwide were held by women?",
+      "decision": "Already direct; keep the date and measure."
+    }
+  ]
+}
