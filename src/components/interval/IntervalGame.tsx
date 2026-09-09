@@ -15,6 +15,7 @@ import "./style.css";
 import "./onboarding.css";
 import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
+import { WorldviewGrid } from "./WorldviewGrid";
 import { CalibrationScore } from './CalibrationScore';
 import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
 import {
@@ -79,6 +80,7 @@ function activeGame(id?: string | null) {
 type Stage =
   | "welcome"
   | "scoring"
+  | "worldview"
   | "identity"
   | "loading"
   | "estimate"
@@ -895,7 +897,16 @@ export default function IntervalGame() {
               <h1 ref={heading} tabIndex={-1}>How answers are scored</h1>
               <p className="scoring-intro">You earn more points for a smaller range that includes the right answer, and zero points if it misses.</p>
               <ScoringExamples />
-              <p className="entry-test-invitation">Now take the entry test: 10 initial questions.</p>
+              <button className="primary" onClick={() => { setStage("worldview"); focusHeading(); }}>
+                Next <span aria-hidden="true">→</span>
+              </button>
+            </section>
+          ) : stage === "worldview" ? (
+            <section className="worldview-page">
+              <h1 ref={heading} tabIndex={-1}>The numbers shaping our world.</h1>
+              <p className="worldview-intro">Explore the big facts behind how the world works, and the changes that unfold over years.</p>
+              <WorldviewGrid />
+              <p className="entry-test-invitation">Start with 10 questions to see where you stand.</p>
               <button className="primary" onClick={() => {
                 tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound();
               }}>Next <span aria-hidden="true">→</span></button>
