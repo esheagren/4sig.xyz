@@ -903,8 +903,8 @@ export default function IntervalGame() {
             </section>
           ) : stage === "worldview" ? (
             <section className="worldview-page">
-              <h1 ref={heading} tabIndex={-1}>The numbers shaping our world.</h1>
-              <p className="worldview-intro">Explore the big facts behind how the world works, and the changes that unfold over years.</p>
+              <h1 ref={heading} tabIndex={-1}>The numbers we focus on.</h1>
+              <p className="worldview-intro">We focus on numbers shaping our world.</p>
               <WorldviewGrid />
               <p className="entry-test-invitation">Start with 10 questions to see where you stand.</p>
               <button className="primary" onClick={() => {
