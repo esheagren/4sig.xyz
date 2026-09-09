@@ -78,6 +78,7 @@ function activeGame(id?: string | null) {
 }
 type Stage =
   | "welcome"
+  | "scoring"
   | "identity"
   | "loading"
   | "estimate"
@@ -889,6 +890,15 @@ export default function IntervalGame() {
               <p>Make sense of the numbers shaping our world—and find out how sure you should be.</p>
               <button className="primary" onClick={() => { setDemo(true); resetRound(); }}>Let’s play <span>→</span></button>
             </section>
+          ) : stage === "scoring" ? (
+            <section className="scoring-lesson">
+              <h1 ref={heading} tabIndex={-1}>How answers are scored</h1>
+              <ScoringExamples />
+              <p className="entry-test-invitation">Now take the entry test: 10 initial questions.</p>
+              <button className="primary" onClick={() => {
+                tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound();
+              }}>Begin <span>→</span></button>
+            </section>
           ) : stage === "identity" ? (
             authLoading ? (
               <section className="identity-screen account-loading">
@@ -1142,12 +1152,11 @@ export default function IntervalGame() {
                           names={question.source}
                         />
                       </details>
-                      {demo && <ScoringExamples />}
                       <button className="primary" onClick={() => {
-                        if (demo) { tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound(); }
+                        if (demo) { setStage("scoring"); focusHeading(); }
                         else next();
                       }}>
-                        {demo ? "Begin question one" : index === orderedQuestions.length - 1
+                        {demo ? "Next" : index === orderedQuestions.length - 1
                           ? "See score"
                           : "Next number"}{" "}
                         <span>→</span>

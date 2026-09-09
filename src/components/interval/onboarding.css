@@ -50,3 +50,8 @@
 .interval-app .example-answer { fill: var(--blue); }
 .interval-app .example-exact { stroke: var(--blue); fill: none; }
 .interval-app .scoring-takeaway { margin-top: 16px; font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+.interval-app .scoring-lesson { padding: 40px 0 24px; }
+.interval-app .scoring-lesson h1 { font: 400 clamp(32px, 7vw, 46px)/1.1 'Newsreader', Georgia, serif; margin: 0 0 24px; }
+.interval-app .scoring-lesson .scoring-examples { padding-top: 0; margin-top: 0; border-top: 0; }
+.interval-app .entry-test-invitation { font-size: 15px; line-height: 1.5; margin: 28px 0 20px; }

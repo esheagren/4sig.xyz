@@ -6,16 +6,15 @@ import { formatEntry } from './number-entry';
 const answer = 1776;
 const examples = [
   { label: 'Miss', lower: 2300, upper: 3200 },
-  { label: 'Wide', lower: 0, upper: 3500 },
-  { label: 'Closer', lower: 1700, upper: 1850 },
-  { label: 'Very close', lower: 1775, upper: 1777 },
+  { label: 'Wide', lower: 500, upper: 5000 },
+  { label: 'Close', lower: 1000, upper: 2000 },
+  { label: 'Very close', lower: 1600, upper: 1900 },
   { label: 'Exact', lower: answer, upper: answer },
 ];
-const x = (value: number) => 8 + value / 4000 * 284;
+const x = (value: number) => 8 + value / 5500 * 284;
 
 export function ScoringExamples() {
-  return <section className="scoring-examples" aria-labelledby="scoring-examples-title">
-    <h3 id="scoring-examples-title">Same answer. Different ranges.</h3>
+  return <section className="scoring-examples" aria-label="Range scoring examples">
     <p className="scoring-legend"><span aria-hidden="true">●</span> Answer: 1,776 feet</p>
     <ol>
       {examples.map(({ label, lower, upper }) => {

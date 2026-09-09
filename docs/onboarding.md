@@ -5,8 +5,10 @@ range, edit-bound and hold-to-confirm controls. The practice asks for the height
 in feet. The official World Trade Center site gives 1,776 feet, chosen to mark
 the year of American independence; the reveal links to that source. Practice uses
 the normal ruler reveal and previews points from the same scoring function as
-ranked games, without saving them. Five aligned range diagrams compare a miss,
-a wide hit, two tighter hits and an exact hit before question one. Everyone takes the same ten
+ranked games, without saving them. After the player taps Next, a separate scoring screen uses five aligned range
+diagrams to compare a miss, a wide hit (500–5,000), a close hit (1,000–2,000),
+a very close hit (1,600–1,900) and an exact hit. It then introduces the ten-question
+entry test. Everyone takes the same ten
 questions in the same order. Each submitted interval is locked and saved on the
 server. Scores, truths, sources and hit flags are withheld until all ten answers
 are saved and the player has chosen a username, pattern and color.
