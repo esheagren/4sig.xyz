@@ -55,6 +55,11 @@ test('first eight: per-answer reveal, ownership, cross-day resume, identity, dai
   assert.equal((await query('SELECT count(*)::int n FROM users')).rows[0].n, before);
   assert.deepEqual(first.data.judgements, []);
   assert.doesNotMatch(JSON.stringify(first.data), /trueValue|answerContext|sourceUrl|"hit"|"score"/);
+  const maritime = first.data.questions[3];
+  assert.equal(maritime.prompt, 'What percentage of international trade in goods is carried by sea, by volume?');
+  assert.equal(maritime.prompt.slice(maritime.glossary[0].start, maritime.glossary[0].end), 'by volume');
+  assert.equal((await query('SELECT snapshot FROM game_questions WHERE session_id=$1 AND question_id=$2',
+    [first.data.sessionId, maritime.id])).rows[0].snapshot.prompt, onboardingQuestions[3].prompt);
   await call(session, '/api/session/start', outsider);
   assert.equal((await call(session, '/api/session/answer', outsider, {
     sessionId: first.data.sessionId, questionId: first.data.questions[0].id, lower: 0, upper: 100,
@@ -74,6 +79,7 @@ test('first eight: per-answer reveal, ownership, cross-day resume, identity, dai
       assert.equal(r.data.savedAnswers.length, i + 1);
       assert.equal(r.data.judgement.questionId, onboardingQuestions[i].id);
       assert.equal(r.data.judgement.trueValue, onboardingQuestions[i].trueValue);
+      assert.equal(r.data.judgement.prompt, first.data.questions[i].prompt);
       assert.equal(r.data.judgement.sourceUrl, onboardingQuestions[i].sourceUrl);
       assert.equal(typeof r.data.judgement.score, 'number');
       assert.equal(r.data.judgement.hit, i !== 6);

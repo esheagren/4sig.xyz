@@ -59,7 +59,11 @@ links, explanation, units, maximum bounds and glossary definitions. Answers
 never enter the client bundle. The installation script persists an immutable
 release and dedicated `usage_type='onboarding'` question records outside the
 daily pool. Existing glossary components display the definitions; onboarding
-snapshots also preserve their original wording.
+snapshots also preserve their original wording. Presentation-only wording edits
+in `api/_lib/question-copy.ts` apply consistently to questions and reveals,
+with glossary offsets recalculated. The maritime prompt omits its source preamble
+and “approximately”; “by volume” stays in the question to define the measure.
+Sources, context, answer values and saved snapshots are unchanged.
 
 The order is median age (2020, UN rounded benchmark), urbanization (1950, UN 2018 report), agricultural
 employment (2022), seaborne goods trade (UNCTAD rounded

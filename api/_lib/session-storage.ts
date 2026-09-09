@@ -5,6 +5,7 @@ import type { Question, Judgement } from "./types.js";
 import { HttpError } from "./http.js";
 import { Score } from "./scoring.js";
 import { ONBOARDING_VERSION } from './onboarding-data.js';
+import { questionPrompt, withQuestionCopy } from './question-copy.js';
 const isUuid = (s: unknown): s is string =>
   typeof s === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
@@ -82,7 +83,7 @@ function judgement(row: QueryResultRow): Judgement {
   const q: Question = row.snapshot;
   return {
     questionId: row.question_id,
-    prompt: q.prompt,
+    prompt: questionPrompt(q.prompt),
     unit: q.unit,
     trueValue: q.trueValue,
     source: q.source,
@@ -128,7 +129,7 @@ export async function readGame(
         unit: r.snapshot.unit,
       })),
       client,
-    )).map((q, i) => ({ ...q, max: items[i].snapshot.max, topic: items[i].snapshot.topic,
+    )).map((q, i) => withQuestionCopy({ ...q, max: items[i].snapshot.max, topic: items[i].snapshot.topic,
       observationPeriod: items[i].snapshot.observationPeriod,
       ...(rows[0].kind === 'onboarding' ? { glossary: items[i].snapshot.glossary ?? q.glossary } : {}),
     })),
