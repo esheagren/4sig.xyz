@@ -13,6 +13,8 @@ import { AuthModal } from "../nav/AuthModal";
 import type { Question, Result } from "./game";
 import "./style.css";
 import "./onboarding.css";
+import { Score } from "../../../shared/scoring";
+import { ScoringExamples } from "./ScoringExamples";
 import { CalibrationScore } from './CalibrationScore';
 import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
 import {
@@ -76,7 +78,6 @@ function activeGame(id?: string | null) {
 }
 type Stage =
   | "welcome"
-  | "practice-complete"
   | "identity"
   | "loading"
   | "estimate"
@@ -258,7 +259,12 @@ export default function IntervalGame() {
   const question = demo ? DEMO_QUESTION : results[index]?.question ?? orderedQuestions[index],
     editable = stage === "range",
     showAnswer = stage === "sweeping" || stage === "revealed";
-  const result = results[index],
+  const result: Result = demo ? {
+    ...bounds, question: DEMO_QUESTION, assisted: false,
+    hit: Score.inBounds(bounds.lower, bounds.upper, DEMO_QUESTION.answer),
+    score: Score.calculateScore(bounds.lower, bounds.upper, DEMO_QUESTION.answer),
+  } : results[index];
+  const
     visibleResults = stage === "sweeping" ? results.slice(0, -1) : results;
   const focusHeading = () =>
     requestAnimationFrame(() => {
@@ -448,7 +454,7 @@ export default function IntervalGame() {
     dragCleanup.current?.();
     lock.current = true;
     setError("");
-    if (demo) { setStage('practice-complete'); lock.current = false; focusHeading(); return; }
+    if (demo) { setStage("sweeping"); return; }
     setStage("saving");
     try {
       const data = await request("session/answer", {
@@ -845,7 +851,7 @@ export default function IntervalGame() {
               className="running-score"
               aria-label={onboarding ? "Your first ten" : `Score ${scoreText(totalPoints(visibleResults))} points`}
             >
-              {onboarding ? <small>{demo ? 'Unscored practice' : 'Your first ten'}</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
+              {onboarding ? <small>{demo ? 'Practice' : 'Your first ten'}</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
             </span>
             <button
               className="help-button"
@@ -882,16 +888,6 @@ export default function IntervalGame() {
               </h1>
               <p>Make sense of the numbers shaping our world—and find out how sure you should be.</p>
               <button className="primary" onClick={() => { setDemo(true); resetRound(); }}>Let’s play <span>→</span></button>
-            </section>
-          ) : stage === 'practice-complete' ? (
-            <section className="onboarding-welcome">
-              <p className="onboarding-eyebrow">PRACTICE COMPLETE · NO POINTS COUNTED</p>
-              <h1 ref={heading} tabIndex={-1}>You have the controls.</h1>
-              <p>One World Trade Center stands {formatEntry(String(DEMO_QUESTION.answer))} feet tall, including its spire.</p>
-              <p>Your range: {formatEntry(String(bounds.lower))}–{formatEntry(String(bounds.upper))} {DEMO_QUESTION.unit}. {bounds.lower <= DEMO_QUESTION.answer && bounds.upper >= DEMO_QUESTION.answer ? 'You contained the reference value.' : 'The reference value fell outside your range.'}</p>
-              <p className="onboarding-note">Its height was chosen to mark the year of American independence.</p>
-              <SourceLinks urls={DEMO_QUESTION.url} names={DEMO_QUESTION.source} />
-              <button className="primary" onClick={() => { tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound(); }}>Begin question one <span>→</span></button>
             </section>
           ) : stage === "identity" ? (
             authLoading ? (
@@ -945,7 +941,7 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Your first ten · Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
-              {demo && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Move the brackets to a range you’re 95% sure contains the answer. Hold the round arrow to submit.'}</p>}
+              {demo && !showAnswer && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Move the brackets to a range you’re 95% sure contains the answer. Hold the round arrow to submit.'}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
                   <QuestionText
@@ -1128,13 +1124,13 @@ export default function IntervalGame() {
                         <div>
                           <span className="small-label">ACTUAL VALUE</span>
                           <h2>
-                            {compact(question.answer)}{" "}
+                            {demo ? formatEntry(String(question.answer)) : compact(question.answer)}{" "}
                             <small>{question.unit}</small>
                           </h2>
                         </div>
                         <div className="round-score">
                           <strong>{scoreText(points(result))}</strong>
-                          <span>pts</span>
+                          <span>{demo ? "practice pts" : "pts"}</span>
                         </div>
                       </div>
                       {assisted && <p className="outcome">Hint used</p>}
@@ -1146,8 +1142,12 @@ export default function IntervalGame() {
                           names={question.source}
                         />
                       </details>
-                      <button className="primary" onClick={next}>
-                        {index === orderedQuestions.length - 1
+                      {demo && <ScoringExamples />}
+                      <button className="primary" onClick={() => {
+                        if (demo) { tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound(); }
+                        else next();
+                      }}>
+                        {demo ? "Begin question one" : index === orderedQuestions.length - 1
                           ? "See score"
                           : "Next number"}{" "}
                         <span>→</span>

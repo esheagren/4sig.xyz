@@ -3,7 +3,10 @@
 New visitors see a welcome, then an unscored example using the live estimate,
 range, edit-bound and hold-to-confirm controls. The practice asks for the height of One World Trade Center, including its spire,
 in feet. The official World Trade Center site gives 1,776 feet, chosen to mark
-the year of American independence; the reveal links to that source. Everyone takes the same ten
+the year of American independence; the reveal links to that source. Practice uses
+the normal ruler reveal and previews points from the same scoring function as
+ranked games, without saving them. Five aligned range diagrams compare a miss,
+a wide hit, two tighter hits and an exact hit before question one. Everyone takes the same ten
 questions in the same order. Each submitted interval is locked and saved on the
 server. Scores, truths, sources and hit flags are withheld until all ten answers
 are saved and the player has chosen a username, pattern and color.

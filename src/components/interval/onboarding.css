@@ -28,3 +28,25 @@
 
 .interval-app .onboarding-welcome .welcome-heading { display: flex; align-items: baseline; gap: .25em; font-size: clamp(30px, 7vw, 64px); white-space: nowrap; }
 .interval-app .welcome-heading .brand { flex-shrink: 0; font-size: 1.4em; letter-spacing: -.08em; }
+
+.interval-app .scoring-examples { margin: 28px 0; padding: 24px 0 0; border-top: 1px solid var(--line); }
+.interval-app .scoring-examples h3 { font: 400 26px 'Newsreader', Georgia, serif; margin: 0 0 8px; }
+.interval-app .scoring-legend { font: 11px var(--mono); color: var(--muted); margin: 0 0 20px; }
+.interval-app .scoring-legend span { color: var(--blue); margin-right: 6px; }
+.interval-app .scoring-examples ol { padding: 0; margin: 0; list-style: none; }
+.interval-app .scoring-examples li { padding: 12px 0 4px; border-bottom: 1px solid var(--line); }
+.interval-app .scoring-example-heading { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font: 13px var(--mono); }
+.interval-app .scoring-example-heading small { font-size: 10px; font-weight: 400; color: var(--muted); }
+.interval-app .scoring-example-heading > span small { display: block; margin-top: 4px; }
+.interval-app .scoring-example-heading strong { white-space: nowrap; color: var(--blue); font-weight: 500; font-size: 18px; }
+.interval-app .scoring-miss .scoring-example-heading strong { color: var(--lime); }
+.interval-app .scoring-examples svg { width: 100%; height: 32px; overflow: visible; display: block; margin: 4px 0; }
+.interval-app .example-axis { stroke: var(--line); }
+.interval-app .example-answer-guide { stroke: var(--blue); stroke-opacity: .3; stroke-dasharray: 2 3; }
+.interval-app .example-range { fill: var(--blue); fill-opacity: .12; }
+.interval-app .example-brackets { fill: none; stroke: var(--blue); stroke-width: 1.5; }
+.interval-app .scoring-miss .example-range { fill: var(--lime); }
+.interval-app .scoring-miss .example-brackets { stroke: var(--lime); }
+.interval-app .example-answer { fill: var(--blue); }
+.interval-app .example-exact { stroke: var(--blue); fill: none; }
+.interval-app .scoring-takeaway { margin-top: 16px; font-size: 13px; color: var(--muted); line-height: 1.5; }
