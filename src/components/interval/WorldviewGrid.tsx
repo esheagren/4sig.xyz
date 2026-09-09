@@ -1,5 +1,5 @@
 const topics = [
-  { name: 'Technology & AI', examples: 'Tools & invention', icon: <><rect x="9" y="9" width="18" height="18" rx="3"/><rect x="14" y="14" width="8" height="8" rx="1"/><path d="M13 5v4m10-4v4M13 27v4m10-4v4M5 13h4m-4 10h4m18-10h4m-4 10h4"/></> },
+  { name: 'Technology & AI', examples: 'Computing, automation & intelligence', icon: <><rect x="9" y="9" width="18" height="18" rx="3"/><rect x="14" y="14" width="8" height="8" rx="1"/><path d="M13 5v4m10-4v4M13 27v4m10-4v4M5 13h4m-4 10h4m18-10h4m-4 10h4"/></> },
   { name: 'Health & biotechnology', examples: 'Biology, medicine & longevity', icon: <><path d="M11 4c0 14 14 14 14 28M25 4c0 14-14 14-14 28M12 8h12M14 13h8M14 23h8M12 28h12"/></> },
   { name: 'Economics & business', examples: 'Markets, companies & trade', icon: <><path d="M6 29h25M8 29V19h5v10m3 0V13h5v16m3 0V7h5v22M7 11l8-5"/></> },
   { name: 'Global development', examples: 'Poverty, education & opportunity', icon: <><path d="M29 23a13 13 0 1 1-16-17M5 18h12M9 27h14M18 5c-8 7-8 19 0 26M18 31c3-3 5-7 6-11M20 15 31 4m-8 0h8v8"/></> },
