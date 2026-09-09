@@ -1,13 +1,16 @@
+import type { InkDesign } from './ink-exploration.js';
+import { inkExplorationSvg } from './ink-exploration-svg.js';
 import { normalizeColor, normalizeIcon, type Player } from './player-profile.js';
 import { patternFrame } from '../src/components/interval/patterns.js';
 
 export type ScorecardVariant = 'paper' | 'ink' | 'emblem';
-export type ScorecardData = { player: Player; score: number; hits: boolean[]; label: string; practice?: boolean };
+export type ScorecardData = { player: Player; score: number; hits: boolean[]; label: string; practice?: boolean; design?: InkDesign };
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]!);
 export const calibrationText = (hits: boolean[]) => hits.length ? `${Math.round(hits.filter(Boolean).length / hits.length * 1000) / 10}%` : '—';
 
 /** One self-contained SVG for the live card, exported PNG/GIF and design studies. */
 export function scorecardSvg(data: ScorecardData, variant: ScorecardVariant = 'ink', phase = .125): string {
+  if (data.design) return inkExplorationSvg(data, phase);
   const dark = variant === 'ink', emblem = variant === 'emblem';
   const paper = dark ? '#352a25' : '#f6f0e6', ink = dark ? '#f6f0e6' : '#352a25';
   const muted = dark ? '#c5b8a8' : '#786b60', line = dark ? '#64554b' : '#d6c8b5';

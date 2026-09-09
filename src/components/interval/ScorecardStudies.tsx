@@ -1,35 +1,60 @@
-import { useMemo, useState } from 'react';
-import { scorecardStudy } from '../../../shared/scorecard-study';
-import { playerColors, playerIcons, type PlayerIcon } from '../../../shared/player-profile';
+import { useEffect, useMemo, useState } from 'react';
+import { INITIAL_INK_SEED, inkExplorations, normalizeInkSeed, seedDecisions } from '../../../shared/ink-exploration';
+import { colorName, playerColors, playerIcons } from '../../../shared/player-profile';
 import { ScorecardShare } from './ScorecardShare';
 
-const variants = [
-  { id: 'ink', title: '01 · Ink', description: 'The current game card. Deep espresso, bright numbers, and a moving pattern.' },
-  { id: 'paper', title: '02 · Paper', description: 'Warm paper with the same moving pattern and sharing controls.' },
-  { id: 'emblem', title: '03 · Emblem', description: 'A personal seal above your name, points, and calibration.' },
-] as const;
+function randomSeed() {
+  const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  // Rejection sampling gives every character an equal chance.
+  let seed = '';
+  while (seed.length < 12) for (const value of crypto.getRandomValues(new Uint8Array(24))) {
+    if (value < 252 && seed.length < 12) seed += alphabet[value % 36];
+  }
+  return seed;
+}
+const query = new URLSearchParams(window.location.search);
+const initialSeed = normalizeInkSeed(query.get('seed'));
 
 export function ScorecardStudies() {
-  const [username, setUsername] = useState(scorecardStudy.player.username);
-  const [icon, setIcon] = useState<PlayerIcon>(scorecardStudy.player.icon);
-  const [color, setColor] = useState(scorecardStudy.player.color);
-  const data = useMemo(() => ({ ...scorecardStudy, player: { username: username || 'your_name', icon, color } }), [username, icon, color]);
+  const [username, setUsername] = useState((query.get('name') ?? 'erik').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20));
+  const [seed, setSeed] = useState(initialSeed), [draft, setDraft] = useState(initialSeed);
+  const [color, setColor] = useState(playerColors.some(color => color.value === query.get('color')) ? query.get('color')! : '');
+  const [message, setMessage] = useState('');
+  const cards = useMemo(() => inkExplorations(seed, username, color || undefined), [seed, username, color]);
+  useEffect(() => {
+    const url = new URL(window.location.href); url.searchParams.set('seed', seed); url.searchParams.set('name', username);
+    if (color) url.searchParams.set('color', color); else url.searchParams.delete('color');
+    window.history.replaceState(null, '', url);
+  }, [seed, username, color]);
   return <>
-    <div className="preview-controls" aria-label="Scorecard preview settings">
+    <form className="preview-controls" aria-label="Ink exploration settings" onSubmit={event => {
+      event.preventDefault(); if (draft.length === 12) { setSeed(draft); setMessage(''); }
+    }}>
       <label>Name<input value={username} maxLength={20} onChange={event => setUsername(event.target.value.replace(/[^a-zA-Z0-9_]/g, ''))} /></label>
-      <label>Pattern<select aria-label="Pattern" value={icon} onChange={event => setIcon(event.target.value as PlayerIcon)}>
-        {playerIcons.map(pattern => <option key={pattern.id} value={pattern.id}>{pattern.label}</option>)}
-      </select></label>
       <label>Color<select aria-label="Color" value={color} onChange={event => setColor(event.target.value)}>
-        {playerColors.map(color => <option key={color.value} value={color.value}>{color.label}</option>)}
+        <option value="">All six colors</option>{playerColors.map(color => <option key={color.value} value={color.value}>{color.label}</option>)}
       </select></label>
-    </div>
-    <div className="studies">{variants.map(variant => <article key={variant.id} data-variant={variant.id}>
-      <h2>{variant.title}</h2><p className="study-description">{variant.description}</p>
+      <label>Design seed<input className="seed-input" aria-label="Design seed" value={draft} minLength={12} maxLength={12} pattern="[A-Z0-9]{12}" required onChange={event => setDraft(event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, ''))} /></label>
+      <button type="submit" className="study-action">Apply seed</button>
+      <button type="button" className="study-action primary-study-action" onClick={() => { const next = randomSeed(); setSeed(next); setDraft(next); setMessage(''); }}>New seed ↗</button>
+      <button type="button" className="study-action" onClick={async () => {
+        try { await navigator.clipboard.writeText(window.location.href); setMessage('Study link copied.'); }
+        catch { setMessage('Copy the page address to keep this study.'); }
+      }}>Copy study link</button>
+    </form>
+    <div className="seed-caption"><span>Six patterns. Six colors. One set of deliberate collisions.</span><span role="status">{message}</span></div>
+    <details className="seed-key"><summary>How {seed} becomes six designs</summary>
+      <p>Each pair sets one design choice. The same seed produces the same board. “New seed” reshuffles the choices; it always keeps one of every animation and layout.</p>
+      <div className="seed-decisions">{seedDecisions.map((decision, index) => <div key={decision}><code>{seed.slice(index * 2, index * 2 + 2)}</code><span>{decision}</span></div>)}</div>
+      <p>Try one color across all six to compare layout and pattern. The first exploration began with <code>{INITIAL_INK_SEED}</code>.</p>
+    </details>
+    <div className="studies ink-explorations">{cards.map((data, index) => <article key={data.player.icon} data-pattern={data.player.icon}>
+      <div className="study-heading"><h2>{String(index + 1).padStart(2, '0')} · {playerIcons[index].label}</h2><span className="study-swatch" style={{ background: data.player.color }} aria-label={colorName(data.player.color)} /></div>
+      <p className="study-description">{colorName(data.player.color)} · {data.design!.surface} · {data.design!.layout}</p>
       <div className="interval-app study-card">
-        <ScorecardShare data={data} variant={variant.id} text={`4σ · Designspace sample\n${data.player.username} · 1,286.4 points · 87.5% calibration`} />
+        <ScorecardShare data={data} text={`4σ · Ink study ${seed} · ${data.player.icon}\n${data.player.username} · 1,286.4 points · 87.5% calibration`} />
       </div>
+      <p className="design-recipe">{data.design!.type} type · {data.design!.scale}× pattern · {data.design!.angle}° angle</p>
     </article>)}</div>
   </>;
 }
-

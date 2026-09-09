@@ -127,20 +127,22 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     assert.match(allowed.headers["x-robots-tag"], /noindex/);
     assert.equal(allowed.headers["referrer-policy"], "same-origin");
     const scorecards = await request(`${DESIGN_COOKIE}=${designToken(secret)}`, "GET", undefined, undefined, "/designspace?view=scorecards");
-    assert.equal((scorecards.body.match(/<svg xmlns=/g) ?? []).length, 3);
+    assert.equal((scorecards.body.match(/<svg xmlns=/g) ?? []).length, 6);
     assert.match(scorecards.body, /1,286.4/);
     assert.match(scorecards.body, /87.5%/);
-    assert.doesNotMatch(scorecards.body, /__CARD_|__NONCE__|__SCORECARD_BOOTSTRAP__/);
+    assert.doesNotMatch(scorecards.body, /__INK_EXPLORATIONS__|__NONCE__|__SCORECARD_BOOTSTRAP__/);
     assert.match(scorecards.body, /id="scorecard-studies"/);
     assert.match(scorecards.headers["content-security-policy"], /worker-src 'self'/);
     assert.match(scorecards.headers["content-security-policy"], /img-src data: blob:/);
-    assert.ok(scorecards.body.indexOf('01 · Ink') < scorecards.body.indexOf('02 · Paper'));
+    for (const pattern of ['Orbit', 'Wave', 'Spiral', 'Pendulum', 'Bloom', 'Braid']) assert.ok(scorecards.body.includes(pattern));
     assert.match(scorecards.body, /designspace-scorecards/);
     const scorecardNonce = /script nonce="([^"]+)"/.exec(scorecards.body)?.[1];
     assert.ok(scorecards.headers["content-security-policy"].includes(`'nonce-${scorecardNonce}'`));
     const lockedCards = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards");
     assert.match(lockedCards.body, /action="\/designspace\?view=scorecards"/);
     assert.doesNotMatch(lockedCards.body, /<svg/);
+    const seededLogin = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards&seed=AB12CD34EF56&name=custom&color=%23795078");
+    assert.match(seededLogin.body, /view=scorecards&amp;seed=AB12CD34EF56&amp;name=custom&amp;color=%23795078/);
     const manager = await request(
       `${DESIGN_COOKIE}=${designToken(secret)}`,
       "GET",

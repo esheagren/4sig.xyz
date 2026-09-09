@@ -128,9 +128,15 @@ image access fails, the card downloads and the caption/link is copied if allowed
 If image creation fails, selectable score/link text remains available.
 
 `shared/scorecard.ts` defines every image frame used on screen and in exports.
-Protected Designspace uses the same animated card and share controls at
-`/designspace?view=scorecards`, with Ink first and Paper and Emblem for comparison.
-Preview name, pattern, and color controls change only the sample, not the player's
-profile. All three versions export matching PNGs/GIFs and include the game link.
-The protected page loads a dedicated Vite entry, with workers and blob images
-allowed only in the scorecard study's CSP. The game continues to use Ink.
+Protected Designspace has a seeded Ink exploration board at
+`/designspace?view=scorecards`. It shows Orbit, Wave, Spiral, Pendulum, Bloom,
+and Braid once each. The initial random seed is `1BMV6OZR1EBG`; six base-36 pairs
+independently shuffle palette, layout, background treatment, scale, type, and angle.
+Every board covers all six palettes, layouts, and surfaces. Name and color controls
+change only the preview. A single-color override makes comparing layouts easier.
+New seed uses cryptographic randomness; Copy study link retains the seed, name,
+and color through reload and Designspace login.
+
+Explorations pass an optional design into the same SVG, animation, PNG, and GIF
+rendering path. The game keeps its existing Ink card. The protected page loads a
+dedicated Vite entry with workers and blob images allowed in its CSP.
