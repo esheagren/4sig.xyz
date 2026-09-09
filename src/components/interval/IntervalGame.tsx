@@ -50,12 +50,12 @@ import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
 const RANGE_MIN = 0;
 const DEMO_QUESTION: Question = {
   id: 'practice',
-  title: 'About how many glass panels cover the exterior of One World Trade Center?',
-  short: 'One World Trade Center glass panels', unit: 'panels', answer: 12000,
+  title: 'How tall is One World Trade Center, including its spire, in feet?',
+  short: 'One World Trade Center height', unit: 'feet', answer: 1776,
   category: 'Practice', date: '', scale: 1,
-  source: 'American Galvanizers Association',
-  url: 'https://galvanizeit.org/project-gallery/1-world-trade-center',
-  context: 'Published construction accounts describe around 12,000 exterior glass panels. This is a rounded reference count, not an exact count of individual window panes.',
+  source: 'World Trade Center',
+  url: 'https://wtc.com/work-place/1wtc/',
+  context: 'One World Trade Center stands 1,776 feet tall, including its spire—a deliberate reference to the year of American independence.',
 };
 function tutorialSeen(id: string, mark = false) {
   try {
@@ -887,9 +887,9 @@ export default function IntervalGame() {
             <section className="onboarding-welcome">
               <p className="onboarding-eyebrow">PRACTICE COMPLETE · NO POINTS COUNTED</p>
               <h1 ref={heading} tabIndex={-1}>You have the controls.</h1>
-              <p>About {formatEntry(String(DEMO_QUESTION.answer))} glass panels cover One World Trade Center.</p>
+              <p>One World Trade Center stands {formatEntry(String(DEMO_QUESTION.answer))} feet tall, including its spire.</p>
               <p>Your range: {formatEntry(String(bounds.lower))}–{formatEntry(String(bounds.upper))} {DEMO_QUESTION.unit}. {bounds.lower <= DEMO_QUESTION.answer && bounds.upper >= DEMO_QUESTION.answer ? 'You contained the reference value.' : 'The reference value fell outside your range.'}</p>
-              <p className="onboarding-note">A rounded construction count—not an exact window count.</p>
+              <p className="onboarding-note">Its height was chosen to mark the year of American independence.</p>
               <SourceLinks urls={DEMO_QUESTION.url} names={DEMO_QUESTION.source} />
               <button className="primary" onClick={() => { tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound(); }}>Begin question one <span>→</span></button>
             </section>
