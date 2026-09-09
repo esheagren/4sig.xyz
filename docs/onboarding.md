@@ -27,7 +27,10 @@ a username, pattern and color. Unanswered questions stay concealed. Resuming
 a game restores its submitted results and continues from the next question.
 
 The initial pattern and color are randomized from the existing six choices.
-The pattern button sits left of the username. Availability checks are debounced;
+The “Claim username” screen places the pattern button left of the username.
+It opens one panel with pattern choices and a color subsection beneath them.
+The picker follows reduced-motion preferences, and typing does not reset its
+animations. Availability checks are debounced;
 the existing case-insensitive database uniqueness constraint is authoritative.
 The draft identity survives a refresh in the same tab. Guest game ownership and
 account attachment use the existing HttpOnly cookies.

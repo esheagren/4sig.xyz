@@ -1590,15 +1590,6 @@
   height: 48px;
   animation: none;
 }
-.interval-app .identity-color-button {
-  width: 48px;
-  gap: 5px;
-}
-.interval-app .identity-color-dot {
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-}
 .interval-app .compact-personality .identity-options-panel:not([hidden]) {
   margin-top: 16px;
   padding-top: 14px;
@@ -1677,9 +1668,10 @@
   color: var(--muted);
   line-height: 1.4;
 }
-.interval-app .pattern-caption button {
-  font-size: 10px;
-  white-space: nowrap;
+.interval-app .pattern-color-section {
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  margin-top: 16px;
 }
 .interval-app .color-picker legend {
   display: flex;

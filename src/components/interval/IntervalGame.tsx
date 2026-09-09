@@ -1542,7 +1542,7 @@ export default function IntervalGame() {
               </>
             ) : (
               <>
-                <h3>Make it yours</h3>
+                <h3>Claim username</h3>
                 <p>
                   After your starting questions, choose a username, animated symbol,
                   and color to give your shared score a personality.
