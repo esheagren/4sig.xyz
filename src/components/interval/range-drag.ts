@@ -81,6 +81,5 @@ export function stepDrag(
     next.domain[0] +
     Math.max(0, Math.min(1, ratio)) * (next.domain[1] - next.domain[0]);
   next.bounds = moveBound(next.bounds, state.part, value, min, max);
-  if (next.bounds[state.part] === next.bounds.estimate) next.cue = "At your estimate";
   return next;
 }

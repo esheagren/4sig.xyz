@@ -2128,8 +2128,6 @@
 .interval-app .calculator-operators button:hover { background: #e8dac9; }
 .interval-app .keypad .calculator-key[aria-pressed="true"] { color: var(--blue); background: #e4e9e1; box-shadow: inset 0 0 0 1px var(--blue); }
 
-.interval-app .estimate-anchor-label { display: flex; justify-content: center; align-items: baseline; gap: 8px; width: 100%; padding: 8px 0 16px; color: var(--muted); background: transparent; font: 12px var(--mono); }
-.interval-app .estimate-anchor-label strong { font-weight: 500; color: var(--ink); border-bottom: 1px dotted var(--muted); }
 .interval-app .handle.lower, .interval-app .handle.lower:active:not(:disabled) { transform: translateX(-100%); }
 .interval-app .handle.upper, .interval-app .handle.upper:active:not(:disabled) { transform: none; }
 .interval-app .handle.lower::before { left: auto; right: 0; }
@@ -2137,5 +2135,5 @@
 .interval-app .handle.at-anchor::before { border-color: var(--blue); }
 .interval-app .anchor-mark { top: 78px; transform: translate(-50%, -50%); line-height: 1; }
 .interval-app .exact-range .handle::before { top: 35px; height: 24px; }
-.interval-app .exact-range .anchor-mark, .interval-app .exact-range .range-cue { color: var(--blue); }
+.interval-app .exact-range .anchor-mark { color: var(--blue); }
 .interval-app .exact-range .anchor-mark { width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid var(--blue); border-radius: 50%; }

@@ -984,11 +984,6 @@ export default function IntervalGame() {
                     className={`instrument ${showAnswer ? "locked" : ""} ${bounds.lower === bounds.upper ? "exact-range" : ""}`}
                     aria-label="Your range"
                   >
-                    <button className="estimate-anchor-label" disabled={!editable}
-                      onClick={() => { setEditText(String(bounds.estimate)); setError(""); setEditing("estimate"); }}
-                      aria-label={`Edit estimate, ${formatEntry(String(bounds.estimate))} ${question.unit}`}>
-                      Your estimate <strong>{formatEntry(String(bounds.estimate))} {question.unit}</strong>
-                    </button>
                     <div className="readings">
                       {(["lower", "upper"] as const).map((part) => (
                         <button
@@ -1094,8 +1089,7 @@ export default function IntervalGame() {
                     {editable && (
                       <>
                         <div className="range-cue" role="status">
-                          {bounds.lower === bounds.upper
-                            ? `Exactly ${formatEntry(String(bounds.estimate))} ${question.unit}` : dragCue}
+                          {dragCue}
                         </div>
                       </>
                     )}
