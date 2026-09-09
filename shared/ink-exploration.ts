@@ -5,7 +5,7 @@ import { scorecardStudy } from './scorecard-study.js';
 export const INITIAL_INK_SEED = '1BMV6OZR1EBG';
 export const inkLayouts = ['poster', 'split', 'spine', 'band', 'seal', 'index'] as const;
 export const inkSurfaces = ['color field', 'night tint', 'color wash', 'duotone', 'edge stripe', 'spotlight'] as const;
-export type InkDesign = { seed: string; layout: typeof inkLayouts[number]; surface: typeof inkSurfaces[number]; scale: number; type: 'serif' | 'sans' | 'mono'; angle: number };
+export type InkDesign = { seed: string; layout: typeof inkLayouts[number] | 'halo' | 'horizon'; surface: typeof inkSurfaces[number]; scale: number; type: 'serif' | 'sans' | 'mono'; angle: number; collection?: boolean };
 export const seedDecisions = ['Palette order', 'Layout order', 'Background treatment', 'Pattern scale', 'Typography', 'Pattern angle'];
 export function normalizeInkSeed(value: string | null): string {
   const seed = (value ?? '').toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 12);

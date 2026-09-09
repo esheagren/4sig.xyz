@@ -11,6 +11,7 @@ import {
 } from "./_lib/designspace-auth.js";
 import { scorecardSvg } from '../shared/scorecard.js';
 import { inkExplorations, normalizeInkSeed } from '../shared/ink-exploration.js';
+import { inkCollection, inkStyles } from '../shared/ink-collection.js';
 import { playerIcons, playerColors } from '../shared/player-profile.js';
 import { questionLibrary, questionAnswers } from "./_lib/question-library.js";
 import { HttpError, prepare } from "./_lib/http.js";
@@ -26,11 +27,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     .searchParams;
   const view = ["questions", "scorecards"].includes(params.get("view") ?? "") ? params.get("view")! : "";
   const returnParams = new URLSearchParams();
-  if (view === 'scorecards' && params.has('seed')) {
-    returnParams.set('seed', normalizeInkSeed(params.get('seed')));
+  const exploring = params.get('mode') === 'explore' || (params.has('seed') && params.get('mode') !== 'collection');
+  if (view === 'scorecards') {
+    if (params.has('seed')) returnParams.set('seed', normalizeInkSeed(params.get('seed')));
     if (params.has('name')) returnParams.set('name', (params.get('name') ?? '').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20));
     if (playerColors.some(color => color.value === params.get('color'))) returnParams.set('color', params.get('color')!);
   }
+  if (view === 'scorecards' && ['explore', 'collection'].includes(params.get('mode') ?? '')) returnParams.set('mode', params.get('mode')!);
+  if (view === 'scorecards' && inkStyles.some(style => style.id === params.get('style'))) returnParams.set('style', params.get('style')!);
   const returnView = view + (returnParams.size ? '&' + returnParams.toString() : '');
   const questions = view === "questions";
   const data = params.get("data");
@@ -136,8 +140,14 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ? "import('/assets/designspace-scorecards.js');"
         : "import('/@react-refresh').then(({default: runtime}) => { runtime.injectIntoGlobalHook(window); window.$RefreshReg$ = () => {}; window.$RefreshSig$ = () => type => type; window.__vite_plugin_react_preamble_installed__ = true; return import('/src/designspace-scorecards.tsx'); });";
       page = page.replace('__SCORECARD_BOOTSTRAP__', bootstrap);
-      const cards = inkExplorations(normalizeInkSeed(params.get('seed')));
-      page = page.replace('__INK_EXPLORATIONS__', cards.map((card, index) => `<article><h2>${String(index + 1).padStart(2, '0')} · ${playerIcons[index].label}</h2><p class="study-description">${card.design!.surface} · ${card.design!.layout}</p><div class="static-card">${scorecardSvg(card)}</div></article>`).join(''));
+      const name = (params.get('name') ?? 'erik').replace(/[^a-zA-Z0-9_]/g, '').slice(0, 20);
+      const color = playerColors.find(color => color.value === params.get('color'))?.value;
+      const cards = exploring ? inkExplorations(normalizeInkSeed(params.get('seed')), name, color) : inkCollection(name, color);
+      page = page.replace('__STUDY_TITLE__', exploring ? 'Six ways to be yourself.' : 'Eight styles. One signature.')
+        .replace('__STUDY_INTRO__', exploring ? 'The original seeded explorations. Shuffle into another combination, or return to the curated collection.' : 'A family of eight compositions with one mark, one type system, and a shared color palette. Pick a pattern, then make it yours.')
+        .replace('__OTHER_STUDY_URL__', exploring ? '/designspace?view=scorecards' : '/designspace?view=scorecards&amp;mode=explore')
+        .replace('__OTHER_STUDY_LABEL__', exploring ? 'Eight-style collection' : 'Seed explorations');
+      page = page.replace('__INK_EXPLORATIONS__', cards.map((card, index) => `<article><h2>${String(index + 1).padStart(2, '0')} · ${exploring ? playerIcons[index].label : inkStyles[index].name}</h2><p class="study-description">${exploring ? card.design!.surface + ' · ' + card.design!.layout : inkStyles[index].description}</p><div class="static-card">${scorecardSvg(card)}</div></article>`).join(''));
     }
     return res.status(200).send(page);
   } catch (error) {

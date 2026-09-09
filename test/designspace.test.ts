@@ -127,14 +127,14 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     assert.match(allowed.headers["x-robots-tag"], /noindex/);
     assert.equal(allowed.headers["referrer-policy"], "same-origin");
     const scorecards = await request(`${DESIGN_COOKIE}=${designToken(secret)}`, "GET", undefined, undefined, "/designspace?view=scorecards");
-    assert.equal((scorecards.body.match(/<svg xmlns=/g) ?? []).length, 6);
+    assert.equal((scorecards.body.match(/<svg xmlns=/g) ?? []).length, 8);
     assert.match(scorecards.body, /1,286.4/);
     assert.match(scorecards.body, /87.5%/);
-    assert.doesNotMatch(scorecards.body, /__INK_EXPLORATIONS__|__NONCE__|__SCORECARD_BOOTSTRAP__/);
+    assert.doesNotMatch(scorecards.body, /__INK_EXPLORATIONS__|__NONCE__|__SCORECARD_BOOTSTRAP__|__STUDY_|__OTHER_STUDY_/);
     assert.match(scorecards.body, /id="scorecard-studies"/);
     assert.match(scorecards.headers["content-security-policy"], /worker-src 'self'/);
     assert.match(scorecards.headers["content-security-policy"], /img-src data: blob:/);
-    for (const pattern of ['Orbit', 'Wave', 'Spiral', 'Pendulum', 'Bloom', 'Braid']) assert.ok(scorecards.body.includes(pattern));
+    for (const pattern of ['Orbit', 'Wave', 'Spiral', 'Pendulum', 'Bloom', 'Braid', 'Halo', 'Horizon']) assert.ok(scorecards.body.includes(pattern));
     assert.match(scorecards.body, /designspace-scorecards/);
     const scorecardNonce = /script nonce="([^"]+)"/.exec(scorecards.body)?.[1];
     assert.ok(scorecards.headers["content-security-policy"].includes(`'nonce-${scorecardNonce}'`));
@@ -143,6 +143,10 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     assert.doesNotMatch(lockedCards.body, /<svg/);
     const seededLogin = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards&seed=AB12CD34EF56&name=custom&color=%23795078");
     assert.match(seededLogin.body, /view=scorecards&amp;seed=AB12CD34EF56&amp;name=custom&amp;color=%23795078/);
+    const archive = await request(`${DESIGN_COOKIE}=${designToken(secret)}`, "GET", undefined, undefined, "/designspace?view=scorecards&seed=1BMV6OZR1EBG");
+    assert.equal((archive.body.match(/<svg xmlns=/g) ?? []).length, 6);
+    const chosenLogin = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards&style=halo&name=custom");
+    assert.match(chosenLogin.body, /name=custom&amp;style=halo/);
     const manager = await request(
       `${DESIGN_COOKIE}=${designToken(secret)}`,
       "GET",

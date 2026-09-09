@@ -128,15 +128,21 @@ image access fails, the card downloads and the caption/link is copied if allowed
 If image creation fails, selectable score/link text remains available.
 
 `shared/scorecard.ts` defines every image frame used on screen and in exports.
-Protected Designspace has a seeded Ink exploration board at
-`/designspace?view=scorecards`. It shows Orbit, Wave, Spiral, Pendulum, Bloom,
-and Braid once each. The initial random seed is `1BMV6OZR1EBG`; six base-36 pairs
-independently shuffle palette, layout, background treatment, scale, type, and angle.
-Every board covers all six palettes, layouts, and surfaces. Name and color controls
-change only the preview. A single-color override makes comparing layouts easier.
-New seed uses cryptographic randomness; Copy study link retains the seed, name,
-and color through reload and Designspace login.
+Protected Designspace defaults to an eight-style Ink collection at
+`/designspace?view=scorecards`: Orbit, Wave, Spiral, Pendulum, Bloom, Braid,
+Halo (an Orbit companion), and Horizon (a Wave companion). The accepted Orbit,
+Wave, Pendulum, and Braid compositions anchor the family. All eight share a fixed
+serif 4σ signature, Arial names/scores/labels, common spacing and footer rules,
+and the six identity colors expressed as deep fields or warm tints.
 
-Explorations pass an optional design into the same SVG, animation, PNG, and GIF
-rendering path. The game keeps its existing Ink card. The protected page loads a
-dedicated Vite entry with workers and blob images allowed in its CSP.
+Name, color, direct style selection, matching by pattern, and random assignment
+are preview controls only. Copy study link preserves the selection through
+reload and login. This does not assign or save a new style to real players.
+
+The earlier seeded board remains at `?view=scorecards&mode=explore`; old seed
+links still open it. `1BMV6OZR1EBG` is the original board. Its six base-36 pairs
+independently shuffle palette, layout, surface, scale, type, and angle.
+
+Both boards use the shared SVG, animation, PNG and GIF path. The game retains
+its existing Ink card. The protected page loads a dedicated Vite entry with
+workers and blob images allowed in its CSP.
