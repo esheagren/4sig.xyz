@@ -2129,3 +2129,10 @@
 .interval-app .exact-range .handle::before { top: 35px; height: 24px; }
 .interval-app .exact-range .anchor-mark { color: var(--blue); }
 .interval-app .exact-range .anchor-mark { width: 18px; height: 18px; display: grid; place-items: center; border: 1px solid var(--blue); border-radius: 50%; }
+
+.interval-app .scorecard-button { display: block; width: 100%; padding: 0; border: 0; border-radius: 8px; background: transparent; cursor: pointer; text-align: left; }
+.interval-app .scorecard-button > span { display: block; }
+.interval-app .scorecard-button svg { display: block; width: 100%; height: auto; border-radius: 8px; }
+.interval-app .scorecard-button:focus-visible { outline: 2px solid var(--blue); outline-offset: 5px; }
+.interval-app .scorecard-share-actions { margin: 18px 0 0; }
+.interval-app .scorecard-share-actions .primary { margin-top: 0; }

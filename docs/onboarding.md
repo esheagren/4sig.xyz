@@ -109,3 +109,17 @@ different published release. No production database is modified by tests.
 for a staged rollout; existing baseline games still resume and retain the same
 concealment rules. The integration runner uses this switch only for the legacy
 daily API suite, then runs the onboarding suite with it enabled.
+
+## Shareable scorecard
+
+Completed calibration and daily games, including shared-score links, show one
+scorecard with the player's name and pattern, points, calibration, and hit marks.
+Only the background pattern animates; reduced-motion settings render a still.
+Clicking the card or **Copy and Share** shares a 1920 × 1440 PNG and the score
+link through native file sharing when available, otherwise copies image and text
+to the clipboard. If image copying is unavailable, it downloads the PNG; if image
+creation fails, the existing selectable score text remains available.
+
+`shared/scorecard.ts` defines the self-contained image used both on screen and in
+exports. Protected Designspace has paper, ink, and emblem studies at
+`/designspace?view=scorecards`; the game uses paper. Studies use sample results.

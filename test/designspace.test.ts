@@ -126,6 +126,16 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     );
     assert.match(allowed.headers["x-robots-tag"], /noindex/);
     assert.equal(allowed.headers["referrer-policy"], "same-origin");
+    const scorecards = await request(`${DESIGN_COOKIE}=${designToken(secret)}`, "GET", undefined, undefined, "/designspace?view=scorecards");
+    assert.equal((scorecards.body.match(/<svg xmlns=/g) ?? []).length, 3);
+    assert.match(scorecards.body, /1,286.4/);
+    assert.match(scorecards.body, /87.5%/);
+    assert.doesNotMatch(scorecards.body, /__CARD_|__NONCE__/);
+    const scorecardNonce = /script nonce="([^"]+)"/.exec(scorecards.body)?.[1];
+    assert.ok(scorecards.headers["content-security-policy"].includes(`'nonce-${scorecardNonce}'`));
+    const lockedCards = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards");
+    assert.match(lockedCards.body, /action="\/designspace\?view=scorecards"/);
+    assert.doesNotMatch(lockedCards.body, /<svg/);
     const manager = await request(
       `${DESIGN_COOKIE}=${designToken(secret)}`,
       "GET",

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   CSSProperties,
   PointerEvent as ReactPointerEvent,
@@ -17,14 +17,14 @@ import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
 import { CalibrationSetup } from "./CalibrationSetup";
 import { WorldviewGrid } from "./WorldviewGrid";
-import { CalibrationScore } from './CalibrationScore';
+import { ScoreCard } from './ScoreCard';
+import { scorecardPng, shareScorecard } from '../../lib/share-scorecard';
+import type { ScorecardData } from '../../../shared/scorecard';
 import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
 import {
   validPlayerIcon,
   normalizeColor,
   normalizeIcon,
-  playerLabel,
-  colorName,
 } from "./player";
 import type { Player, SharedScore } from "./player";
 import { QuestionText } from "./QuestionText";
@@ -233,7 +233,6 @@ export default function IntervalGame() {
     [editText, setEditText] = useState("");
   const [player, setPlayer] = useState<Player | null>(null);
   const [share, setShare] = useState<SharedScore | null>(null);
-  const [motionPaused, setMotionPaused] = useState(false);
   const shareUrl = share
     ? `https://4sig.xyz/share/${share.id}`
     : "https://4sig.xyz/";
@@ -248,9 +247,22 @@ export default function IntervalGame() {
   } | null>(null);
   const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null),
     copySequence = useRef(0);
-  const [copyState, setCopyState] = useState<"idle" | "copied" | "fallback">(
+  const [copyState, setCopyState] = useState<"idle" | "copied" | "shared" | "downloaded" | "fallback">(
     "idle",
   );
+  const cardData = useMemo<ScorecardData | null>(() => player ? {
+    player, score: totalPoints(results), hits: results.map(result => result.hit),
+    label: onboarding ? 'STARTING CALIBRATION' : edition,
+    practice: !isRanked,
+  } : null, [player, results, onboarding, edition, isRanked]);
+  const cardImage = useRef<{ data: ScorecardData; png: Promise<Blob>; ready: Blob | null } | null>(null);
+  useEffect(() => {
+    if (stage !== 'complete' || !cardData) return;
+    const entry = { data: cardData, png: scorecardPng(cardData), ready: null as Blob | null };
+    cardImage.current = entry;
+    void entry.png.then(blob => { entry.ready = blob; }).catch(() => { if (cardImage.current === entry) cardImage.current = null; });
+  }, [stage, cardData]);
+  const copyMessage = copyState === 'shared' ? 'Scorecard shared' : copyState === 'downloaded' ? 'Scorecard image saved' : 'Scorecard copied';
   const ruler = useRef<HTMLDivElement>(null),
     heading = useRef<HTMLHeadingElement>(null);
   const [menuTab, setMenuTab] = useState<
@@ -700,15 +712,13 @@ export default function IntervalGame() {
       Math.min(window.innerHeight - 30, e.detail ? e.clientY : rect.top),
     );
     try {
-      await navigator.clipboard.writeText(
-        makeShareText(
-          results,
-          shareUrl,
-          player,
-          onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
-        ),
-      );
-      setCopyState("copied");
+      if (!cardData) return;
+      const cached = cardImage.current?.data === cardData ? cardImage.current : null;
+      const outcome = await shareScorecard(cached?.png ?? scorecardPng(cardData), cached?.ready ?? null,
+        makeShareText(results, shareUrl, player,
+          onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? '' : ' · Practice')));
+      if (outcome === 'cancelled') return;
+      setCopyState(outcome);
       setCopyToast({ x, y, key: ++copySequence.current });
       if (copyTimer.current) clearTimeout(copyTimer.current);
       copyTimer.current = setTimeout(() => {
@@ -1202,67 +1212,18 @@ export default function IntervalGame() {
             </>
           ) : (
             <section className="summary">
-              <div className="result-brand brand" aria-label="Four Sigma">
-                4<span>σ</span>
-              </div>
-              <div className="result-person">
-                {player && (
-                  <>
-                    <PlayerMark
-                      icon={player.icon}
-                      color={player.color}
-                      paused={motionPaused}
-                    />
-                    <span>{player.username}</span>
-                    <button
-                      className="text-button motion-toggle"
-                      aria-label={
-                        motionPaused
-                          ? "Play identity animation"
-                          : "Pause identity animation"
-                      }
-                      aria-pressed={motionPaused}
-                      onClick={() => setMotionPaused(!motionPaused)}
-                    >
-                      {motionPaused ? "▷" : "Ⅱ"}
-                    </button>
-                  </>
-                )}
-              </div>
-              {player && (
-                <p className="personality-signature">
-                  {playerLabel(player.icon)} · {colorName(player.color)}
-                </p>
-              )}
-              <h1 ref={heading} tabIndex={-1}>
-                {onboarding ? (isRanked ? 'Your starting snapshot' : 'Your starting calibration · Practice') : isRanked ? "Your score" : "Practice score"}
+              <h1 className="sr-only" ref={heading} tabIndex={-1}>
+                {onboarding ? 'Your starting snapshot' : 'Your score'}
               </h1>
-              <CalibrationScore score={totalPoints(results)} hits={results.filter(r => r.hit).length} count={results.length} initial={onboarding} />
-              {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
-              {onboarding && <div className="daily-invitation">
-                <p>{dailyAvailable ? 'Four more numbers to explore. Your starting calibration stays here as your baseline.' : 'Your starting calibration is complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>
-                {dailyAvailable && <button className="primary" onClick={() => void startSession(false, true)}>Play today's four <span>→</span></button>}
-                {(user?.questionsAnswered ?? 0) > results.length && <p className="onboarding-note">Overall: {scoreText(user!.totalScore)} points · {Math.round(user!.calibrationRate * 1000) / 10}% calibration across {user!.questionsAnswered} questions. Target: 95%.</p>}
-              </div>}
-              <div className="share-tiles" aria-hidden="true">
-                {results.map((r, i) => (
-                  <span
-                    key={r.question.id}
-                    style={{ animationDelay: `${150 + i * 65}ms` }}
-                    className={r.hit ? "hit" : ""}
-                  >
-                    {r.hit ? "✓" : "×"}
-                  </span>
-                ))}
-              </div>
-              <div className="share-actions">
+              {cardData && <ScoreCard data={cardData} onShare={copy} />}
+              <div className="share-actions scorecard-share-actions">
                 <button className="primary" onClick={copy}>
-                  Share Score<span aria-hidden="true">↗</span>
+                  Copy and Share<span aria-hidden="true">↗</span>
                 </button>
               </div>
               <p className="copy-status" role="status">
-                {copyState === "copied" ? (
-                  <span className="sr-only">Score copied. Ready to paste.</span>
+                {["copied", "shared", "downloaded"].includes(copyState) ? (
+                  <span>{copyMessage}{copyState === "copied" ? ". Ready to paste." : "."}</span>
                 ) : copyState === "fallback" ? (
                   "Select and copy your score below."
                 ) : (
@@ -1279,7 +1240,7 @@ export default function IntervalGame() {
                   {player && (
                     <PlayerMark icon={player.icon} color={player.color} />
                   )}
-                  <span>Score copied</span>
+                  <span>{copyMessage}</span>
                   <span>✓</span>
                 </div>
               )}
@@ -1297,6 +1258,12 @@ export default function IntervalGame() {
                   onFocus={(e) => e.target.select()}
                 />
               )}
+              {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
+              {onboarding && <div className="daily-invitation">
+                <p>{dailyAvailable ? 'Four more numbers to explore. Your starting calibration stays here as your baseline.' : 'Your starting calibration is complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>
+                {dailyAvailable && <button className="primary" onClick={() => void startSession(false, true)}>Play today's four <span>→</span></button>}
+                {(user?.questionsAnswered ?? 0) > results.length && <p className="onboarding-note">Overall: {scoreText(user!.totalScore)} points · {Math.round(user!.calibrationRate * 1000) / 10}% calibration across {user!.questionsAnswered} questions. Target: 95%.</p>}
+              </div>}
               <div className="result-list">
                 {results.map((r, i) => (
                   <details key={r.question.id}>

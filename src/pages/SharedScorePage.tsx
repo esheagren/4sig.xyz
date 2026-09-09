@@ -1,23 +1,23 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
-import { PlayerMark } from "../components/interval/PlayerIdentity";
+import { ScoreCard } from "../components/interval/ScoreCard";
+import { scorecardPng, shareScorecard } from "../lib/share-scorecard";
+import type { ScorecardData } from "../../shared/scorecard";
 import {
   colorName,
   playerLabel,
   playerSymbol,
 } from "../components/interval/player";
 import type { SharedScore } from "../components/interval/player";
-import { CalibrationScore } from '../components/interval/CalibrationScore';
 import '../components/interval/onboarding.css';
 import { scoreText } from "../components/interval/game";
 export function SharedScorePage() {
   const { id } = useParams();
   const [score, setScore] = useState<SharedScore | null>(null),
     [error, setError] = useState(""),
-    [copied, setCopied] = useState(false),
-    [fallback, setFallback] = useState(false),
-    [paused, setPaused] = useState(false);
+    [status, setStatus] = useState(""),
+    [fallback, setFallback] = useState(false);
   useEffect(() => {
     const abort = new AbortController();
     void fetch("/api/share?id=" + encodeURIComponent(id ?? ""), {
@@ -48,6 +48,22 @@ export function SharedScorePage() {
   const text = score
     ? `4σ · ${score.kind === 'onboarding' ? 'Your starting calibration' : score.edition}${score.isRanked ? "" : " · Practice"}\n${playerSymbol(score.player.icon)} ${score.player.username} · ${playerLabel(score.player.icon)} / ${colorName(score.player.color)}\n${scoreText(score.score)} pts · ${score.hits.filter(Boolean).length}/${score.hits.length} in range\n${score.hits.map((hit) => (hit ? "■" : "□")).join("")}\nhttps://4sig.xyz/share/${score.id}`
     : "";
+  const card = useMemo<ScorecardData | null>(() => score ? { player: score.player, score: score.score, hits: score.hits,
+    label: score.kind === 'onboarding' ? 'STARTING CALIBRATION' : score.edition, practice: !score.isRanked } : null, [score]);
+  const image = useRef<{ data: ScorecardData; png: Promise<Blob>; ready: Blob | null } | null>(null);
+  useEffect(() => {
+    if (!card) return;
+    const entry = { data: card, png: scorecardPng(card), ready: null as Blob | null }; image.current = entry;
+    void entry.png.then(blob => { entry.ready = blob; }).catch(() => { if (image.current === entry) image.current = null; });
+  }, [card]);
+  async function copy() {
+    if (!card) return;
+    try {
+      const cached = image.current?.data === card ? image.current : null;
+      const outcome = await shareScorecard(cached?.png ?? scorecardPng(card), cached?.ready ?? null, text);
+      if (outcome !== 'cancelled') setStatus(outcome === 'shared' ? 'Scorecard shared.' : outcome === 'copied' ? 'Scorecard copied. Ready to paste.' : 'Scorecard image saved.');
+    } catch { setFallback(true); }
+  }
   return (
     <div className="interval-page">
       <div
@@ -57,68 +73,13 @@ export function SharedScorePage() {
         <main>
           {score ? (
             <section className="summary">
-              <div className="result-brand brand" aria-label="Four Sigma">
-                4<span>σ</span>
+              <h1 className="sr-only">{score.player.username}’s scorecard</h1>
+              {card && <ScoreCard data={card} onShare={() => void copy()} />}
+              <div className="share-actions scorecard-share-actions">
+                <button className="primary" onClick={() => void copy()}>Copy and Share<span aria-hidden="true">↗</span></button>
               </div>
-              <div className="shared-personality">
-                <PlayerMark
-                  icon={score.player.icon}
-                  color={score.player.color}
-                  paused={paused}
-                />
-                <button
-                  className="motion-toggle text-button"
-                  aria-label={
-                    paused
-                      ? "Play identity animation"
-                      : "Pause identity animation"
-                  }
-                  aria-pressed={paused}
-                  onClick={() => setPaused(!paused)}
-                >
-                  {paused ? "▷" : "Ⅱ"}
-                </button>
-              </div>
-              <div className="result-person">{score.player.username}</div>
-              <p className="personality-signature">
-                {playerLabel(score.player.icon)} ·{" "}
-                {colorName(score.player.color)}
-              </p>
-              <h1>{score.kind === 'onboarding' ? 'Starting calibration' : score.isRanked ? 'Daily score' : 'Practice score'}</h1>
-              <CalibrationScore score={score.score} hits={score.hits.filter(Boolean).length} count={score.hits.length} initial={score.kind === 'onboarding'} />
-              <p className="summary-caption">{score.edition}{score.isRanked ? '' : ' · Practice'}</p>
-              <div className="share-tiles" aria-label="Round results">
-                {score.hits.map((hit, i) => (
-                  <span
-                    key={i}
-                    className={hit ? "hit" : ""}
-                    aria-label={hit ? "In range" : "Outside range"}
-                  >
-                    {hit ? "✓" : "×"}
-                  </span>
-                ))}
-              </div>
-              <p className="shared-promise">
-                A better sense of the world, four numbers at a time.
-              </p>
-              <Link className="primary" to="/">
-                Play Four Sigma<span>→</span>
-              </Link>
-              <button
-                className="text-button reshare"
-                onClick={async () => {
-                  try {
-                    await navigator.clipboard.writeText(text);
-                    setCopied(true);
-                  } catch {
-                    setFallback(true);
-                  }
-                }}
-              >
-                Share Score
-              </button>
               <p className="copy-status" role="status">
-                {copied ? "Score copied ✓" : ""}
+                {status}
               </p>
               {fallback && (
                 <textarea
@@ -129,6 +90,12 @@ export function SharedScorePage() {
                   onFocus={(e) => e.target.select()}
                 />
               )}
+              <p className="shared-promise">
+                A better sense of the world, four numbers at a time.
+              </p>
+              <Link className="primary" to="/">
+                Play<span aria-hidden="true">→</span>
+              </Link>
             </section>
           ) : (
             <section className="identity-screen account-loading">

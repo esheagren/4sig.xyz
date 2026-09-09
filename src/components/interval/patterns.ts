@@ -1,4 +1,4 @@
-import type { PlayerIcon } from "./player";
+import type { PlayerIcon } from "../../../shared/player-profile.js";
 const n = (x: number) => x.toFixed(2);
 const dot = (x: number, y: number, r = 2, opacity = 1) =>
   `<circle cx="${n(x)}" cy="${n(y)}" r="${r}" fill="currentColor" stroke="none" opacity="${opacity}"/>`;
