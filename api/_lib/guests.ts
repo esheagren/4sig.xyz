@@ -46,7 +46,7 @@ export async function guestGameForEdition(
   if (!owner) return null;
   const { rows } = await query(
     `SELECT g.id FROM game_sessions g JOIN guest_sessions v ON v.token_hash=$1
-    WHERE g.edition=$2 AND ((g.guest_session_hash=v.token_hash AND g.is_ranked)
+    WHERE (g.edition=$2 OR g.kind='onboarding') AND ((g.guest_session_hash=v.token_hash AND g.is_ranked)
       OR (g.id=v.claimed_game_id AND g.user_id=$3 AND g.completed_at IS NULL))
     ORDER BY g.created_at DESC LIMIT 1`,
     [owner.slice(6), edition, userId],
@@ -70,13 +70,13 @@ export async function attachGuestGame(
     // Same lock as startGame prevents a second ranked game during sign-in/claim.
     await client.query("SELECT id FROM users WHERE id=$1 FOR UPDATE", [userId]);
     const { rows } = await client.query(
-      "SELECT edition,is_ranked FROM game_sessions WHERE id=$1 AND guest_session_hash=$2 FOR UPDATE",
+      "SELECT edition,is_ranked,kind FROM game_sessions WHERE id=$1 AND guest_session_hash=$2 FOR UPDATE",
       [sessionId, owner.slice(6)],
     );
     if (!rows[0]) return;
     const existing = await client.query(
-      "SELECT id FROM game_sessions WHERE user_id=$1 AND edition=$2 AND is_ranked",
-      [userId, rows[0].edition],
+      "SELECT id FROM game_sessions WHERE user_id=$1 AND (edition=$2 OR $3='onboarding') AND kind=$3 AND is_ranked",
+      [userId, rows[0].edition, rows[0].kind],
     );
     await client.query(
       "UPDATE game_sessions SET user_id=$2,guest_session_hash=NULL,is_ranked=$3 WHERE id=$1",

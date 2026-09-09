@@ -12,6 +12,8 @@ import { getDeviceId } from "../../lib/device";
 import { AuthModal } from "../nav/AuthModal";
 import type { Question, Result } from "./game";
 import "./style.css";
+import "./onboarding.css";
+import { CalibrationScore } from './CalibrationScore';
 import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
 import {
   validPlayerIcon,
@@ -46,6 +48,13 @@ import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
 
 // The current question bank is curated for nonnegative quantities.
 const RANGE_MIN = 0;
+const DEMO_QUESTION: Question = { id: 'practice', title: 'How many minutes are in one day?', short: 'Minutes in a day', unit: 'minutes', answer: 1440, category: 'Practice', date: '', scale: 1, source: '', url: '', context: '' };
+function tutorialSeen(id: string, mark = false) {
+  try {
+    if (mark) localStorage.setItem('four_sigma_tutorial_' + id, 'done');
+    return localStorage.getItem('four_sigma_tutorial_' + id) === 'done';
+  } catch { return false; }
+}
 
 function activeGame(id?: string | null) {
   try {
@@ -58,6 +67,8 @@ function activeGame(id?: string | null) {
   return null;
 }
 type Stage =
+  | "welcome"
+  | "practice-complete"
   | "identity"
   | "loading"
   | "estimate"
@@ -80,6 +91,8 @@ type ServerJudgement = {
   source?: string;
   sourceUrl?: string;
   answerContext?: string;
+  topic?: string;
+  observationPeriod?: string;
 };
 function toResult(j: ServerJudgement): Result {
   return {
@@ -98,8 +111,8 @@ function toResult(j: ServerJudgement): Result {
       source: j.source ?? "",
       url: j.sourceUrl ?? "",
       context: j.answerContext ?? "",
-      category: "Daily",
-      date: "",
+      category: j.topic ?? "Daily",
+      date: j.observationPeriod ?? "",
       scale: 1,
     },
   };
@@ -129,6 +142,11 @@ export default function IntervalGame() {
     [sessionId, setSessionId] = useState(""),
     [edition, setEdition] = useState("");
   const [isRanked, setRanked] = useState(true);
+  const [onboarding, setOnboarding] = useState(false),
+    [demo, setDemo] = useState(false),
+    [savedCount, setSavedCount] = useState(0),
+    [dailyAvailable, setDailyAvailable] = useState(false);
+  const finalizing = useRef(false);
   const [standings, setStandings] = useState<Standings | null>(null),
     [authOpen, setAuthOpen] = useState(false);
   const starting = useRef(false);
@@ -208,8 +226,7 @@ export default function IntervalGame() {
     : "https://4sig.xyz/";
   const initialPlayer: Partial<Player> = {
     ...(!user?.isAnonymous && user ? { username: user.displayName } : {}),
-    icon: normalizeIcon(user?.avatarIcon),
-    color: normalizeColor(user?.avatarColor),
+    ...(user?.hasPersonality ? { icon: normalizeIcon(user.avatarIcon), color: normalizeColor(user.avatarColor) } : {}),
   };
   const [copyToast, setCopyToast] = useState<{
     x: number;
@@ -230,7 +247,7 @@ export default function IntervalGame() {
     editDialog = useRef<HTMLDialogElement>(null);
   const lock = useRef(false),
     dragCleanup = useRef<(() => void) | null>(null);
-  const question = results[index]?.question ?? orderedQuestions[index],
+  const question = demo ? DEMO_QUESTION : results[index]?.question ?? orderedQuestions[index],
     editable = stage === "range",
     showAnswer = stage === "sweeping" || stage === "revealed";
   const result = results[index],
@@ -419,6 +436,7 @@ export default function IntervalGame() {
     dragCleanup.current?.();
     lock.current = true;
     setError("");
+    if (demo) { setStage('practice-complete'); lock.current = false; focusHeading(); return; }
     setStage("saving");
     try {
       const data = await request("session/answer", {
@@ -427,6 +445,15 @@ export default function IntervalGame() {
         lower: bounds.lower,
         upper: bounds.upper,
       });
+      if (onboarding) {
+        const count = data.savedAnswers?.length;
+        if (!Number.isInteger(count) || count < index + 1) throw new Error('Your answer could not be confirmed. Try again.');
+        setSavedCount(count);
+        if (count === orderedQuestions.length) finish();
+        else { setIndex(count); resetRound(); }
+        capture('onboarding_answer_saved', { sessionId, questionId: question.id, position: count });
+        return;
+      }
       if (!data.judgement)
         throw new Error("Your answer could not be confirmed. Try again.");
       setResults((r) => [...r, toResult(data.judgement)]);
@@ -460,6 +487,8 @@ export default function IntervalGame() {
     void finalizeScore();
   }
   async function finalizeScore() {
+    if (finalizing.current) return;
+    finalizing.current = true;
     setStage("finalizing");
     setError("");
     try {
@@ -467,6 +496,7 @@ export default function IntervalGame() {
       setResults(data.judgements.map(toResult));
       setShare(data.share);
       setRanked(data.isRanked);
+      setOnboarding(data.kind === "onboarding");
       setPlayer(data.share.player);
       setStandings(data.dailyStats ?? null);
       setStage("complete");
@@ -482,7 +512,7 @@ export default function IntervalGame() {
       setError(
         e instanceof Error ? e.message : "Could not finish. Please try again.",
       );
-    }
+    } finally { finalizing.current = false; }
   }
   function next() {
     if (index === orderedQuestions.length - 1) {
@@ -492,18 +522,23 @@ export default function IntervalGame() {
       resetRound();
     }
   }
-  async function startSession(practice = false) {
+  async function startSession(practice = false, playDaily = false) {
     if (starting.current) return;
     starting.current = true;
     setStage("loading");
     setError("");
     try {
       const data = await request("session/start", {
-        practice,
-        resumeId: practice ? undefined : activeGame(),
+        practice, playDaily,
+        onboarding: !playDaily && new URLSearchParams(window.location.search).has('onboarding'),
+        resumeId: practice || playDaily ? undefined : activeGame(),
       });
       if (!data.questions?.length)
         throw new Error("Today’s numbers are not ready yet.");
+      const isOnboarding = data.kind === 'onboarding';
+      setOnboarding(isOnboarding);
+      setDemo(false);
+      setDailyAvailable(data.dailyAvailable === true);
       setQuestions(
         data.questions.map(
           (q: {
@@ -511,15 +546,19 @@ export default function IntervalGame() {
             prompt: string;
             unit?: string;
             glossary?: GlossaryAnnotation[];
+            max?: number;
+            topic?: string;
+            observationPeriod?: string;
           }) => ({
             id: q.id,
             title: q.prompt,
             glossary: q.glossary,
+            max: q.max,
             short: q.prompt,
             unit: q.unit ?? "",
             answer: NaN,
-            category: "Daily",
-            date: "",
+            category: q.topic ?? "Daily",
+            date: q.observationPeriod ?? "",
             scale: 1,
             source: "",
             url: "",
@@ -535,8 +574,10 @@ export default function IntervalGame() {
       setStandings(null);
       const saved: Result[] = (data.judgements ?? []).map(toResult);
       setResults(saved);
-      setIndex(Math.min(saved.length, data.questions.length - 1));
-      if (data.completed || saved.length === data.questions.length) {
+      const answered = data.savedAnswers?.length ?? saved.length;
+      setSavedCount(answered);
+      setIndex(Math.min(answered, data.questions.length - 1));
+      if (data.completed || answered === data.questions.length) {
         if (!user || user.isAnonymous || !user.hasPersonality) {
           setStage("identity");
           return;
@@ -552,6 +593,8 @@ export default function IntervalGame() {
         setStage("complete");
         activeGame(null);
         void refreshUser();
+      } else if (isOnboarding && answered === 0 && !tutorialSeen(data.sessionId)) {
+        setStage('welcome'); focusHeading();
       } else resetRound();
       capture("game_session_started", {
         sessionId: data.sessionId,
@@ -649,7 +692,7 @@ export default function IntervalGame() {
           results,
           shareUrl,
           player,
-          edition + (isRanked ? "" : " · Practice"),
+          onboarding ? 'Your first ten' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
         ),
       );
       setCopyState("copied");
@@ -788,10 +831,9 @@ export default function IntervalGame() {
           <header className="topbar">
             <span
               className="running-score"
-              aria-label={`Score ${scoreText(totalPoints(visibleResults))} points`}
+              aria-label={onboarding ? "Your first ten" : `Score ${scoreText(totalPoints(visibleResults))} points`}
             >
-              {scoreText(totalPoints(visibleResults))}
-              <small>pts</small>
+              {onboarding ? <small>{demo ? 'Unscored practice' : 'Your first ten'}</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
             </span>
             <button
               className="help-button"
@@ -820,7 +862,26 @@ export default function IntervalGame() {
           </header>
         )}
         <main>
-          {stage === "identity" ? (
+          {stage === 'welcome' ? (
+            <section className="onboarding-welcome">
+              <div className="brand" aria-label="Four Sigma">4<span>σ</span></div>
+              <p className="onboarding-eyebrow">YOUR FIRST TEN</p>
+              <h1 ref={heading} tabIndex={-1}>How well do you know your world?</h1>
+              <p>Ten questions about people, power, nature, and technology.</p>
+              <p>You do not need exact answers. Choose a range you are 95% sure contains the answer.</p>
+              <p className="onboarding-note">Everyone starts with the same ten. First, try the controls with an unscored example.</p>
+              <button className="primary" onClick={() => { setDemo(true); resetRound(); }}>Start my first ten <span>→</span></button>
+            </section>
+          ) : stage === 'practice-complete' ? (
+            <section className="onboarding-welcome">
+              <p className="onboarding-eyebrow">PRACTICE COMPLETE · NO POINTS COUNTED</p>
+              <h1 ref={heading} tabIndex={-1}>You have the controls.</h1>
+              <p>A day contains 1,440 minutes. Your range was {quantity(bounds.lower, 'minutes')} to {quantity(bounds.upper, 'minutes')}.</p>
+              <p>{bounds.lower <= 1440 && bounds.upper >= 1440 ? 'Your range contained the answer.' : 'The answer fell outside your range.'} Over time, aim to contain the answer about 19 times out of 20.</p>
+              <p>A narrower range earns more points when it contains the answer. For your first ten, the answers and your score will be revealed together at the end.</p>
+              <button className="primary" onClick={() => { tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound(); }}>Begin question one <span>→</span></button>
+            </section>
+          ) : stage === "identity" ? (
             authLoading ? (
               <section className="identity-screen account-loading">
                 <p role="status">Connecting…</p>
@@ -830,6 +891,7 @@ export default function IntervalGame() {
                 <PlayerIdentity
                   key={user.id}
                   initial={initialPlayer}
+                  onboarding={onboarding}
                   onStart={startPlayer}
                 />
                 {user.isAnonymous && (
@@ -854,7 +916,7 @@ export default function IntervalGame() {
               <p role="status">
                 {error ||
                   (stage === "loading"
-                    ? "Loading today’s numbers…"
+                    ? "Loading your numbers…"
                     : "Saving your score…")}
               </p>
               {error && (
@@ -870,11 +932,13 @@ export default function IntervalGame() {
             </section>
           ) : stage !== "complete" ? (
             <>
+              {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Your first ten · Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
+              {demo && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Drag the L and U brackets, or tap a bound to type it. Hold the round arrow for half a second to submit.'}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
                   <QuestionText
                     text={question.title}
-                    glossary={orderedQuestions[index]?.glossary}
+                    glossary={demo ? undefined : orderedQuestions[index]?.glossary}
                   />
                 </h1>
                 {question.date && <p className="date">{question.date}</p>}
@@ -1083,9 +1147,10 @@ export default function IntervalGame() {
                   )}
                 </>
               )}
-              <ol className="progress" aria-label="Round progress">
-                {orderedQuestions.map((q, i) => {
+              <ol className={onboarding ? 'progress onboarding-progress' : 'progress'} aria-label="Round progress">
+                {(demo ? [] : orderedQuestions).map((q, i) => {
                   const r = visibleResults[i];
+                  if (onboarding) return <li key={q.id} className={i === index ? 'current' : i < savedCount ? 'done' : ''} aria-current={i === index ? 'step' : undefined}><span>{i + 1}</span><span className="sr-only">{i < savedCount ? 'Range saved' : i === index ? 'Current question' : 'Upcoming question'}</span></li>;
                   return (
                     <li
                       key={q.id}
@@ -1142,16 +1207,15 @@ export default function IntervalGame() {
                 </p>
               )}
               <h1 ref={heading} tabIndex={-1}>
-                {isRanked ? "Your score" : "Practice score"}
+                {onboarding ? (isRanked ? 'Your starting snapshot' : 'Your first ten · Practice') : isRanked ? "Your score" : "Practice score"}
               </h1>
-              <div className="final-score score-reveal">
-                {scoreText(totalPoints(results))}
-                <span>pts</span>
-              </div>
-              <p className="summary-caption">
-                {!isRanked && <>Unranked · </>}
-                {results.filter((r) => r.hit).length}/{results.length} in range
-              </p>
+              <CalibrationScore score={totalPoints(results)} hits={results.filter(r => r.hit).length} count={results.length} initial={onboarding} />
+              {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
+              {onboarding && <div className="daily-invitation">
+                <p>{dailyAvailable ? 'Four more numbers to explore. Your original ten stay here as your baseline.' : 'Your first ten are complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>
+                {dailyAvailable && <button className="primary" onClick={() => void startSession(false, true)}>Play today's four <span>→</span></button>}
+                {(user?.questionsAnswered ?? 0) > results.length && <p className="onboarding-note">Overall: {scoreText(user!.totalScore)} points · {Math.round(user!.calibrationRate * 1000) / 10}% calibration across {user!.questionsAnswered} questions. Target: 95%.</p>}
+              </div>}
               <div className="share-tiles" aria-hidden="true">
                 {results.map((r, i) => (
                   <span
@@ -1200,7 +1264,7 @@ export default function IntervalGame() {
                     results,
                     shareUrl,
                     player,
-                    edition + (isRanked ? "" : " · Practice"),
+                    onboarding ? 'Your first ten' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? "" : " · Practice"),
                   )}
                   onFocus={(e) => e.target.select()}
                 />
@@ -1275,9 +1339,7 @@ export default function IntervalGame() {
                 <Link className="text-button" to="/profile">
                   Your profile & history
                 </Link>
-                <button className="text-button" onClick={restart}>
-                  Practice ↻
-                </button>
+                {!onboarding && <button className="text-button" onClick={restart}>Practice ↻</button>}
               </div>
             </section>
           )}
@@ -1386,8 +1448,7 @@ export default function IntervalGame() {
               reference scale.
             </p>
             <p className="muted menu-edition-note">
-              Four numbers to explore each day. Your first attempt counts toward
-              your score; replays are practice.
+              Start with ten shared questions and a calibration snapshot. Then explore four new numbers each day. Your first daily attempt counts toward your score; replays are practice.
             </p>
           </section>
           <section
@@ -1455,7 +1516,7 @@ export default function IntervalGame() {
               <>
                 <h3>Make it yours</h3>
                 <p>
-                  After your fourth answer, choose a username, animated symbol,
+                  After your first ten answers, choose a username, animated symbol,
                   and color to give your shared score a personality.
                 </p>
                 <button

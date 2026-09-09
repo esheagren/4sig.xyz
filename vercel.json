@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "npx tsx scripts/postgres/upgrade-onboarding.ts --environment && npm run build",
   "outputDirectory": "dist",
   "framework": "vite",
   "functions": {

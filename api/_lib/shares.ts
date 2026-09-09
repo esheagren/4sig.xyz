@@ -7,7 +7,7 @@ export async function getSharedScore(id: unknown): Promise<SharedScore> {
   if (typeof id !== "string" || !uuid.test(id))
     throw new HttpError(404, "Score not found.");
   const { rows } = await query(
-    `SELECT r.id,r.player,g.edition::text,g.score,g.is_ranked,
+    `SELECT r.id,r.player,g.edition::text,g.score,g.is_ranked,g.kind,
     (SELECT json_agg(a.captured ORDER BY q.position) FROM game_answers a JOIN game_questions q
       ON (q.session_id,q.question_id)=(a.session_id,a.question_id) WHERE a.session_id=g.id) hits
     FROM result_shares r JOIN completed_games g ON g.id=r.session_id WHERE r.id=$1`,
@@ -22,6 +22,7 @@ export async function getSharedScore(id: unknown): Promise<SharedScore> {
     score: r.score,
     hits: r.hits,
     isRanked: r.is_ranked,
+    kind: r.kind,
   };
 }
 export async function prepareShare(

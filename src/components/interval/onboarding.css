@@ -1,0 +1,27 @@
+.interval-app .onboarding-welcome { padding: 64px 0 32px; }
+.interval-app .onboarding-welcome h1 { font-family: 'Newsreader', serif; font-size: clamp(38px, 8vw, 64px); font-weight: 400; line-height: 1.06; margin: 32px 0 24px; }
+.interval-app .onboarding-welcome p { line-height: 1.65; margin: 18px 0; max-width: 48ch; }
+.interval-app .onboarding-welcome .primary { margin-top: 30px; }
+.interval-app .onboarding-eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .035em; color: var(--muted); }
+.interval-app .onboarding-coach { padding: 12px 16px; border-left: 2px solid var(--lime); background: #eee4d6; line-height: 1.55; margin: 16px 0; }
+.interval-app .onboarding-progress { gap: 6px; flex-wrap: wrap; }
+.interval-app .onboarding-progress li { flex: 1 0 7%; min-width: 20px; }
+.interval-app .onboarding-progress .done { color: var(--blue); }
+.interval-app .share-tiles { flex-wrap: wrap; }
+.interval-app .calibration-scorecard { display: grid; grid-template-columns: 1fr 1fr; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); margin: 24px 0; text-align: left; }
+.interval-app .calibration-scorecard > div { padding: 22px 12px; min-width: 0; }
+.interval-app .calibration-scorecard > div + div { border-left: 1px solid var(--line); }
+.interval-app .calibration-scorecard strong { display: block; font-family: 'Newsreader', serif; font-size: clamp(30px, 7vw, 50px); font-weight: 400; margin: 8px 0; overflow-wrap: anywhere; }
+.interval-app .calibration-scorecard p { color: var(--muted); font-size: 12px; line-height: 1.6; }
+.interval-app .calibration-target { display: block; color: var(--blue); font-weight: 600; }
+.interval-app .onboarding-note { font-size: 14px; color: var(--muted); line-height: 1.6; margin: 18px 0; }
+.interval-app .daily-invitation { text-align: left; padding: 20px 0; margin: 16px 0; border-bottom: 1px solid var(--line); }
+.interval-app .daily-invitation p { line-height: 1.6; margin-bottom: 16px; }
+.interval-app .identity-controls .identity-pattern-button { order: -1; }
+.interval-app .username-availability { min-height: 24px; font-size: 13px; margin-top: 10px; color: var(--muted); }
+.interval-app .username-availability.available { color: var(--blue); }
+.interval-app .baseline-link { display: block; margin: 18px 0; }
+@media (max-width: 420px) {
+  .interval-app .onboarding-welcome { padding-top: 32px; }
+  .interval-app .calibration-scorecard > div { padding: 16px 8px; }
+}

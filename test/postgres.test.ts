@@ -356,6 +356,7 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     "hits",
     "id",
     "isRanked",
+    "kind",
     "player",
     "score",
   ]);
@@ -694,7 +695,7 @@ test("play first: anonymous resume, ownership, final identity, and existing-acco
 test("daily schedule fills imported three-question editions and stays stable at four", async () => {
   const date = "2099-01-01";
   const { rows: bank } = await query(
-    "SELECT id FROM questions WHERE is_active ORDER BY id LIMIT 4",
+    "SELECT id FROM questions WHERE is_active AND usage_type='daily' ORDER BY id LIMIT 4",
   );
   for (let i = 0; i < 3; i++)
     await query(

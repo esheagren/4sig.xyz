@@ -1,6 +1,6 @@
 # Four Sigma
 
-A daily game of the numbers that matter for understanding the world, with four questions. Play immediately: enter an estimate (including `4E5`), then draw your range. Hold the circular ink arrow for half a second to confirm; release early to cancel. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
+A daily game of the numbers that matter for understanding the world, with four questions. New players begin with a standardized ten-question onboarding round and calibration scorecard; see [onboarding](docs/onboarding.md) for its flow and required database upgrade. Daily play uses the same controls: enter an estimate (including `4E5`), then draw your range. Hold the circular ink arrow for half a second to confirm; release early to cancel. Misses score zero; hits reward precision relative to the answer's magnitude. Your first attempt each Pacific calendar day is ranked; later attempts are practice. Refreshing resumes your first attempt.
 
 ## Brand and editorial direction
 
@@ -53,7 +53,7 @@ Profiles use server-generated random session cookies (HttpOnly, SameSite, Secure
 
 ## Mathematical identity
 
-The game opens directly on the first question. Only after the last answer do new players choose a username and personality; returning players with a saved personality skip this step. The game uses the Mathematical Espresso design. Players choose Orbit, Wave, Spiral, Pendulum, Bloom or Braid, plus one of six preset colors. Original mathematical SVG loops pause offscreen, in hidden tabs, and under reduced-motion preferences. The picker and score pages also provide pause controls.
+New players see a welcome and unscored practice before their first ten. Existing daily players retain direct daily play and can take the baseline from their profile. Only after the last answer do new players choose a username and personality; returning players with a saved personality skip this step. The game uses the Mathematical Espresso design. Players choose Orbit, Wave, Spiral, Pendulum, Bloom or Braid, plus one of six preset colors. Original mathematical SVG loops pause offscreen, in hidden tabs, and under reduced-motion preferences. The picker and score pages also provide pause controls.
 
 Apply the additive upgrade to an existing Neon target before deploying this version:
 

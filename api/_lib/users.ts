@@ -14,15 +14,17 @@ export async function isUsernameAvailable(name: string) {
 export async function getUserById(id: string): Promise<User | null> {
   const { rows } = await query(
     `SELECT u.*,
-    COALESCE(sum(g.score),0)::float8 total_score, COALESCE(avg(g.score),0)::float8 average_score,
-    COALESCE(sum(g.score) FILTER(WHERE g.edition >= date_trunc('week',now() AT TIME ZONE 'America/Los_Angeles')::date),0)::float8 weekly_score,
-    count(g.id)::int games_played, COALESCE(sum(g.questions_captured),0)::int questions_captured,
+    COALESCE(sum(g.score),0)::float8 total_score, COALESCE(avg(g.score) FILTER(WHERE g.kind='daily'),0)::float8 average_score,
+    COALESCE(sum(g.score) FILTER(WHERE g.kind='daily' AND g.edition >= date_trunc('week',now() AT TIME ZONE 'America/Los_Angeles')::date),0)::float8 weekly_score,
+    count(g.id) FILTER(WHERE g.kind='daily')::int games_played, COALESCE(sum(g.questions_captured),0)::int questions_captured,
+    COALESCE(sum(g.questions_answered),0)::int questions_answered,
     COALESCE(sum(g.questions_captured)::float8/nullif(sum(g.questions_answered),0),0)::float8 calibration_rate,
-    COALESCE(max(g.score),0)::float8 best_single_score,max(g.completed_at) last_played_at,
-    COALESCE(array_agg(DISTINCT g.edition::text ORDER BY g.edition::text) FILTER(WHERE g.edition IS NOT NULL),'{}') played_dates
+    COALESCE(max(g.score) FILTER(WHERE g.kind='daily'),0)::float8 best_single_score,max(g.completed_at) last_played_at,
+    COALESCE(array_agg(DISTINCT g.edition::text ORDER BY g.edition::text) FILTER(WHERE g.edition IS NOT NULL AND g.kind='daily'),'{}') played_dates
     FROM users u LEFT JOIN completed_games g ON g.user_id=u.id AND g.is_ranked WHERE u.id=$1 GROUP BY u.id`,
     [id],
   );
+  const { rows: baseline } = await query("SELECT id,score,questions_captured,questions_answered,onboarding_version FROM completed_games WHERE user_id=$1 AND kind='onboarding' AND is_ranked LIMIT 1", [id]);
   const row = rows[0];
   if (!row) return null;
   let streak = 0,
@@ -61,6 +63,8 @@ export async function getUserById(id: string): Promise<User | null> {
     gamesPlayed: row.games_played,
     sessionCount: row.games_played,
     questionsCaptured: row.questions_captured,
+    questionsAnswered: row.questions_answered,
+    onboarding: baseline[0] ? { sessionId: baseline[0].id, score: baseline[0].score, hits: baseline[0].questions_captured, count: baseline[0].questions_answered, version: baseline[0].onboarding_version } : null,
     calibrationRate: row.calibration_rate,
     currentStreak: streak,
     bestStreak: best,

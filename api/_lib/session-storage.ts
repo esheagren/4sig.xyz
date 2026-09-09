@@ -17,6 +17,8 @@ export async function startGame(
   edition: string,
   questions: Question[],
   practice = false,
+  kind: 'daily' | 'onboarding' = 'daily',
+  version: string | null = null,
 ) {
   return transaction(async (client) => {
     await client.query(
@@ -27,14 +29,14 @@ export async function startGame(
     );
     if (!practice) {
       const { rows } = await client.query(
-        `SELECT id FROM game_sessions WHERE ${ownerColumn(userId)}=$1 AND edition=$2 AND is_ranked`,
-        [ownerKey(userId), edition],
+        `SELECT id FROM game_sessions WHERE ${ownerColumn(userId)}=$1 AND (edition=$2 OR $3='onboarding') AND kind=$3 AND is_ranked`,
+        [ownerKey(userId), edition, kind],
       );
       if (rows[0]) return readGame(rows[0].id, userId, client);
     }
     const { rows } = await client.query(
-      `INSERT INTO game_sessions(${ownerColumn(userId)},edition,is_ranked) VALUES($1,$2,$3) RETURNING id`,
-      [ownerKey(userId), edition, !practice],
+      `INSERT INTO game_sessions(${ownerColumn(userId)},edition,is_ranked,kind,onboarding_version) VALUES($1,$2,$3,$4,$5) RETURNING id`,
+      [ownerKey(userId), edition, !practice, kind, version],
     );
     const id = rows[0].id;
     for (let i = 0; i < questions.length; i++)
@@ -55,6 +57,8 @@ function judgement(row: QueryResultRow): Judgement {
     source: q.source,
     sourceUrl: q.sourceUrl,
     answerContext: q.answerContext,
+    topic: q.topic,
+    observationPeriod: q.observationPeriod,
     lower: Number(row.lower_bound),
     upper: Number(row.upper_bound),
     hit: row.captured,
@@ -65,11 +69,12 @@ export async function readGame(
   id: unknown,
   userId: string,
   client?: PoolClient,
+  revealForFinalization = false,
 ) {
   if (!isUuid(id)) throw new HttpError(404, "Game not found.");
   const run = client ? client.query.bind(client) : query;
   const { rows } = await run(
-    `SELECT id,edition::text,completed_at,is_ranked FROM game_sessions WHERE id=$1 AND ${ownerColumn(userId)}=$2`,
+    `SELECT id,edition::text,completed_at,is_ranked,kind,onboarding_version FROM game_sessions WHERE id=$1 AND ${ownerColumn(userId)}=$2`,
     [id, ownerKey(userId)],
   );
   if (!rows[0]) throw new HttpError(404, "Game not found.");
@@ -83,16 +88,25 @@ export async function readGame(
     sessionId: id,
     edition: rows[0].edition,
     isRanked: rows[0].is_ranked,
+    kind: rows[0].kind as "daily" | "onboarding",
+    onboardingVersion: rows[0].onboarding_version,
     completed: !!rows[0].completed_at,
-    questions: await withGlossary(
+    questions: (await withGlossary(
       items.map((r) => ({
         id: r.question_id,
         prompt: r.snapshot.prompt,
         unit: r.snapshot.unit,
       })),
       client,
-    ),
-    judgements: items.filter((r) => r.lower_bound !== null).map(judgement),
+    )).map((q, i) => ({ ...q, max: items[i].snapshot.max, topic: items[i].snapshot.topic,
+      observationPeriod: items[i].snapshot.observationPeriod,
+      ...(rows[0].kind === 'onboarding' ? { glossary: items[i].snapshot.glossary ?? q.glossary } : {}),
+    })),
+    savedAnswers: items.filter((r) => r.lower_bound !== null).map((r) => ({
+      questionId: r.question_id, lower: Number(r.lower_bound), upper: Number(r.upper_bound),
+    })),
+    judgements: rows[0].kind === 'onboarding' && !rows[0].completed_at && !revealForFinalization
+      ? [] : items.filter((r) => r.lower_bound !== null).map(judgement),
   };
 }
 export async function saveAnswer(
@@ -113,7 +127,7 @@ export async function saveAnswer(
     throw new HttpError(400, "Enter finite, ordered bounds.");
   return transaction(async (client) => {
     const { rows } = await client.query(
-      `SELECT completed_at FROM game_sessions WHERE id=$1 AND ${ownerColumn(userId)}=$2 FOR UPDATE`,
+      `SELECT completed_at,kind FROM game_sessions WHERE id=$1 AND ${ownerColumn(userId)}=$2 FOR UPDATE`,
       [sessionId, ownerKey(userId)],
     );
     if (!rows[0]) throw new HttpError(404, "Game not found.");
@@ -138,6 +152,8 @@ export async function saveAnswer(
     if (items.find((r) => r.lower_bound === null)?.question_id !== questionId)
       throw new HttpError(409, "Answer the current question first.");
     const q: Question = item.snapshot;
+    if (rows[0].kind === "onboarding" && (lower < 0 || upper > (q.max ?? 1e100)))
+      throw new HttpError(400, "Keep your bounds within the question units.");
     const score = Score.calculateScore(
         lower,
         upper,
@@ -166,7 +182,7 @@ export async function finishGame(userId: string, id: unknown) {
       [id, userId],
     );
     if (!rows[0]) throw new HttpError(404, "Game not found.");
-    const game = await readGame(id, userId, client);
+    const game = await readGame(id, userId, client, true);
     if (game.judgements.length !== game.questions.length)
       throw new HttpError(409, "Answer every question before finishing.");
     await client.query(
@@ -179,6 +195,8 @@ export async function finishGame(userId: string, id: unknown) {
       totalQuestions: game.questions.length,
       edition: game.edition,
       isRanked: game.isRanked,
+      kind: game.kind,
+      onboardingVersion: game.onboardingVersion,
     };
   });
 }

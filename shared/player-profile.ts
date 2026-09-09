@@ -82,6 +82,7 @@ export function playerLabel(icon: PlayerIcon) {
   return playerIcons.find((p) => p.id === icon)!.label;
 }
 export type SharedScore = {
+  kind?: 'daily' | 'onboarding';
   id: string;
   player: Player;
   edition: string;

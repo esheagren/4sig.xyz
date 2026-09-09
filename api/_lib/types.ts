@@ -5,6 +5,8 @@ export interface User {
   avatarColor?: string | null;
   hasPersonality?: boolean;
   sessionCount?: number;
+  questionsAnswered?: number;
+  onboarding?: { sessionId: string; score: number; hits: number; count: number; version: string } | null;
   id: string;
   deviceId: string | null;
   authId: string | null;
@@ -34,6 +36,10 @@ export interface AuthUser {
 }
 
 export interface Question {
+  max?: number;
+  topic?: string;
+  observationPeriod?: string;
+  glossary?: import('../../src/lib/glossary.js').GlossaryAnnotation[];
   scoringReference?: number;
   id: string;
   prompt: string;
@@ -73,6 +79,8 @@ export interface CrowdData {
 }
 
 export interface Judgement {
+  topic?: string;
+  observationPeriod?: string;
   questionId: string;
   prompt: string;
   unit?: string;

@@ -234,16 +234,48 @@ export function PersonalityPicker({
   );
 }
 
+function identityDraft(initial: Partial<Player>): Player {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem('four_sigma_identity_draft') ?? 'null');
+    if (stored && !initial.icon) return { username: initial.username ?? stored.username ?? '', icon: normalizeIcon(stored.icon), color: normalizeColor(stored.color) };
+  } catch { /* Storage is optional. */ }
+  return { username: initial.username ?? '',
+    icon: initial.icon ?? playerIcons[Math.floor(Math.random() * playerIcons.length)].id,
+    color: initial.color ?? playerColors[Math.floor(Math.random() * playerColors.length)].value };
+}
+
 export function PlayerIdentity({
   initial,
   onStart,
+  onboarding = false,
 }: {
   initial: Partial<Player>;
+  onboarding?: boolean;
   onStart: (player: Player) => Promise<void>;
 }) {
-  const [username, setUsername] = useState(initial.username ?? ""),
-    [icon, setIcon] = useState<PlayerIcon>(normalizeIcon(initial.icon)),
-    [color, setColor] = useState(normalizeColor(initial.color));
+  const [draft] = useState(() => identityDraft(initial));
+  const [username, setUsername] = useState(draft.username),
+    [icon, setIcon] = useState<PlayerIcon>(draft.icon),
+    [color, setColor] = useState(draft.color);
+  const [availability, setAvailability] = useState<{ name: string; state: 'checking' | 'available' | 'taken' | 'error' }>({name: '', state: 'checking'});
+  useEffect(() => {
+    try { sessionStorage.setItem('four_sigma_identity_draft', JSON.stringify({ username, icon, color })); } catch { /* Optional. */ }
+  }, [username, icon, color]);
+  useEffect(() => {
+    const name = username.trim();
+    if (initial.username || !validUsername(name)) return;
+    const abort = new AbortController();
+    const timer = setTimeout(() => {
+      setAvailability({ name, state: 'checking' });
+      void fetch('/api/auth/check-username', { method: 'POST', signal: abort.signal,
+        headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ username: name }) })
+        .then(async r => { if (!r.ok) throw new Error(); return r.json(); })
+        .then(data => setAvailability({ name, state: data.available ? 'available' : 'taken' }))
+        .catch(() => { if (!abort.signal.aborted) setAvailability({ name, state: 'error' }); });
+    }, 350);
+    return () => { clearTimeout(timer); abort.abort(); };
+  }, [username, initial.username]);
+  const checked = availability.name === username.trim() ? availability.state : 'checking';
   const [error, setError] = useState(""),
     [pending, setPending] = useState(false);
   async function start(e: FormEvent<HTMLFormElement>) {
@@ -271,7 +303,7 @@ export function PlayerIdentity({
           <h1>
             Make it <em>yours.</em>
           </h1>
-          <p className="identity-ritual">Give your score a signature.</p>
+          <p className="identity-ritual">{onboarding ? 'Your first ten are complete. Choose how you will appear on your scorecard.' : 'Give your score a signature.'}</p>
         </div>
       </div>
       <form onSubmit={start}>
@@ -318,15 +350,17 @@ export function PlayerIdentity({
             3–20 letters, numbers or underscores.
           </p>
         )}
+        {!initial.username && validUsername(username.trim()) && <p className={
+          'username-availability ' + checked} role="status">{checked === 'available' ? 'Username available' : checked === 'taken' ? 'That username is already taken.' : checked === 'error' ? 'Availability check unavailable. Submit to try again.' : 'Checking availability...'}</p>}
         <p id="identity-error" className="identity-error" role="status">
           {error}
         </p>
         <button
           type="submit"
           className="primary"
-          disabled={pending || !validUsername(username.trim())}
+          disabled={pending || !validUsername(username.trim()) || (!initial.username && checked === 'taken')}
         >
-          {pending ? "Saving…" : "See my score"}
+          {pending ? "Saving…" : "See my results"}
           <span aria-hidden="true">→</span>
         </button>
       </form>

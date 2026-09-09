@@ -16,6 +16,8 @@ interface User {
   avatarColor?: string | null;
   hasPersonality?: boolean;
   sessionCount: number;
+  questionsAnswered?: number;
+  onboarding?: { sessionId: string; score: number; hits: number; count: number; version: string } | null;
   totalScore: number;
   averageScore: number;
   gamesPlayed: number;

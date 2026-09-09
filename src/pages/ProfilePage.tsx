@@ -7,6 +7,8 @@ import {
   PersonalityPicker,
 } from "../components/interval/PlayerIdentity";
 import { normalizeColor, normalizeIcon } from "../components/interval/player";
+import { CalibrationScore } from '../components/interval/CalibrationScore';
+import '../components/interval/onboarding.css';
 import { scoreText } from "../components/interval/game";
 import type { PlayerIcon } from "../components/interval/player";
 export function ProfilePage() {
@@ -133,7 +135,7 @@ export function ProfilePage() {
                   [scoreText(user.totalScore), "Total points"],
                   [user.gamesPlayed, "Daily games"],
                   [scoreText(user.averageScore), "Average score"],
-                  [Math.round(user.calibrationRate * 100) + "%", "In range"],
+                  [Math.round(user.calibrationRate * 1000) / 10 + "%", "Calibration · target 95%"],
                   [user.currentStreak, "Day streak"],
                   [user.bestStreak, "Best streak"],
                 ].map(([v, l]) => (
@@ -143,6 +145,12 @@ export function ProfilePage() {
                   </div>
                 ))}
               </dl>
+              <p className="onboarding-note">Overall points and calibration include your first ten and ranked daily answers. Daily averages and streaks count daily rounds only.</p>
+              {user.onboarding ? <section>
+                <h2>Your first ten</h2>
+                <CalibrationScore score={user.onboarding.score} hits={user.onboarding.hits} count={user.onboarding.count} initial />
+                <Link className="text-button baseline-link" to="/?onboarding=1">Explore your original answers</Link>
+              </section> : <Link className="text-button baseline-link" to="/?onboarding=1">Take your first ten: establish a calibration baseline</Link>}
               <h2>Last 7 days</h2>
               <p className="muted">First attempts only.</p>
               <table className="history-table">
