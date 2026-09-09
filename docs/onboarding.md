@@ -8,7 +8,7 @@ the normal ruler reveal and previews points from the same scoring function as
 ranked games, without saving them. After the player taps Next, a separate scoring screen uses five aligned range
 diagrams to compare a wide hit (500–5,000), a close hit (1,000–2,000),
 a very close hit (1,600–1,900), an exact hit and a near miss (1,778–1,780).
-The correct value sits above the first dot, with each range's endpoints labeled
+All five examples use the same scale. The correct value sits above the first dot, with each range's endpoints labeled
 at its brackets. Next opens a compact worldview page: nine illustrated topics
 cover technology and AI, biology and biotechnology, economics and trade,
 health and longevity, China and global power, energy and resources, population
