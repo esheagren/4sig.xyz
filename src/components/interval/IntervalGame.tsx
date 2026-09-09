@@ -48,7 +48,15 @@ import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
 
 // The current question bank is curated for nonnegative quantities.
 const RANGE_MIN = 0;
-const DEMO_QUESTION: Question = { id: 'practice', title: 'How many minutes are in one day?', short: 'Minutes in a day', unit: 'minutes', answer: 1440, category: 'Practice', date: '', scale: 1, source: '', url: '', context: '' };
+const DEMO_QUESTION: Question = {
+  id: 'practice',
+  title: 'About how many glass panels cover the exterior of One World Trade Center?',
+  short: 'One World Trade Center glass panels', unit: 'panels', answer: 12000,
+  category: 'Practice', date: '', scale: 1,
+  source: 'American Galvanizers Association',
+  url: 'https://galvanizeit.org/project-gallery/1-world-trade-center',
+  context: 'Published construction accounts describe around 12,000 exterior glass panels. This is a rounded reference count, not an exact count of individual window panes.',
+};
 function tutorialSeen(id: string, mark = false) {
   try {
     if (mark) localStorage.setItem('four_sigma_tutorial_' + id, 'done');
@@ -879,9 +887,10 @@ export default function IntervalGame() {
             <section className="onboarding-welcome">
               <p className="onboarding-eyebrow">PRACTICE COMPLETE · NO POINTS COUNTED</p>
               <h1 ref={heading} tabIndex={-1}>You have the controls.</h1>
-              <p>A day contains 1,440 minutes. Your range was {quantity(bounds.lower, 'minutes')} to {quantity(bounds.upper, 'minutes')}.</p>
-              <p>{bounds.lower <= 1440 && bounds.upper >= 1440 ? 'Your range contained the answer.' : 'The answer fell outside your range.'} Over time, aim to contain the answer about 19 times out of 20.</p>
-              <p>This one you can calculate. The next ones take judgment.</p>
+              <p>About {formatEntry(String(DEMO_QUESTION.answer))} glass panels cover One World Trade Center.</p>
+              <p>Your range: {formatEntry(String(bounds.lower))}–{formatEntry(String(bounds.upper))} {DEMO_QUESTION.unit}. {bounds.lower <= DEMO_QUESTION.answer && bounds.upper >= DEMO_QUESTION.answer ? 'You contained the reference value.' : 'The reference value fell outside your range.'}</p>
+              <p className="onboarding-note">A rounded construction count—not an exact window count.</p>
+              <SourceLinks urls={DEMO_QUESTION.url} names={DEMO_QUESTION.source} />
               <button className="primary" onClick={() => { tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound(); }}>Begin question one <span>→</span></button>
             </section>
           ) : stage === "identity" ? (
@@ -936,7 +945,7 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Your first ten · Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
-              {demo && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Know it exactly? Bring both brackets to the dot. Otherwise, leave room for uncertainty. Hold the round arrow to submit.'}</p>}
+              {demo && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Move the brackets to a range you’re 95% sure contains the answer. Hold the round arrow to submit.'}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
                   <QuestionText

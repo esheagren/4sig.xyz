@@ -1,7 +1,10 @@
 # Your first ten
 
 New visitors see a welcome, then an unscored example using the live estimate,
-range, edit-bound and hold-to-confirm controls. Everyone takes the same ten
+range, edit-bound and hold-to-confirm controls. The practice asks about the exterior
+glass panels of One World Trade Center, using a rounded 12,000-panel reference
+from the American Galvanizers Association; the reveal links to that source and
+identifies the value as approximate. Everyone takes the same ten
 questions in the same order. Each submitted interval is locked and saved on the
 server. Scores, truths, sources and hit flags are withheld until all ten answers
 are saved and the player has chosen a username, pattern and color.
