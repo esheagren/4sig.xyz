@@ -31,9 +31,8 @@ export function ScorecardShare({ data, text, url = GAME_URL, variant = 'ink' }: 
     try {
       const png = cached?.png ?? scorecardPng(data, variant);
       const outcome = await copyScorecard(png, text, cached?.gif ?? null, url);
-      if (outcome === 'cancelled') return;
-      setFallback(outcome === 'downloaded');
-      setStatus(outcome === 'copied-gif' ? 'GIF, score and link copied.' : outcome === 'copied-saved-gif' ? 'Image, score and link copied. Animated GIF saved—attach it to keep it moving.' : outcome === 'copied' ? 'Still image, score and link copied.' : outcome === 'downloaded-linked' ? 'Card saved. Score and link copied—paste them and attach the file.' : 'Card saved. Copy your score and link below.');
+      setFallback(outcome === 'unavailable');
+      setStatus(outcome === 'copied-gif' ? 'GIF, score and link copied.' : outcome === 'copied' ? 'Image, score and link copied.' : outcome === 'copied-text' ? 'Score and link copied. This browser couldn’t copy the image.' : 'Select and copy your score and link below.');
     } catch { setFallback(true); setStatus('Select and copy your score and link below.'); }
     finally { setSharing(false); }
   }

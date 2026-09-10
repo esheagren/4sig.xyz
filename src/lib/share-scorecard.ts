@@ -33,7 +33,8 @@ const escapeHtml = (text: string) => text.replace(/[&<>"']/g, char => ({ '&': '&
 export function shareCaption(text: string, url = GAME_URL): string {
   return `${text}${text.includes(url) ? '' : `\n${url}`}${url === GAME_URL || text.includes(`Play: ${GAME_URL}`) ? '' : `\nPlay: ${GAME_URL}`}`;
 }
-export type ShareOutcome = 'copied-gif' | 'copied-saved-gif' | 'copied' | 'shared' | 'downloaded-linked' | 'downloaded' | 'cancelled';
+export type CopyOutcome = 'copied-gif' | 'copied' | 'copied-text' | 'unavailable';
+export type ShareOutcome = CopyOutcome | 'shared' | 'cancelled';
 export async function shareScorecard(png: Promise<Blob>, ready: Blob | null, text: string, gif: Blob | null = null, url = GAME_URL): Promise<ShareOutcome> {
   const caption = shareCaption(text, url);
   // Native sharing takes the animated file and URL together. Keep it inside the click's activation.
@@ -52,8 +53,8 @@ export async function shareScorecard(png: Promise<Blob>, ready: Blob | null, tex
   return copyScorecard(png, text, gif, url);
 }
 
-/** Explicit Copy never opens the native share sheet. */
-export async function copyScorecard(png: Promise<Blob>, text: string, gif: Blob | null = null, url = GAME_URL): Promise<ShareOutcome> {
+/** Clipboard only: downloads and native sharing require their own explicit actions. */
+export async function copyScorecard(png: Promise<Blob>, text: string, gif: Blob | null = null, url = GAME_URL): Promise<CopyOutcome> {
   const caption = shareCaption(text, url);
   if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
     try {
@@ -68,13 +69,9 @@ export async function copyScorecard(png: Promise<Blob>, text: string, gif: Blob 
       if (canCopyGif) formats['image/gif'] = gif!;
       await navigator.clipboard.write([new ClipboardItem(formats)]);
       if (canCopyGif) return 'copied-gif';
-      // A PNG clipboard fallback cannot promise animation. Supply the actual GIF as a file too.
-      if (gif) { saveScorecard(gif); return 'copied-saved-gif'; }
       return 'copied';
-    } catch { /* Save the GIF and copy its accompanying link when image copying is unavailable. */ }
+    } catch { /* Try the score and link alone when image copying is unavailable. */ }
   }
-  let linked = false;
-  try { await navigator.clipboard.writeText(caption); linked = true; } catch { /* Show a selectable caption when clipboard access is unavailable. */ }
-  saveScorecard(gif ?? await png);
-  return linked ? 'downloaded-linked' : 'downloaded';
+  try { await navigator.clipboard.writeText(caption); return 'copied-text'; }
+  catch { return 'unavailable'; }
 }

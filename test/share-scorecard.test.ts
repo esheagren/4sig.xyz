@@ -58,3 +58,46 @@ test('GIF-capable clipboards receive the animation, actual score and exact resul
     }
   }
 });
+
+test('clipboard copying never downloads, including unsupported GIFs and denied clipboard access', async () => {
+  const originals = ['navigator', 'ClipboardItem', 'FileReader', 'document'].map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)] as const);
+  let downloads = 0, imageAllowed = true, textAllowed = true, copiedText = '';
+  let formats: Record<string, Blob | Promise<Blob>> = {};
+  class FakeClipboardItem {
+    static supports() { return false; }
+    constructor(data: typeof formats) { formats = data; }
+  }
+  class FakeFileReader {
+    result = 'data:image/gif;base64,R0lGODlh'; onload?: () => void;
+    readAsDataURL() { this.onload?.(); }
+  }
+  Object.defineProperty(globalThis, 'document', { configurable: true, value: {
+    createElement: () => { downloads++; throw new Error('Downloading is forbidden while copying'); },
+  } });
+  Object.defineProperty(globalThis, 'navigator', { configurable: true, value: { clipboard: {
+    write: async () => { if (!imageAllowed) throw new Error('Image denied'); },
+    writeText: async (text: string) => { if (!textAllowed) throw new Error('Text denied'); copiedText = text; },
+  } } });
+  Object.defineProperty(globalThis, 'ClipboardItem', { configurable: true, value: FakeClipboardItem });
+  Object.defineProperty(globalThis, 'FileReader', { configurable: true, value: FakeFileReader });
+  try {
+    const png = Promise.resolve(new Blob(['PNG'], { type: 'image/png' })), gif = new Blob(['GIF89a'], { type: 'image/gif' });
+    const url = 'https://4sig.xyz/share/real-score';
+    assert.equal(await copyScorecard(png, '4321.5 points', gif, url), 'copied');
+    assert.equal(downloads, 0);
+    assert.ok(formats['image/png']); assert.equal(formats['image/gif'], undefined);
+    assert.match(await (await formats['text/html']).text(), /data:image\/gif/);
+    assert.ok((await (await formats['text/plain']).text()).includes(url));
+    imageAllowed = false;
+    assert.equal(await copyScorecard(png, '4321.5 points', gif, url), 'copied-text');
+    assert.ok(copiedText.includes(url)); assert.match(copiedText, /4321.5 points/); assert.equal(downloads, 0);
+    textAllowed = false;
+    assert.equal(await copyScorecard(png, 'score', gif, url), 'unavailable'); assert.equal(downloads, 0);
+    Object.defineProperty(globalThis, 'navigator', { configurable: true, value: {} });
+    assert.equal(await copyScorecard(png, 'score', gif, url), 'unavailable'); assert.equal(downloads, 0);
+  } finally {
+    for (const [key, descriptor] of originals) {
+      if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key);
+    }
+  }
+});
