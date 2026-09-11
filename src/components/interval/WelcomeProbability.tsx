@@ -26,9 +26,9 @@ export function WelcomeProbability() {
     if (!node || !context) return;
     let seed = 42176;
     const random = () => { seed = (Math.imul(seed, 1664525) + 1013904223) >>> 0; return seed / 4294967296; };
-    const dots = Array.from({ length: 1100 }, () => ({
+    const dots = Array.from({ length: 1600 }, () => ({
       u: random() * 2 - 1, v: random(), x: random(), y: random(),
-      phase: random() * TAU, radius: .65 + random() * 1.1, ink: random() > .78,
+      phase: random() * TAU, radius: .8 + random() * 1.15, ink: random() > .78,
     }));
     const reduced = matchMedia('(prefers-reduced-motion: reduce)');
     let width = 0, height = 0, frame = 0, previous = 0, elapsed = 0, lastPaint = 0;
@@ -37,29 +37,31 @@ export function WelcomeProbability() {
       if (!context) return;
       const phase = (seconds / 38) % 1;
       const [formed, spread, shift, bracketShift, range] = composition(phase);
-      const base = height * .81, rise = Math.min(height * .36, 340);
-      const center = width * (.5 + shift) + driftX;
-      const left = width * (.5 + bracketShift - range) + driftX * .5;
-      const right = width * (.5 + bracketShift + range) + driftX * .5;
+      // Fill the viewport vertically as well as horizontally, including tall phones.
+      const base = height * .89, rise = height * .77;
+      const fieldWidth = Math.max(width, Math.min(height * .9, width * 1.35));
+      const center = width * .5 + fieldWidth * shift + driftX;
+      const left = width * .5 + fieldWidth * (bracketShift - range) + driftX * .5;
+      const right = width * .5 + fieldWidth * (bracketShift + range) + driftX * .5;
       context.clearRect(0, 0, width, height);
-      const count = width < 600 ? 640 : dots.length;
+      const count = Math.min(dots.length, Math.max(800, Math.round(width * height / 800)));
       for (let i = 0; i < count; i++) {
         const dot = dots[i];
         const bell = Math.exp(-.5 * (dot.u * 2.65) ** 2);
-        const targetX = center + dot.u * width * .62 * spread;
+        const targetX = center + dot.u * fieldWidth * .62 * spread;
         const targetY = base - rise * bell * Math.pow(dot.v, .7);
         const scatteredX = (dot.x * 1.2 - .1) * width;
-        const scatteredY = height * (.40 + dot.y * .58);
+        const scatteredY = height * (.06 + dot.y * .88);
         const x = scatteredX + (targetX - scatteredX) * formed + Math.sin(seconds * .19 + dot.phase) * 3;
         const y = scatteredY + (targetY - scatteredY) * formed + Math.cos(seconds * .16 + dot.phase) * 3 + driftY;
         const outside = x < left || x > right;
         context.fillStyle = outside && formed > .8 ? '#ad4128' : dot.ink ? '#352a25' : '#276c66';
-        context.globalAlpha = (dot.ink ? .20 : .30) * (.65 + dot.v * .35);
+        context.globalAlpha = (dot.ink ? .26 : .42) * (.65 + dot.v * .35);
         context.beginPath(); context.arc(x, y, dot.radius, 0, TAU); context.fill();
       }
       // Brackets follow the evidence with a deliberate delay; certainty can be surprised.
       const top = base - rise * .95 + driftY * .5, bottom = base + 18 + driftY * .5;
-      context.globalAlpha = .25; context.strokeStyle = '#276c66'; context.lineWidth = 1;
+      context.globalAlpha = .32; context.strokeStyle = '#276c66'; context.lineWidth = 1;
       for (const [x, direction] of [[left, 1], [right, -1]]) {
         context.beginPath(); context.moveTo(x + 13 * direction, top); context.lineTo(x, top);
         context.lineTo(x, bottom); context.lineTo(x + 13 * direction, bottom); context.stroke();
