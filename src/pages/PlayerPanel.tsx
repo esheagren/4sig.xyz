@@ -13,7 +13,7 @@ import '../components/interval/onboarding.css';
 import { scoreText } from "../components/interval/game";
 import { ProfileSettings } from '../components/interval/ProfileSettings';
 import type { PlayerIcon } from "../components/interval/player";
-export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }) {
+export function PlayerPanel() {
   const usernameId = useId();
   const { user, isLoading, refreshUser, logout } = useAuth();
   const [history, setHistory] = useState<
@@ -27,7 +27,7 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
     [username, setUsername] = useState(""),
     [error, setError] = useState("");
   useEffect(() => {
-    if (!user || user.isAnonymous || view !== 'stats') return;
+    if (!user || user.isAnonymous) return;
     const abort = new AbortController();
     void fetch("/api/user/performance-history", { signal: abort.signal })
       .then(async (r) => {
@@ -40,7 +40,7 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
           setError("Could not load your history. Please reload.");
       });
     return () => abort.abort();
-  }, [user, view]);
+  }, [user]);
   async function saveName(e: React.FormEvent) {
     e.preventDefault();
     setError("");
@@ -72,7 +72,7 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
             <p>Loading…</p>
           ) : !user || user.isAnonymous ? (
             <>
-              <h3>{view === 'stats' ? 'Your data starts here' : 'Your profile'}</h3>
+              <h3>Your profile</h3>
               <p>Finish your starting quiz and claim a username to save your progress.</p>
               <Link className="primary" to="/">
                 Play →
@@ -80,7 +80,6 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
             </>
           ) : (
             <>
-              {view === 'profile' && <>
               <div className="result-person">
                 <PlayerMark
                   color={normalizeColor(user.avatarColor)}
@@ -133,8 +132,6 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
                   Edit personality
                 </button>
               )}
-              </>}
-              {view === 'stats' && <>
               <dl className="profile-stats-grid">
                 {[
                   [scoreText(user.totalScore), "Total points"],
@@ -151,6 +148,7 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
                 ))}
               </dl>
               <p className="onboarding-note">Overall points and calibration include your starting calibration and ranked daily answers. Daily averages and streaks count daily rounds only.</p>
+              <details className="profile-history"><summary>Calibration & history</summary>
               {user.onboarding ? <section>
                 <h2>Your starting calibration</h2>
                 <CalibrationScore score={user.onboarding.score} hits={user.onboarding.hits} count={user.onboarding.count} initial />
@@ -176,8 +174,8 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
                   ))}
                 </tbody>
               </table>
-              </>}
-              {view === 'profile' && (!user.email ? (
+              </details>
+              {!user.email ? (
                 <div className="profile-account">
                   <p>
                     Your profile is saved in this browser. Add an email and
@@ -197,10 +195,10 @@ export function PlayerPanel({ view = 'profile' }: { view?: 'stats' | 'profile' }
                     Sign out
                   </button>
                 </div>
-              ))}
+              )}
             </>
           )}
-          {view === 'profile' && <ProfileSettings />}
+          <ProfileSettings />
           <p role="status" className="entry-error">
             {error}
           </p>

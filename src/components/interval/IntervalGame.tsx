@@ -775,18 +775,6 @@ export default function IntervalGame() {
           } as CSSProperties
         }
       >
-        {["estimate", "range", "saving", "sweeping", "revealed"].includes(
-          stage,
-        ) && (
-          <header className="topbar">
-            <span
-              className="running-score"
-              aria-label={demo ? "Practice" : `Score ${scoreText(totalPoints(visibleResults))} points`}
-            >
-              {demo ? <small>Practice</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
-            </span>
-          </header>
-        )}
         <main>
           {stage === 'welcome' ? (
             <section className="onboarding-welcome">
@@ -1202,7 +1190,7 @@ export default function IntervalGame() {
           )}
         </main>
         {demo && practiceTip && <PracticeTip step={practiceTip} onDismiss={() => { setPracticeTip(null); focusHeading(); }} />}
-        {["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) && <BottomNav onOpenChange={open => {
+        {["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) && <BottomNav score={totalPoints(visibleResults)} onOpenChange={open => {
           dragCleanup.current?.();
           feedback.stop();
           setHelp(open);
