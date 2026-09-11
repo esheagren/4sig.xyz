@@ -297,7 +297,12 @@
 .interval-app .ruler {
   height: 144px;
   position: relative;
-  touch-action: pan-y;
+}
+/* A thumb landing beside a bracket must not pan the page underneath it. */
+.interval-app .instrument.editable {
+  touch-action: pinch-zoom;
+  user-select: none;
+  -webkit-user-select: none;
 }
 .interval-app .grid-lines {
   position: absolute;

@@ -802,9 +802,9 @@ export default function IntervalGame() {
           <header className="topbar">
             <span
               className="running-score"
-              aria-label={onboarding ? (demo ? "Practice" : "Your starting calibration") : `Score ${scoreText(totalPoints(visibleResults))} points`}
+              aria-label={demo ? "Practice" : `Score ${scoreText(totalPoints(visibleResults))} points`}
             >
-              {onboarding ? <small>{demo ? 'Practice' : 'Starting calibration'}</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
+              {demo ? <small>Practice</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
             </span>
             <button
               className="help-button"
@@ -974,7 +974,7 @@ export default function IntervalGame() {
               ) : (
                 <>
                   <section
-                    className={`instrument ${showAnswer ? "locked" : ""} ${bounds.lower === bounds.upper ? "exact-range" : ""}`}
+                    className={`instrument ${editable ? "editable" : ""} ${showAnswer ? "locked" : ""} ${bounds.lower === bounds.upper ? "exact-range" : ""}`}
                     aria-label="Your range"
                   >
                     <div className="readings">
