@@ -2166,7 +2166,13 @@
 .interval-app .question-block h1[data-length='medium'] { --question-font-scale: .95; }
 .interval-app .question-block h1[data-length='long'] { --question-font-scale: .9; }
 @media (max-width: 480px) {
-  .interval-app .question-block h1 { --question-font-size: 35px; }
+  .interval-app .question-block h1 { font-size: 35px; }
+  .interval-app .question-block h1[data-mobile-length='medium'] { font-size: 32px; }
+  .interval-app .question-block h1[data-mobile-length='long'] { font-size: 30px; }
+}
+@media (max-width: 360px) {
+  .interval-app .question-block h1[data-mobile-length='medium'] { font-size: 30px; }
+  .interval-app .question-block h1[data-mobile-length='long'] { font-size: 28px; }
 }
 .interval-app .question-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 12px; }
 .interval-app .question-meta .date { margin: 0; }

@@ -871,7 +871,9 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               <section className="question-block" key={question.id}>
-                <h1 ref={heading} tabIndex={-1} data-length={questionWordCount > 28 ? 'long' : questionWordCount > 18 ? 'medium' : 'short'}>
+                <h1 ref={heading} tabIndex={-1}
+                  data-length={questionWordCount > 28 ? 'long' : questionWordCount > 18 ? 'medium' : 'short'}
+                  data-mobile-length={questionWordCount > 15 ? 'long' : questionWordCount > 10 ? 'medium' : 'short'}>
                   <QuestionText
                     text={question.title}
                     glossary={demo ? undefined : orderedQuestions[index]?.glossary}
