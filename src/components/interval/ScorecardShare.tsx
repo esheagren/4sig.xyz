@@ -32,15 +32,16 @@ export function ScorecardShare({ data, url = GAME_URL, variant = 'ink' }: { data
       const png = cached?.png ?? scorecardPng(data, variant);
       const outcome = await copyScorecard(png, cached?.gif ?? null, url);
       setFallback(outcome === 'unavailable');
-      setStatus(outcome === 'copied-gif' ? 'GIF and link copied.' : outcome === 'copied' ? 'Image and link copied.' : outcome === 'copied-text' ? 'Link copied. This browser couldn’t copy the image.' : 'Select and copy the link below.');
+      setStatus(outcome === 'copied-gif' || outcome === 'copied' ? 'Copied to your clipboard.' : outcome === 'copied-text' ? 'Link copied. This browser couldn’t copy the image.' : 'Select and copy the link below.');
     } catch { setFallback(true); setStatus('Select and copy the link below.'); }
     finally { setSharing(false); }
   }
   return <>
     <ScoreCard data={data} variant={variant} onShare={() => void copy()} disabled={preparing || sharing} />
     <div className="share-actions scorecard-share-actions">
-      <button type="button" className="primary" onClick={() => void copy()} disabled={preparing || sharing}>
-        Share<span aria-hidden="true">↗</span>
+      <button type="button" className="hold-commit scorecard-share-button" onClick={() => void copy()} disabled={preparing || sharing}>
+        <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>
+        <span>Share</span>
       </button>
     </div>
     <div className="scorecard-extras">
