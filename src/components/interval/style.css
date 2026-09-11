@@ -2145,3 +2145,13 @@
 .interval-app .motion-options { grid-template-columns: repeat(4, minmax(0, 1fr)); }
 
 .interval-app .scorecard-preview { cursor: default; }
+
+/* Compact game header; the smaller menu glyph keeps its full touch target. */
+.interval-app .topbar { height: 48px; }
+.interval-app .topbar .running-score small { font-size: 10px; }
+.interval-app .topbar .help-button svg { width: 18px; height: 18px; }
+.interval-app .topbar + main { padding-top: 14px; }
+@media (max-width: 480px) {
+  .interval-app .topbar { height: 44px; }
+  .interval-app .topbar + main { padding-top: 12px; }
+}

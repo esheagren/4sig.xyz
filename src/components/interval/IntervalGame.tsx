@@ -18,6 +18,7 @@ import "./onboarding.css";
 import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
 import { CalibrationSetup } from "./CalibrationSetup";
+import { PracticeTip } from "./PracticeTip";
 import { WelcomeProbability } from "./WelcomeProbability";
 import { WorldviewGrid } from "./WorldviewGrid";
 import { ScorecardShare } from './ScorecardShare';
@@ -161,6 +162,7 @@ export default function IntervalGame() {
   const [onboarding, setOnboarding] = useState(false),
     [demo, setDemo] = useState(false),
     [dailyAvailable, setDailyAvailable] = useState(false);
+  const [practiceTip, setPracticeTip] = useState<'estimate' | 'range' | null>(null);
   const finalizing = useRef(false);
   const [standings, setStandings] = useState<Standings | null>(null),
     [authOpen, setAuthOpen] = useState(false);
@@ -313,6 +315,7 @@ export default function IntervalGame() {
     }
     updateBounds(initialBounds(value, question.max, RANGE_MIN));
     setStage("range");
+    if (demo) setPracticeTip('range');
     focusHeading();
   }
   function saveBound() {
@@ -799,7 +802,7 @@ export default function IntervalGame() {
           <header className="topbar">
             <span
               className="running-score"
-              aria-label={onboarding ? "Your starting calibration" : `Score ${scoreText(totalPoints(visibleResults))} points`}
+              aria-label={onboarding ? (demo ? "Practice" : "Your starting calibration") : `Score ${scoreText(totalPoints(visibleResults))} points`}
             >
               {onboarding ? <small>{demo ? 'Practice' : 'Starting calibration'}</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
             </span>
@@ -838,7 +841,7 @@ export default function IntervalGame() {
               </h1>
               <p>Make sense of the numbers shaping our world—and find out how sure you should be.</p>
               <div className="welcome-play">
-                <button className="hold-commit welcome-play-button" type="button" aria-label="Let’s play" onClick={() => { setDemo(true); resetRound(); }}>
+                <button className="hold-commit welcome-play-button" type="button" aria-label="Let’s play" onClick={() => { setDemo(true); setPracticeTip('estimate'); resetRound(); }}>
                   <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>
                   <svg className="commit-arrow" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 16h18m-7-7 7 7-7 7" /></svg>
                 </button>
@@ -924,7 +927,6 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
-              {demo && !showAnswer && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate.' : 'Move the brackets to a range you’re 95% sure contains the answer. Hold the round arrow to submit.'}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
                   <QuestionText
@@ -1250,6 +1252,7 @@ export default function IntervalGame() {
             </section>
           )}
         </main>
+        {demo && practiceTip && <PracticeTip step={practiceTip} onDismiss={() => { setPracticeTip(null); focusHeading(); }} />}
         <dialog
           ref={helpDialog}
           className="help-dialog game-menu"
