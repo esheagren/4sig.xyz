@@ -4,11 +4,6 @@ import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ScorecardShare } from "../components/interval/ScorecardShare";
 import type { ScorecardData } from "../../shared/scorecard";
-import {
-  colorName,
-  playerLabel,
-  playerSymbol,
-} from "../components/interval/player";
 import type { SharedScore } from "../components/interval/player";
 import '../components/interval/onboarding.css';
 import { scoreText } from "../components/interval/game";
@@ -43,9 +38,6 @@ export function SharedScorePage() {
       document.title = "Four Sigma — Numbers that matter";
     };
   }, [score]);
-  const text = score
-    ? `4σ · ${score.kind === 'onboarding' ? 'Your starting calibration' : score.edition}${score.isRanked ? "" : " · Practice"}\n${playerSymbol(score.player.icon)} ${score.player.username} · ${playerLabel(score.player.icon)} / ${colorName(score.player.color)}\n${scoreText(score.score)} pts · ${score.hits.filter(Boolean).length}/${score.hits.length} in range\n${score.hits.map((hit) => (hit ? "■" : "□")).join("")}\nhttps://4sig.xyz/share/${score.id}`
-    : "";
   const card = useMemo<ScorecardData | null>(() => score ? playerScorecard({ player: score.player, score: score.score, hits: score.hits,
     label: score.kind === 'onboarding' ? 'STARTING CALIBRATION' : score.edition, practice: !score.isRanked }) : null, [score]);
   return (
@@ -58,7 +50,7 @@ export function SharedScorePage() {
           {score ? (
             <section className="summary">
               <h1 className="sr-only">{score.player.username}’s scorecard</h1>
-              {card && <ScorecardShare data={card} text={text} url={`https://4sig.xyz/share/${score.id}`} />}
+              {card && <ScorecardShare data={card} url={`https://4sig.xyz/share/${score.id}`} />}
               <p className="shared-promise">
                 A better sense of the world, four numbers at a time.
               </p>

@@ -51,7 +51,7 @@ function InkCollectionStudy() {
       const style = inkStyles[index]; return <article key={style.id} id={`style-${style.id}`} data-style={style.id} data-pattern={style.icon} className={selected === style.id ? 'chosen-study' : ''}>
         <div className="study-heading"><h2>{String(index + 1).padStart(2, '0')} · {style.name}</h2><span className="study-swatch" style={{ background: data.player.color }} aria-label={colorName(data.player.color)} /></div>
         <p className="study-description">{style.description}</p>
-        <div className="interval-app study-card"><ScorecardShare data={data} text={`4σ · ${style.name} collection study\n${data.player.username} · 1,286.4 points · 87.5% calibration`} /></div>
+        <div className="interval-app study-card"><ScorecardShare data={data} /></div>
         <div className="collection-choice"><span>{colorName(data.player.color)} · {playerIcons.find(icon => icon.id === style.icon)!.label}</span><button className="study-action" aria-pressed={selected === style.id} onClick={() => choose(style.id)}>{selected === style.id ? 'Selected ✓' : 'Choose this style'}</button></div>
       </article>;
     })}</div>

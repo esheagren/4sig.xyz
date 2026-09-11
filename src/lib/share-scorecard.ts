@@ -50,28 +50,27 @@ export async function shareScorecard(png: Promise<Blob>, ready: Blob | null, tex
       }
     }
   }
-  return copyScorecard(png, text, gif, url);
+  return copyScorecard(png, gif, url);
 }
 
 /** Clipboard only: downloads and native sharing require their own explicit actions. */
-export async function copyScorecard(png: Promise<Blob>, text: string, gif: Blob | null = null, url = GAME_URL): Promise<CopyOutcome> {
-  const caption = shareCaption(text, url);
+export async function copyScorecard(png: Promise<Blob>, gif: Blob | null = null, url = GAME_URL): Promise<CopyOutcome> {
   if (navigator.clipboard?.write && typeof ClipboardItem !== 'undefined') {
     try {
       const canCopyGif = !!gif && typeof ClipboardItem.supports === 'function' && ClipboardItem.supports('image/gif');
-      // One item carries image, score and URL, so each destination can choose its supported format.
+      // One item carries the image and URL, so each destination can choose its supported format.
       const html = Promise.resolve(gif ?? png).then(dataUrl).then(src => new Blob([
-        `<p><img src="${src}" alt="4σ scorecard" width="480" height="360"></p><p>${escapeHtml(caption).replace(/\n/g, '<br>')}</p><p><a href="${escapeHtml(url)}">View score · Play 4σ</a></p>`,
+        `<p><img src="${src}" alt="4σ scorecard" width="480" height="360"></p><p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
       ], { type: 'text/html' }));
       void html.catch(() => {});
       const formats: Record<string, Blob | Promise<Blob>> = { 'image/png': png,
-        'text/plain': new Blob([caption], { type: 'text/plain' }), 'text/html': html };
+        'text/plain': new Blob([url], { type: 'text/plain' }), 'text/html': html };
       if (canCopyGif) formats['image/gif'] = gif!;
       await navigator.clipboard.write([new ClipboardItem(formats)]);
       if (canCopyGif) return 'copied-gif';
       return 'copied';
-    } catch { /* Try the score and link alone when image copying is unavailable. */ }
+    } catch { /* Try the link alone when image copying is unavailable. */ }
   }
-  try { await navigator.clipboard.writeText(caption); return 'copied-text'; }
+  try { await navigator.clipboard.writeText(url); return 'copied-text'; }
   catch { return 'unavailable'; }
 }

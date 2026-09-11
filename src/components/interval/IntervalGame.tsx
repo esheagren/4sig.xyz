@@ -39,7 +39,6 @@ import {
   compact,
   fitDomain,
   initialBounds,
-  makeShareText,
   parseAmount,
   points,
   quantity,
@@ -1164,8 +1163,7 @@ export default function IntervalGame() {
               <h1 className="sr-only" ref={heading} tabIndex={-1}>
                 {onboarding ? 'Your starting snapshot' : 'Your score'}
               </h1>
-              {cardData && player && <ScorecardShare data={cardData} url={shareUrl} text={makeShareText(results, shareUrl, player,
-                onboarding ? 'Your starting calibration' + (isRanked ? '' : ' · Practice') : edition + (isRanked ? '' : ' · Practice'))} />}
+              {cardData && player && <ScorecardShare data={cardData} url={shareUrl} />}
               {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
               {onboarding && <div className="daily-invitation">
                 <p>{dailyAvailable ? 'Four more numbers to explore. Your starting calibration stays here as your baseline.' : 'Your starting calibration is complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>

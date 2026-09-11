@@ -52,7 +52,7 @@ export function SeededScorecardStudies() {
       <div className="study-heading"><h2>{String(index + 1).padStart(2, '0')} · {playerIcons[index].label}</h2><span className="study-swatch" style={{ background: data.player.color }} aria-label={colorName(data.player.color)} /></div>
       <p className="study-description">{colorName(data.player.color)} · {data.design!.surface} · {data.design!.layout}</p>
       <div className="interval-app study-card">
-        <ScorecardShare data={data} text={`4σ · Ink study ${seed} · ${data.player.icon}\n${data.player.username} · 1,286.4 points · 87.5% calibration`} />
+        <ScorecardShare data={data} />
       </div>
       <p className="design-recipe">{data.design!.type} type · {data.design!.scale}× pattern · {data.design!.angle}° angle</p>
     </article>)}</div>
