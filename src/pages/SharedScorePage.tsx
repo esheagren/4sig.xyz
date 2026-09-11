@@ -2,6 +2,7 @@ import { playerScorecard } from '../../shared/ink-collection';
 import { useEffect, useMemo, useState } from "react";
 import type { CSSProperties } from "react";
 import { Link, useParams } from "react-router-dom";
+import { BottomNav } from '../components/nav/BottomNav';
 import { ScorecardShare } from "../components/interval/ScorecardShare";
 import type { ScorecardData } from "../../shared/scorecard";
 import type { SharedScore } from "../components/interval/player";
@@ -43,7 +44,7 @@ export function SharedScorePage() {
   return (
     <div className="interval-page">
       <div
-        className="interval-app shared-score-page"
+        className="interval-app shared-score-page has-bottom-nav"
         style={{ "--player-color": score?.player.color } as CSSProperties}
       >
         <main>
@@ -69,6 +70,7 @@ export function SharedScorePage() {
             </section>
           )}
         </main>
+        <BottomNav />
       </div>
     </div>
   );

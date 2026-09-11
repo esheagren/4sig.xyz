@@ -2187,3 +2187,24 @@
 .interval-app .reveal .round-score span { font-size: 11px; }
 .interval-app .scan-message { padding: 18px 0; }
 .interval-app .entry-error:empty { display: none; }
+
+.interval-app.has-bottom-nav { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
+.interval-app .bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%, 700px); display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 8px 20px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #f6f0e6; }
+.interval-app .bottom-nav > a, .interval-app .bottom-nav > button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 48px; padding: 4px; color: var(--muted); background: transparent; text-decoration: none; font-size: 10px; }
+.interval-app .bottom-nav > .bottom-nav-logo { display: block; justify-self: center; min-width: 48px; text-align: center; font: 400 34px/44px 'Newsreader', Georgia, serif; letter-spacing: -2px; color: var(--ink); }
+.interval-app .bottom-nav-logo span { color: var(--lime); }
+.interval-app .bottom-nav svg { width: 22px; height: 22px; }
+.interval-app .bottom-nav [aria-current='page'] { color: var(--ink); }
+.interval-app .player-dialog { margin: auto; width: min(580px, calc(100% - 32px)); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; border-radius: 12px; }
+.interval-app .player-dialog .dialog-head { position: sticky; top: -25px; z-index: 2; padding: 8px 0; background: #f6f0e6; }
+.interval-app .player-panel main { padding-top: 0; }
+.interval-app .player-panel .result-person { margin-top: 0; }
+.interval-app .player-panel .result-person h3 { min-width: 0; margin: 0; font-size: 30px; overflow-wrap: anywhere; }
+.interval-app .player-panel .profile-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; margin-top: 0; }
+.interval-app .player-panel .profile-stats-grid dd { overflow-wrap: anywhere; }
+.interval-app .profile-page-title { margin-top: 28px; }
+.interval-app .profile-settings { margin-top: 28px; border-top: 1px solid var(--line); padding-top: 20px; }
+.interval-app .profile-settings h3 { margin: 0 0 16px; }
+.interval-app .profile-settings details { border-bottom: 1px solid var(--line); padding: 14px 0; }
+.interval-app .profile-settings summary { cursor: pointer; font-size: 14px; }
+.interval-app .profile-settings details p { margin: 14px 0 0; font-size: 14px; line-height: 1.6; }

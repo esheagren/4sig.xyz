@@ -11,6 +11,8 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useAnalytics } from "../../context/PostHogContext";
 import { getDeviceId } from "../../lib/device";
+import { BottomNav } from '../nav/BottomNav';
+import { useRulerSound } from './useRulerSound';
 import { AuthModal } from "../nav/AuthModal";
 import type { Question, Result } from "./game";
 import "./style.css";
@@ -50,7 +52,7 @@ import type { Bounds } from "./game";
 import { HoldToConfirm } from "./HoldToConfirm";
 import { rulerScale } from "./ruler-scale";
 import { moveBound, startDrag, stepDrag } from "./range-drag";
-import { FEEDBACK_KEY, RulerFeedback, RulerTickGate } from "./ruler-feedback";
+import { RulerFeedback, RulerTickGate } from "./ruler-feedback";
 
 // The current question bank is curated for nonnegative quantities.
 const RANGE_MIN = 0;
@@ -193,13 +195,7 @@ export default function IntervalGame() {
   const [domain, setDomain] = useState<[number, number]>([0, 1]),
     [results, setResults] = useState<Result[]>([]);
   const [dragCue, setDragCue] = useState("");
-  const [soundOn, setSoundOn] = useState(() => {
-    try {
-      return localStorage.getItem(FEEDBACK_KEY) !== "off";
-    } catch {
-      return true;
-    }
-  });
+  const [soundOn] = useRulerSound();
   const [feedback] = useState(() => new RulerFeedback());
   const keyboardTicks = useRef(new RulerTickGate());
   useEffect(() => {
@@ -217,18 +213,10 @@ export default function IntervalGame() {
       feedback.dispose();
     };
   }, [feedback]);
-  function toggleSound() {
-    const enabled = !soundOn;
-    feedback.enabled = enabled;
-    setSoundOn(enabled);
-    try {
-      localStorage.setItem(FEEDBACK_KEY, enabled ? "on" : "off");
-    } catch {
-      /* Optional preference storage. */
-    }
-    if (enabled) feedback.unlock();
-    else feedback.stop();
-  }
+  useEffect(() => {
+    feedback.enabled = soundOn;
+    if (!soundOn) feedback.stop();
+  }, [feedback, soundOn]);
   const [assisted, setAssisted] = useState(false),
     [error, setError] = useState(""),
     [help, setHelp] = useState(false);
@@ -250,11 +238,7 @@ export default function IntervalGame() {
   }) : null, [player, results, onboarding, edition, isRanked]);
   const ruler = useRef<HTMLDivElement>(null),
     heading = useRef<HTMLHeadingElement>(null);
-  const [menuTab, setMenuTab] = useState<
-    "play" | "profile" | "settings" | "about"
-  >("play");
-  const helpDialog = useRef<HTMLDialogElement>(null),
-    editDialog = useRef<HTMLDialogElement>(null);
+  const editDialog = useRef<HTMLDialogElement>(null);
   const lock = useRef(false),
     dragCleanup = useRef<(() => void) | null>(null);
   const question = demo ? DEMO_QUESTION : results[index]?.question ?? orderedQuestions[index],
@@ -289,10 +273,6 @@ export default function IntervalGame() {
     );
     return () => clearTimeout(id);
   }, [stage]);
-  useEffect(() => {
-    if (help) helpDialog.current?.showModal();
-    else helpDialog.current?.close();
-  }, [help]);
   useEffect(() => {
     if (editing) editDialog.current?.showModal();
     else editDialog.current?.close();
@@ -787,7 +767,7 @@ export default function IntervalGame() {
     <div className={`interval-page${stage === 'welcome' ? ' welcome-page' : ''}`}>
       {stage === 'welcome' && <WelcomeProbability />}
       <div
-        className="interval-app"
+        className={`interval-app ${["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) ? "has-bottom-nav" : ""}`}
         style={
           {
             "--player-color":
@@ -805,30 +785,6 @@ export default function IntervalGame() {
             >
               {demo ? <small>Practice</small> : <>{scoreText(totalPoints(visibleResults))}<small>pts</small></>}
             </span>
-            <button
-              className="help-button"
-              onClick={() => {
-                dragCleanup.current?.();
-                feedback.stop();
-                setMenuTab("play");
-                setHelp(true);
-              }}
-              aria-label="Open menu"
-              aria-haspopup="dialog"
-            >
-              <svg
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                aria-hidden="true"
-              >
-                <path d="M4 6h16M4 12h16M4 18h16" />
-              </svg>
-            </button>
           </header>
         )}
         <main>
@@ -1246,218 +1202,11 @@ export default function IntervalGame() {
           )}
         </main>
         {demo && practiceTip && <PracticeTip step={practiceTip} onDismiss={() => { setPracticeTip(null); focusHeading(); }} />}
-        <dialog
-          ref={helpDialog}
-          className="help-dialog game-menu"
-          aria-labelledby="game-menu-title"
-          onCancel={() => setHelp(false)}
-          onClick={(e) => {
-            if (e.target === helpDialog.current) setHelp(false);
-          }}
-        >
-          <div className="dialog-head">
-            <h2
-              id="game-menu-title"
-              className="menu-brand brand"
-              aria-label="Four Sigma"
-            >
-              4<span>σ</span>
-            </h2>
-            <button aria-label="Close menu" onClick={() => setHelp(false)}>
-              ×
-            </button>
-          </div>
-          <p className="menu-value-prop">
-            A better sense of the world, four numbers at a time.
-          </p>
-          <div
-            className="menu-tabs"
-            role="tablist"
-            aria-label="Four Sigma menu"
-          >
-            {(
-              [
-                ["play", "How to play"],
-                ["profile", "Your profile"],
-                ["settings", "Settings"],
-                ["about", "About"],
-              ] as const
-            ).map(([id, label], index) => (
-              <button
-                key={id}
-                id={`menu-tab-${id}`}
-                role="tab"
-                type="button"
-                aria-selected={menuTab === id}
-                aria-controls={`menu-panel-${id}`}
-                tabIndex={menuTab === id ? 0 : -1}
-                onClick={() => setMenuTab(id)}
-                onKeyDown={(event) => {
-                  const ids = ["play", "profile", "settings", "about"] as const;
-                  const next =
-                    event.key === "Home"
-                      ? 0
-                      : event.key === "End"
-                        ? 3
-                        : event.key === "ArrowRight"
-                          ? (index + 1) % 4
-                          : event.key === "ArrowLeft"
-                            ? (index + 3) % 4
-                            : null;
-                  if (next === null) return;
-                  event.preventDefault();
-                  setMenuTab(ids[next]);
-                  document.getElementById(`menu-tab-${ids[next]}`)?.focus();
-                }}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          <section
-            className="menu-panel"
-            id="menu-panel-play"
-            role="tabpanel"
-            aria-labelledby="menu-tab-play"
-            hidden={menuTab !== "play"}
-            tabIndex={0}
-          >
-            <h3>How to play</h3>
-            <p>
-              Give your best estimate, then drag the brackets to choose a range
-              you’re 95% confident contains the answer.
-            </p>
-            <p>
-              Tap either bound to edit it. Hold a bracket at the edge to expand
-              the ruler slowly. Hold the round arrow for half a second to commit
-              your answer.
-            </p>
-            <p>
-              Use 000 for thousands and millions, or E for scientific notation:
-              4E5 = 400,000.
-            </p>
-            <h3>Scoring</h3>
-            <p>
-              If the answer falls outside your range, you earn 0 points. If it
-              falls inside, a narrower range relative to the answer earns more
-              points—up to 10,000 per question.
-            </p>
-            <p className="menu-formula">
-              50 × (|answer| ÷ range width)<sup>0.7</sup>
-            </p>
-            <p>
-              Exact guesses earn 10,000. A zero answer uses the question’s
-              reference scale.
-            </p>
-            <p className="muted menu-edition-note">
-              Start with eight shared questions and a calibration snapshot. Then explore four new numbers each day. Your first daily attempt counts toward your score; replays are practice.
-            </p>
-          </section>
-          <section
-            className="menu-panel"
-            id="menu-panel-about"
-            role="tabpanel"
-            aria-labelledby="menu-tab-about"
-            hidden={menuTab !== "about"}
-            tabIndex={0}
-          >
-            <h3>Numbers that matter</h3>
-            <p>
-              Four Sigma is a daily game about the numbers that help you
-              understand the world.
-            </p>
-            <p>
-              Our questions explore how the world works and how it’s changing,
-              with a few lasting yardsticks to give you a sense of scale.
-            </p>
-            <p>
-              The aim is to leave you with something worth knowing. Make an
-              estimate, consider how sure you are, then explore the answer and
-              its source.
-            </p>
-          </section>
-          <section
-            className="menu-panel"
-            id="menu-panel-profile"
-            role="tabpanel"
-            aria-labelledby="menu-tab-profile"
-            hidden={menuTab !== "profile"}
-            tabIndex={0}
-          >
-            {user && !user.isAnonymous ? (
-              <>
-                <div className="menu-profile-person">
-                  <PlayerMark
-                    icon={normalizeIcon(user.avatarIcon)}
-                    color={normalizeColor(user.avatarColor)}
-                  />
-                  <strong>{user.displayName}</strong>
-                </div>
-                <dl className="menu-profile-stats">
-                  <div>
-                    <dt>Games played</dt>
-                    <dd>{user.gamesPlayed}</dd>
-                  </div>
-                  <div>
-                    <dt>Average score</dt>
-                    <dd>{scoreText(user.averageScore)}</dd>
-                  </div>
-                  <div>
-                    <dt>Current streak</dt>
-                    <dd>
-                      {user.currentStreak}{" "}
-                      {user.currentStreak === 1 ? "day" : "days"}
-                    </dd>
-                  </div>
-                </dl>
-                <Link className="text-button" to="/profile">
-                  Edit personality & view history ↗
-                </Link>
-              </>
-            ) : (
-              <>
-                <h3>Claim username</h3>
-                <p>
-                  After your starting questions, choose a username, animated symbol,
-                  and color to give your shared score a personality.
-                </p>
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={() => setHelp(false)}
-                >
-                  Back to the game →
-                </button>
-              </>
-            )}
-          </section>
-          <section
-            className="menu-panel"
-            id="menu-panel-settings"
-            role="tabpanel"
-            aria-labelledby="menu-tab-settings"
-            hidden={menuTab !== "settings"}
-            tabIndex={0}
-          >
-            <div className="menu-setting">
-              <div>
-                <span>Sound</span>
-                <p>Soft ruler ticks and touch feedback.</p>
-              </div>
-              <button
-                className="menu-switch"
-                type="button"
-                role="switch"
-                aria-checked={soundOn}
-                aria-label="Sound and vibration"
-                onClick={toggleSound}
-              >
-                <span aria-hidden="true">{soundOn ? "On" : "Off"}</span>
-                <i aria-hidden="true" />
-              </button>
-            </div>
-          </section>
-        </dialog>
+        {["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) && <BottomNav onOpenChange={open => {
+          dragCleanup.current?.();
+          feedback.stop();
+          setHelp(open);
+        }} />}
         <dialog
           ref={editDialog}
           className="edit-dialog"
