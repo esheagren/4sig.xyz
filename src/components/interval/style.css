@@ -2188,12 +2188,12 @@
 .interval-app .scan-message { padding: 18px 0; }
 .interval-app .entry-error:empty { display: none; }
 
-.interval-app.has-bottom-nav { padding-bottom: calc(104px + env(safe-area-inset-bottom)); }
-.interval-app .bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%, 700px); display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 8px 20px calc(8px + env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: #f6f0e6; }
-.interval-app .bottom-nav > a, .interval-app .bottom-nav > button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; min-height: 48px; padding: 4px; color: var(--muted); background: transparent; text-decoration: none; font-size: 10px; }
-.interval-app .bottom-nav > .bottom-nav-logo { display: block; justify-self: center; min-width: 48px; text-align: center; font: 400 34px/44px 'Newsreader', Georgia, serif; letter-spacing: -2px; color: var(--ink); }
+.interval-app.has-bottom-nav { padding-bottom: calc(80px + env(safe-area-inset-bottom)); }
+.interval-app .bottom-nav { position: fixed; z-index: 20; left: 50%; bottom: 0; transform: translateX(-50%); width: min(100%, 700px); display: grid; grid-template-columns: repeat(3, 1fr); align-items: center; padding: 0 20px env(safe-area-inset-bottom); border-top: 1px solid var(--line); background: #f6f0e6; }
+.interval-app .bottom-nav > a, .interval-app .bottom-nav > button { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; min-height: 44px; padding: 2px; color: var(--muted); background: transparent; text-decoration: none; font-size: 9px; line-height: 12px; }
+.interval-app .bottom-nav > .bottom-nav-logo { display: block; justify-self: center; min-width: 44px; text-align: center; font: 400 28px/40px 'Newsreader', Georgia, serif; letter-spacing: -2px; color: var(--ink); }
 .interval-app .bottom-nav-logo span { color: var(--lime); }
-.interval-app .bottom-nav svg { width: 22px; height: 22px; }
+.interval-app .bottom-nav svg { width: 18px; height: 18px; }
 .interval-app .bottom-nav [aria-current='page'] { color: var(--ink); }
 .interval-app .player-dialog { margin: auto; width: min(580px, calc(100% - 32px)); max-height: calc(100dvh - 40px); overflow-y: auto; overscroll-behavior: contain; border-radius: 12px; }
 .interval-app .player-dialog .dialog-head { position: sticky; top: -25px; z-index: 2; padding: 8px 0; background: #f6f0e6; }
