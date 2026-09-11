@@ -18,6 +18,7 @@ import "./onboarding.css";
 import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
 import { CalibrationSetup } from "./CalibrationSetup";
+import { WelcomeProbability } from "./WelcomeProbability";
 import { WorldviewGrid } from "./WorldviewGrid";
 import { ScorecardShare } from './ScorecardShare';
 import type { ScorecardData } from '../../../shared/scorecard';
@@ -781,7 +782,8 @@ export default function IntervalGame() {
     return () => lifecycle.abort();
   }, []);
   return (
-    <div className="interval-page">
+    <div className={`interval-page${stage === 'welcome' ? ' welcome-page' : ''}`}>
+      {stage === 'welcome' && <WelcomeProbability />}
       <div
         className="interval-app"
         style={
@@ -835,7 +837,13 @@ export default function IntervalGame() {
                 <span className="brand" aria-label="Four Sigma">4<span>σ</span></span>
               </h1>
               <p>Make sense of the numbers shaping our world—and find out how sure you should be.</p>
-              <button className="primary" onClick={() => { setDemo(true); resetRound(); }}>Let’s play <span>→</span></button>
+              <div className="welcome-play">
+                <button className="hold-commit welcome-play-button" type="button" aria-label="Let’s play" onClick={() => { setDemo(true); resetRound(); }}>
+                  <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>
+                  <svg className="commit-arrow" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 16h18m-7-7 7 7-7 7" /></svg>
+                </button>
+                <span aria-hidden="true">Let’s play</span>
+              </div>
             </section>
           ) : stage === "scoring" ? (
             <section className="scoring-lesson">
