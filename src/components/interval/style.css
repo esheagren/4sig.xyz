@@ -2162,6 +2162,12 @@
 
 /* Keep the question, range and outcome together on small screens. */
 .interval-app .question-block { margin-bottom: 18px; }
+.interval-app .question-block h1 { --question-font-size: 42px; font-size: calc(var(--question-font-size) * var(--question-font-scale, 1)); }
+.interval-app .question-block h1[data-length='medium'] { --question-font-scale: .95; }
+.interval-app .question-block h1[data-length='long'] { --question-font-scale: .9; }
+@media (max-width: 480px) {
+  .interval-app .question-block h1 { --question-font-size: 35px; }
+}
 .interval-app .question-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 12px; }
 .interval-app .question-meta .date { margin: 0; }
 .interval-app .question-unit { display: inline-block; max-width: 100%; padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px; background: #eee4d6; color: var(--ink); font: 11px/1.4 var(--mono); overflow-wrap: anywhere; }

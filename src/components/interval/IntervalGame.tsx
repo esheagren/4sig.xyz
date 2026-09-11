@@ -244,6 +244,7 @@ export default function IntervalGame() {
   const question = demo ? DEMO_QUESTION : results[index]?.question ?? orderedQuestions[index],
     editable = stage === "range",
     showAnswer = stage === "sweeping" || stage === "revealed";
+  const questionWordCount = question?.title.match(/\S+/g)?.length ?? 0;
   const result: Result = demo ? {
     ...bounds, question: DEMO_QUESTION, assisted: false,
     hit: Score.inBounds(bounds.lower, bounds.upper, DEMO_QUESTION.answer),
@@ -870,7 +871,7 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               <section className="question-block" key={question.id}>
-                <h1 ref={heading} tabIndex={-1}>
+                <h1 ref={heading} tabIndex={-1} data-length={questionWordCount > 28 ? 'long' : questionWordCount > 18 ? 'medium' : 'short'}>
                   <QuestionText
                     text={question.title}
                     glossary={demo ? undefined : orderedQuestions[index]?.glossary}
