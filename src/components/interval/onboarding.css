@@ -53,7 +53,7 @@
 .interval-app .worldview-page > .primary { margin-top: 28px; }
 
 .interval-app .worldview-page { padding: 36px 0 24px; }
-.interval-app .worldview-page > h1 { font: 400 clamp(34px, 8vw, 48px)/1.05 'Newsreader', Georgia, serif; margin: 0 0 18px; max-width: 16ch; text-wrap: balance; }
+.interval-app .worldview-page > h1 { font: 400 clamp(22px, 6vw, 42px)/1.05 'Newsreader', Georgia, serif; margin: 0 0 18px; white-space: nowrap; }
 .interval-app .worldview-intro { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 0 0 28px; max-width: 45ch; }
 .interval-app .worldview-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); list-style: none; padding: 0; margin: 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .interval-app .worldview-grid li { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 20px 5px 18px; min-width: 0; }
@@ -71,7 +71,7 @@
 }
 
 .interval-app .calibration-setup { padding: 36px 0 24px; }
-.interval-app .calibration-setup h1 { font: 400 clamp(36px, 8vw, 48px)/1.08 'Newsreader', Georgia, serif; margin: 0 0 24px; }
+.interval-app .calibration-setup h1 { font: 400 clamp(22px, 6vw, 42px)/1.08 'Newsreader', Georgia, serif; margin: 0 0 24px; white-space: nowrap; }
 .interval-app .setup-intro { font-size: 14px; line-height: 1.6; color: var(--muted); margin: 0 0 24px; }
 .interval-app .calibration-setup h2 { font: 400 27px/1.15 'Newsreader', Georgia, serif; margin: 32px 0 12px; text-wrap: balance; }
 .interval-app .setup-measures { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); margin: 28px 0; border-block: 1px solid var(--line); }

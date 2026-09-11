@@ -868,7 +868,7 @@ export default function IntervalGame() {
             </section>
           ) : stage === "setup" ? (
             <section className="calibration-setup">
-              <h1 ref={heading} tabIndex={-1}>Four questions.<br />Every day.</h1>
+              <h1 ref={heading} tabIndex={-1}>Four questions. Every day.</h1>
               <CalibrationSetup count={orderedQuestions.length} />
               <button className="primary" onClick={() => {
                 tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound();
