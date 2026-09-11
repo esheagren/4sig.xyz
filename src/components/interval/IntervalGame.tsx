@@ -924,7 +924,7 @@ export default function IntervalGame() {
           ) : stage !== "complete" ? (
             <>
               {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
-              {demo && !showAnswer && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate. Then choose Set range.' : 'Move the brackets to a range you’re 95% sure contains the answer. Hold the round arrow to submit.'}</p>}
+              {demo && !showAnswer && <p className="onboarding-coach">{stage === 'estimate' ? 'First, enter your best estimate.' : 'Move the brackets to a range you’re 95% sure contains the answer. Hold the round arrow to submit.'}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
                   <QuestionText
