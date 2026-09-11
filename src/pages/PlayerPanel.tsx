@@ -11,9 +11,14 @@ import { normalizeColor, normalizeIcon } from "../components/interval/player";
 import { CalibrationScore } from '../components/interval/CalibrationScore';
 import '../components/interval/onboarding.css';
 import { scoreText } from "../components/interval/game";
+import { HowToPlay } from '../components/interval/HowToPlay';
 import { ProfileSettings } from '../components/interval/ProfileSettings';
 import type { PlayerIcon } from "../components/interval/player";
-export function PlayerPanel() {
+const tabs = [['stats', 'Stats'], ['profile', 'Profile'], ['settings', 'Settings'], ['play', 'How to play']] as const;
+type PanelTab = typeof tabs[number][0];
+export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: PanelTab; onClose?: () => void }) {
+  const [view, setView] = useState<PanelTab>(initialView);
+  const tabId = useId();
   const usernameId = useId();
   const { user, isLoading, refreshUser, logout } = useAuth();
   const [history, setHistory] = useState<
@@ -65,21 +70,69 @@ export function PlayerPanel() {
       );
     }
   }
-  return (
-    <div className="profile-page player-panel">
-        <main>
-          {isLoading ? (
-            <p>Loading…</p>
-          ) : !user || user.isAnonymous ? (
-            <>
-              <h3>Your profile</h3>
-              <p>Finish your starting quiz and claim a username to save your progress.</p>
-              <Link className="primary" to="/">
-                Play →
-              </Link>
-            </>
-          ) : (
-            <>
+  const empty = <div className="menu-empty"><h3>Your data starts here</h3><p>Finish your starting quiz and claim a username to save your progress.</p><Link className="primary" to="/">Back to play →</Link></div>;
+  return <div className="profile-page player-panel">
+    <div className="player-menu-head">
+      <div className="player-tabs" role="tablist" aria-label="Game information">
+        {tabs.map(([id, label], index) => <button key={id} type="button" role="tab" id={`${tabId}-tab-${id}`} aria-controls={`${tabId}-panel-${id}`} aria-selected={view === id} tabIndex={view === id ? 0 : -1} onClick={() => setView(id)} onKeyDown={event => {
+          const next = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length - 1 : event.key === 'ArrowRight' ? (index + 1) % tabs.length : event.key === 'ArrowLeft' ? (index + tabs.length - 1) % tabs.length : null;
+          if (next === null) return;
+          event.preventDefault();
+          setView(tabs[next][0]);
+          document.getElementById(`${tabId}-tab-${tabs[next][0]}`)?.focus();
+        }}>{label}</button>)}
+      </div>
+      {onClose && <button type="button" className="player-menu-close" aria-label="Close menu" onClick={onClose}>×</button>}
+    </div>
+    <section className="player-tab-panel" role="tabpanel" id={`${tabId}-panel-stats`} aria-labelledby={`${tabId}-tab-stats`} hidden={view !== 'stats'} tabIndex={0}>
+      {isLoading ? <p>Loading…</p> : !user || user.isAnonymous ? empty : <>
+              <dl className="profile-stats-grid">
+                {[
+                  [scoreText(user.totalScore), "Total points"],
+                  [user.gamesPlayed, "Daily games"],
+                  [scoreText(user.averageScore), "Average score"],
+                  [Math.round(user.calibrationRate * 1000) / 10 + "%", "Calibration · target 95%"],
+                  [user.currentStreak, "Day streak"],
+                  [user.bestStreak, "Best streak"],
+                ].map(([v, l]) => (
+                  <div key={l}>
+                    <dt>{l}</dt>
+                    <dd>{v}</dd>
+                  </div>
+                ))}
+              </dl>
+              <p className="onboarding-note">Overall points and calibration include your starting calibration and ranked daily answers. Daily averages and streaks count daily rounds only.</p>
+              <details className="profile-history"><summary>Calibration & history</summary>
+              {user.onboarding ? <section>
+                <h2>Your starting calibration</h2>
+                <CalibrationScore score={user.onboarding.score} hits={user.onboarding.hits} count={user.onboarding.count} initial />
+                <Link className="text-button baseline-link" to="/?onboarding=1">Explore your original answers</Link>
+              </section> : <Link className="text-button baseline-link" to="/?onboarding=1">Start with eight questions to find your baseline</Link>}
+              <h2>Last 7 days</h2>
+              <p className="muted">First attempts only.</p>
+              <table className="history-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Your score</th>
+                    <th>Daily average</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {history.map((day) => (
+                    <tr key={day.date}>
+                      <td>{day.date.slice(5)}</td>
+                      <td>{scoreText(day.userScore)}</td>
+                      <td>{scoreText(day.avgScore)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              </details>
+      </>}
+    </section>
+    <section className="player-tab-panel" role="tabpanel" id={`${tabId}-panel-profile`} aria-labelledby={`${tabId}-tab-profile`} hidden={view !== 'profile'} tabIndex={0}>
+      {isLoading ? <p>Loading…</p> : !user || user.isAnonymous ? empty : <>
               <div className="result-person">
                 <PlayerMark
                   color={normalizeColor(user.avatarColor)}
@@ -132,49 +185,6 @@ export function PlayerPanel() {
                   Edit personality
                 </button>
               )}
-              <dl className="profile-stats-grid">
-                {[
-                  [scoreText(user.totalScore), "Total points"],
-                  [user.gamesPlayed, "Daily games"],
-                  [scoreText(user.averageScore), "Average score"],
-                  [Math.round(user.calibrationRate * 1000) / 10 + "%", "Calibration · target 95%"],
-                  [user.currentStreak, "Day streak"],
-                  [user.bestStreak, "Best streak"],
-                ].map(([v, l]) => (
-                  <div key={l}>
-                    <dt>{l}</dt>
-                    <dd>{v}</dd>
-                  </div>
-                ))}
-              </dl>
-              <p className="onboarding-note">Overall points and calibration include your starting calibration and ranked daily answers. Daily averages and streaks count daily rounds only.</p>
-              <details className="profile-history"><summary>Calibration & history</summary>
-              {user.onboarding ? <section>
-                <h2>Your starting calibration</h2>
-                <CalibrationScore score={user.onboarding.score} hits={user.onboarding.hits} count={user.onboarding.count} initial />
-                <Link className="text-button baseline-link" to="/?onboarding=1">Explore your original answers</Link>
-              </section> : <Link className="text-button baseline-link" to="/?onboarding=1">Start with eight questions to find your baseline</Link>}
-              <h2>Last 7 days</h2>
-              <p className="muted">First attempts only.</p>
-              <table className="history-table">
-                <thead>
-                  <tr>
-                    <th>Date</th>
-                    <th>Your score</th>
-                    <th>Daily average</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {history.map((day) => (
-                    <tr key={day.date}>
-                      <td>{day.date.slice(5)}</td>
-                      <td>{scoreText(day.userScore)}</td>
-                      <td>{scoreText(day.avgScore)}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              </details>
               {!user.email ? (
                 <div className="profile-account">
                   <p>
@@ -196,18 +206,11 @@ export function PlayerPanel() {
                   </button>
                 </div>
               )}
-            </>
-          )}
-          <ProfileSettings />
-          <p role="status" className="entry-error">
-            {error}
-          </p>
-        </main>
-        <AuthModal
-          isOpen={authOpen}
-          onClose={() => setAuthOpen(false)}
-          initialMode="signup"
-        />
-    </div>
-  );
+      </>}
+    </section>
+    <section className="player-tab-panel" role="tabpanel" id={`${tabId}-panel-settings`} aria-labelledby={`${tabId}-tab-settings`} hidden={view !== 'settings'} tabIndex={0}><ProfileSettings /></section>
+    <section className="player-tab-panel" role="tabpanel" id={`${tabId}-panel-play`} aria-labelledby={`${tabId}-tab-play`} hidden={view !== 'play'} tabIndex={0}><HowToPlay /></section>
+    <p role="status" className="entry-error">{error}</p>
+    <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} initialMode="signup" />
+  </div>;
 }
