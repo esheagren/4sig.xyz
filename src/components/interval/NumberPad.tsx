@@ -15,6 +15,7 @@ type Props = {
   onSubmit: () => void;
   label: string;
   unit: string;
+  showUnit?: boolean;
   error?: string;
   submitLabel: string;
 };
@@ -24,6 +25,7 @@ export function NumberPad({
   onSubmit,
   label,
   unit,
+  showUnit = true,
   error,
   submitLabel,
 }: Props) {
@@ -115,7 +117,7 @@ export function NumberPad({
     >
       <label className="input-label" htmlFor={inputId}>
         {label}
-        <span>{unit}</span>
+        {showUnit && <span>{unit}</span>}
       </label>
       <input
         ref={input}

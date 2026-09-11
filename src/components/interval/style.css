@@ -2155,3 +2155,31 @@
   .interval-app .topbar { height: 44px; }
   .interval-app .topbar + main { padding-top: 12px; }
 }
+
+/* Keep the question, range and outcome together on small screens. */
+.interval-app .question-block { margin-bottom: 18px; }
+.interval-app .question-meta { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; margin-top: 12px; }
+.interval-app .question-meta .date { margin: 0; }
+.interval-app .question-unit { display: inline-block; max-width: 100%; padding: 4px 8px; border: 1px solid var(--line); border-radius: 4px; background: #eee4d6; color: var(--ink); font: 11px/1.4 var(--mono); overflow-wrap: anywhere; }
+.interval-app .instrument { margin-top: 0; padding-top: 8px; padding-bottom: 6px; }
+.interval-app .readings { margin-top: 0; gap: 12px; }
+.interval-app .reading { min-height: 56px; padding: 8px 10px; }
+.interval-app .ruler-wrap { margin-top: 8px; }
+.interval-app .ruler { --axis-y: 52px; height: 100px; }
+.interval-app .grid-lines i, .interval-app .axis, .interval-app .anchor-mark { top: var(--axis-y); }
+.interval-app .belief-band { top: calc(var(--axis-y) - 16px); height: 32px; }
+.interval-app .handle { top: calc(var(--axis-y) - 32px); height: 64px; }
+.interval-app .handle::before { top: 12px; height: 40px; }
+.interval-app .exact-range .handle::before { top: 20px; height: 24px; }
+.interval-app .tick-labels { bottom: 3px; }
+.interval-app .truth { top: calc(var(--axis-y) - 20px); height: 20px; }
+.interval-app .truth > .truth-value { top: auto; bottom: calc(100% + 4px); padding: 3px 7px; border: 1px solid var(--blue); border-radius: 4px; background: #f6f0e6; font: 500 13px/1.3 var(--mono); color: var(--blue); white-space: nowrap; }
+.interval-app .truth-near-left > .truth-value { transform: none; }
+.interval-app .truth-near-right > .truth-value { transform: translateX(-100%); }
+.interval-app .truth-dot { position: absolute; width: 8px; height: 8px; bottom: -4px; left: 50%; transform: translateX(-50%); background: var(--blue); border-radius: 50%; }
+.interval-app .reveal { margin-top: 12px; }
+.interval-app .reveal .round-score { display: flex; align-items: baseline; justify-content: center; gap: 8px; text-align: center; margin: 0 0 12px; }
+.interval-app .reveal .round-score strong { font-size: clamp(28px, 6vw, 34px); }
+.interval-app .reveal .round-score span { font-size: 11px; }
+.interval-app .scan-message { padding: 18px 0; }
+.interval-app .entry-error:empty { display: none; }

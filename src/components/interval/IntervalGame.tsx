@@ -926,7 +926,6 @@ export default function IntervalGame() {
             </section>
           ) : stage !== "complete" ? (
             <>
-              {onboarding && !demo && <p className="onboarding-eyebrow" role="status">Question {index + 1} of {orderedQuestions.length} · {question.category}</p>}
               <section className="question-block" key={question.id}>
                 <h1 ref={heading} tabIndex={-1}>
                   <QuestionText
@@ -934,7 +933,10 @@ export default function IntervalGame() {
                     glossary={demo ? undefined : orderedQuestions[index]?.glossary}
                   />
                 </h1>
-                {question.date && <p className="date">{question.date}</p>}
+                {(question.unit || question.date) && <div className="question-meta">
+                  {question.unit && <span className="question-unit" aria-label={`Answer in ${question.unit}`}>{question.unit}</span>}
+                  {question.date && <p className="date">{question.date}</p>}
+                </div>}
               </section>
               {stage === "estimate" ? (
                 <section className="estimate-panel">
@@ -947,6 +949,7 @@ export default function IntervalGame() {
                     onSubmit={beginRange}
                     label="Your estimate"
                     unit={question.unit}
+                    showUnit={false}
                     error={error}
                     submitLabel="Set range"
                   />
@@ -991,7 +994,6 @@ export default function IntervalGame() {
                         </button>
                       ))}
                     </div>
-                    <p className="range-unit">{question.unit}</p>
                     <div className="ruler-wrap">
                       <div className="ruler" ref={ruler}>
                         <div className="grid-lines">
@@ -1046,20 +1048,21 @@ export default function IntervalGame() {
                         ))}
                         {showAnswer && (
                           <div
-                            className={`truth ${stage}`}
+                            className={`truth ${stage} ${clipped(question.answer) < 35 ? 'truth-near-left' : clipped(question.answer) > 65 ? 'truth-near-right' : ''}`}
+                            role="img"
+                            aria-label={`Actual value: ${formatEntry(String(question.answer))} ${question.unit}${position(question.answer) < 0 ? ', below the displayed scale' : position(question.answer) > 100 ? ', above the displayed scale' : ''}`}
                             style={
                               {
                                 "--truth-x": `${clipped(question.answer)}%`,
                               } as CSSProperties
                             }
                           >
-                            <span>
-                              {position(question.answer) < 0
-                                ? "←"
-                                : position(question.answer) > 100
-                                  ? "→"
-                                  : "●"}
+                            <span className="truth-value" aria-hidden="true">
+                              {position(question.answer) < 0 ? '← ' : ''}
+                              {formatEntry(String(question.answer))}
+                              {position(question.answer) > 100 ? ' →' : ''}
                             </span>
+                            <i className="truth-dot" aria-hidden="true" />
                           </div>
                         )}
                         <div className="tick-labels">
@@ -1105,18 +1108,10 @@ export default function IntervalGame() {
                     </p>
                   ) : (
                     <section className="reveal" aria-live="polite">
-                      <div className="answer-line">
-                        <div>
-                          <span className="small-label">ACTUAL VALUE</span>
-                          <h2>
-                            {demo ? formatEntry(String(question.answer)) : compact(question.answer)}{" "}
-                            <small>{question.unit}</small>
-                          </h2>
-                        </div>
-                        <div className="round-score">
-                          <strong>{scoreText(points(result))}</strong>
-                          <span>{demo ? "practice pts" : "pts"}</span>
-                        </div>
+                      <p className="sr-only">Actual value: {formatEntry(String(question.answer))} {question.unit}.</p>
+                      <div className="round-score">
+                        <strong>{scoreText(points(result))}</strong>
+                        <span>{demo ? "practice points" : "points"}</span>
                       </div>
                       {assisted && <p className="outcome">Hint used</p>}
                       <details className="source-detail">
