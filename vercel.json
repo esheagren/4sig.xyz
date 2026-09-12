@@ -7,6 +7,13 @@
       "includeFiles": "api/_lib/*.html"
     }
   },
+  "redirects": [
+    {
+      "source": "/share/:id",
+      "destination": "/",
+      "permanent": false
+    }
+  ],
   "rewrites": [
     {
       "source": "/designspace",
@@ -46,10 +53,6 @@
     },
     {
       "source": "/profile",
-      "destination": "/index.html"
-    },
-    {
-      "source": "/share/:id",
       "destination": "/index.html"
     }
   ],

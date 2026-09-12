@@ -3,7 +3,7 @@ import type { ScorecardData, ScorecardVariant } from '../../../shared/scorecard'
 import { GAME_URL, scorecardPng, copyScorecard } from '../../lib/share-scorecard';
 import { ScoreCard } from './ScoreCard';
 
-export function ScorecardShare({ data, url = GAME_URL, variant = 'ink' }: { data: ScorecardData; url?: string; variant?: ScorecardVariant }) {
+export function ScorecardShare({ data, variant = 'ink' }: { data: ScorecardData; variant?: ScorecardVariant }) {
   const [status, setStatus] = useState('');
   const [fallback, setFallback] = useState(false);
   const [preparing, setPreparing] = useState(true);
@@ -33,7 +33,7 @@ export function ScorecardShare({ data, url = GAME_URL, variant = 'ink' }: { data
     setSharing(true); setFallback(false); setStatus('');
     try {
       const png = cached?.png ?? scorecardPng(data, variant);
-      const outcome = await copyScorecard(png, cached?.gif ?? null, url);
+      const outcome = await copyScorecard(png, cached?.gif ?? null);
       setFallback(outcome === 'unavailable');
       setStatus(outcome === 'copied-gif' || outcome === 'copied' ? 'Copied to your clipboard.' : outcome === 'copied-text' ? 'Link copied. This browser couldn’t copy the image.' : 'Select and copy the link below.');
     } catch { setFallback(true); setStatus('Select and copy the link below.'); }
@@ -49,6 +49,6 @@ export function ScorecardShare({ data, url = GAME_URL, variant = 'ink' }: { data
     </div>
     <p className="copy-status" role="status">{preparing ? 'Preparing animation…' : sharing ? 'Copying…' : status}</p>
     {fallback && <textarea className="share-fallback" aria-label="Shareable link" readOnly
-      value={url} onFocus={event => event.target.select()} />}
+      value={GAME_URL} onFocus={event => event.target.select()} />}
   </>;
 }

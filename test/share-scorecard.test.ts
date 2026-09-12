@@ -29,7 +29,7 @@ test('native sharing prefers the animated file and explicitly includes the game 
   }
 });
 
-test('GIF-capable clipboards receive the animation and only the exact result URL in one item', async () => {
+test('GIF-capable clipboards receive the animation and only the main game URL in one item', async () => {
   const originals = ['navigator', 'ClipboardItem', 'FileReader'].map(key => [key, Object.getOwnPropertyDescriptor(globalThis, key)] as const);
   let formats: Record<string, Blob | Promise<Blob>> = {};
   class FakeClipboardItem {
@@ -45,8 +45,8 @@ test('GIF-capable clipboards receive the animation and only the exact result URL
   Object.defineProperty(globalThis, 'FileReader', { configurable: true, value: FakeFileReader });
   try {
     const png = new Blob(['PNG'], { type: 'image/png' }), gif = new Blob(['GIF89a-selected-halo'], { type: 'image/gif' });
-    const url = 'https://4sig.xyz/share/real-score';
-    assert.equal(await copyScorecard(Promise.resolve(png), gif, url), 'copied-gif');
+    const url = GAME_URL;
+    assert.equal(await copyScorecard(Promise.resolve(png), gif), 'copied-gif');
     assert.equal(await (await formats['image/gif']).text(), 'GIF89a-selected-halo');
     const caption = await (await formats['text/plain']).text();
     assert.equal(caption, url);
@@ -84,19 +84,19 @@ test('clipboard copying never downloads, including unsupported GIFs and denied c
   Object.defineProperty(globalThis, 'FileReader', { configurable: true, value: FakeFileReader });
   try {
     const png = Promise.resolve(new Blob(['PNG'], { type: 'image/png' })), gif = new Blob(['GIF89a'], { type: 'image/gif' });
-    const url = 'https://4sig.xyz/share/real-score';
-    assert.equal(await copyScorecard(png, gif, url), 'copied');
+    const url = GAME_URL;
+    assert.equal(await copyScorecard(png, gif), 'copied');
     assert.equal(downloads, 0);
     assert.ok(formats['image/png']); assert.equal(formats['image/gif'], undefined);
     assert.match(await (await formats['text/html']).text(), /data:image\/gif/);
     assert.equal(await (await formats['text/plain']).text(), url);
     imageAllowed = false;
-    assert.equal(await copyScorecard(png, gif, url), 'copied-text');
+    assert.equal(await copyScorecard(png, gif), 'copied-text');
     assert.equal(copiedText, url); assert.equal(downloads, 0);
     textAllowed = false;
-    assert.equal(await copyScorecard(png, gif, url), 'unavailable'); assert.equal(downloads, 0);
+    assert.equal(await copyScorecard(png, gif), 'unavailable'); assert.equal(downloads, 0);
     Object.defineProperty(globalThis, 'navigator', { configurable: true, value: {} });
-    assert.equal(await copyScorecard(png, gif, url), 'unavailable'); assert.equal(downloads, 0);
+    assert.equal(await copyScorecard(png, gif), 'unavailable'); assert.equal(downloads, 0);
   } finally {
     for (const [key, descriptor] of originals) {
       if (descriptor) Object.defineProperty(globalThis, key, descriptor); else Reflect.deleteProperty(globalThis, key);

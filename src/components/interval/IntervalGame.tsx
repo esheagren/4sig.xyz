@@ -31,7 +31,7 @@ import {
   normalizeColor,
   normalizeIcon,
 } from "./player";
-import type { Player, SharedScore } from "./player";
+import type { Player } from "./player";
 import { QuestionText } from "./QuestionText";
 import type { GlossaryAnnotation } from "../../lib/glossary";
 import { NumberPad } from "./NumberPad";
@@ -223,10 +223,6 @@ export default function IntervalGame() {
   const [editing, setEditing] = useState<"lower" | "upper" | "estimate" | null>(null),
     [editText, setEditText] = useState("");
   const [player, setPlayer] = useState<Player | null>(null);
-  const [share, setShare] = useState<SharedScore | null>(null);
-  const shareUrl = share
-    ? `https://4sig.xyz/share/${share.id}`
-    : "https://4sig.xyz/";
   const initialPlayer: Partial<Player> = {
     ...(!user?.isAnonymous && user ? { username: user.displayName } : {}),
     ...(user?.hasPersonality ? { icon: normalizeIcon(user.avatarIcon), style: normalizeStyle(user.scorecardStyle, user.avatarIcon), color: normalizeColor(user.avatarColor) } : {}),
@@ -487,7 +483,6 @@ export default function IntervalGame() {
     try {
       const data = await request("session/finalize", { sessionId });
       setResults(data.judgements.map(toResult));
-      setShare(data.share);
       setRanked(data.isRanked);
       setOnboarding(data.kind === "onboarding");
       setPlayer(data.share.player);
@@ -563,7 +558,6 @@ export default function IntervalGame() {
       activeGame(data.sessionId);
       setEdition(data.edition);
       setRanked(data.isRanked);
-      setShare(null);
       setStandings(null);
       const saved: Result[] = (data.judgements ?? []).map(toResult);
       setResults(saved);
@@ -578,7 +572,6 @@ export default function IntervalGame() {
           sessionId: data.sessionId,
         });
         setResults(completed.judgements.map(toResult));
-        setShare(completed.share);
         setRanked(completed.isRanked);
         setPlayer(completed.share.player);
         setStandings(completed.dailyStats ?? null);
@@ -1110,7 +1103,7 @@ export default function IntervalGame() {
               <h1 className="sr-only" ref={heading} tabIndex={-1}>
                 {onboarding ? 'Your starting snapshot' : 'Your score'}
               </h1>
-              {cardData && player && <ScorecardShare data={cardData} url={shareUrl} />}
+              {cardData && player && <ScorecardShare data={cardData} />}
               {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
               {onboarding && <div className="daily-invitation">
                 <p>{dailyAvailable ? 'Four more numbers to explore. Your starting calibration stays here as your baseline.' : 'Your starting calibration is complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>

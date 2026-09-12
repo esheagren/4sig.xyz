@@ -44,6 +44,45 @@ test('first-eight release has explicit definitions and supported, bounded refere
   }
 });
 
+test('two phones on the same network cannot resume or finalize each other’s scorecards', async () => {
+  const firstPhone: Browser = { ip: 'shared-phone-network' };
+  const secondPhone: Browser = { ip: 'shared-phone-network' };
+  const freshPhone: Browser = { ip: 'shared-phone-network' };
+  const first = await call(session, '/api/session/start', firstPhone);
+  const second = await call(session, '/api/session/start', secondPhone);
+  assert.notEqual(first.data.sessionId, second.data.sessionId);
+  assert.notEqual(firstPhone.cookie, secondPhone.cookie);
+  for (const question of first.data.questions) {
+    assert.equal((await call(session, '/api/session/answer', firstPhone, {
+      sessionId: first.data.sessionId, questionId: question.id, lower: 0, upper: 1,
+    })).status, 200);
+  }
+  await call(auth, '/api/auth/claim-username', firstPhone, { username: 'IsolationPhoneA' });
+  await call(auth, '/api/auth/profile', firstPhone, { avatarIcon: 'wave', avatarColor: '#276c66' });
+  const completed = await call(session, '/api/session/finalize', firstPhone, { sessionId: first.data.sessionId });
+  assert.equal(completed.status, 200);
+  assert.equal(completed.data.share.player.username, 'IsolationPhoneA');
+
+  // A copied local resume ID is not a credential, before or after claiming a name.
+  for (const phone of [secondPhone, freshPhone]) {
+    const resumed = await call(session, '/api/session/start', phone, { resumeId: first.data.sessionId });
+    assert.equal(resumed.status, 200);
+    assert.notEqual(resumed.data.sessionId, first.data.sessionId);
+    assert.deepEqual(resumed.data.judgements, []);
+    assert.equal(resumed.data.completed, false);
+    assert.equal((await call(auth, '/api/auth/me', phone, {}, 'GET')).data.user.isAnonymous, true);
+  }
+  await call(auth, '/api/auth/claim-username', secondPhone, { username: 'IsolationPhoneB' });
+  await call(auth, '/api/auth/profile', secondPhone, { avatarIcon: 'orbit', avatarColor: '#ad4128' });
+  const resumed = await call(session, '/api/session/start', secondPhone, { resumeId: first.data.sessionId, playDaily: true });
+  assert.equal(resumed.status, 200);
+  assert.equal(resumed.data.sessionId, second.data.sessionId);
+  assert.deepEqual(resumed.data.judgements, []);
+  assert.equal((await call(session, '/api/session/finalize', secondPhone, { sessionId: first.data.sessionId })).status, 404);
+  assert.equal((await call(auth, '/api/auth/me', secondPhone, {}, 'GET')).data.user.displayName, 'IsolationPhoneB');
+  assert.equal((await call(session, '/api/session/start', firstPhone)).data.sessionId, first.data.sessionId);
+});
+
 test('first eight: per-answer reveal, ownership, cross-day resume, identity, daily gating and calibration', async () => {
   const browser: Browser = { ip: 'onboarding-first' };
   const outsider: Browser = { ip: 'onboarding-outsider' };
