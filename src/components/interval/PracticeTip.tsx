@@ -23,6 +23,6 @@ export function PracticeTip({ step, onDismiss }: { step: 'estimate' | 'range'; o
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" /></svg>
       </button>
     </div>
-    <p id={description}>{step === 'estimate' ? 'First, enter your best estimate.' : 'Great, now we want to spread your estimate so that you’re 95% sure that the true answer lies between the two numbers you’ve given.'}</p>
+    <p id={description}>{step === 'estimate' ? 'First, enter your best estimate.' : 'Great, now we want to spread your estimate so that you’re 95% sure that the true answer lies between the two numbers you’ve given. When you’re ready, press and hold the Submit button for half a second.'}</p>
   </dialog>;
 }
