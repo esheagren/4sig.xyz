@@ -14,6 +14,6 @@ For review, select a screen, interact at a named viewport, use **Inspect compone
 
 ## Answer-review study
 
-`AnswerReview.tsx` and `answer-review.css` are a design-only exploration on R02/R03. Each result has a range graphic and draft explanation: one visible sentence plus two on expansion. The optional `GamePreview.renderResults` slot supplies it only from the design entry; the live game retains its original result list. The scorecard fixtures include a miss and an exact answer for comparison.
+`AnswerReview.tsx` and `answer-review.css` are a design-only exploration on R02/R03. Each result has a range graphic and draft explanation: one visible sentence plus two on expansion. Use concrete historical trends and geographic contrasts in plain language, with context citations; see `answer-review-sources.md` for editorial guidance and verification. The optional `GamePreview.renderResults` slot supplies it only from the design entry; the live game retains its original result list. The scorecard fixtures include a miss and an exact answer for comparison.
 
 The studio uses a compact toolbar and a window-height workbench. The screen library stays on the left; the library, gallery, and reference panel scroll independently. Fit scales the preview to both available width and height. On smaller windows, Details toggles the reference panel; Resources holds the libraries, live-game link, and sign-out action.
