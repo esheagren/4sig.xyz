@@ -831,9 +831,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
               <PlayerIdentity
                 key={user.id}
                 initialUsername={initialPlayer.username}
-                beforeQuestions={results.length < orderedQuestions.length}
                 onStart={startPlayer}
-                onSignIn={() => setAuthOpen(true)}
               />
             ) : (
               <section className="identity-screen account-loading">

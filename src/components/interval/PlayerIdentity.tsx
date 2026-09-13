@@ -201,17 +201,13 @@ export function PersonalityPicker({
 export function PlayerIdentity({
   initialUsername = '',
   onStart,
-  onSignIn,
-  beforeQuestions = false,
 }: {
   initialUsername?: string;
-  beforeQuestions?: boolean;
   onStart: (username: string) => Promise<void>;
-  onSignIn: () => void;
 }) {
   const [username, setUsername] = useState(initialUsername);
-  const heading = useRef<HTMLHeadingElement>(null);
-  useEffect(() => { heading.current?.focus({ preventScroll: true }); }, []);
+  const screen = useRef<HTMLElement>(null);
+  useEffect(() => { screen.current?.focus({ preventScroll: true }); }, []);
   const [availability, setAvailability] = useState<{ name: string; state: 'checking' | 'available' | 'taken' | 'error' }>({name: '', state: 'checking'});
   useEffect(() => {
     const name = username.trim();
@@ -249,18 +245,16 @@ export function PlayerIdentity({
     }
   }
   return (
-    <section className="identity-screen claim-screen">
+    <section ref={screen} className="identity-screen claim-screen" aria-label="Claim Username" tabIndex={-1}>
       <span className="brand claim-brand" aria-label="Four Sigma">4<span>σ</span></span>
-      <h1 ref={heading} tabIndex={-1}>Claim username</h1>
-      <p className="claim-intro">Your scores start here.</p>
       <form onSubmit={start}>
-        <label className="sr-only" htmlFor="player-name">Username</label>
+        <label className="sr-only" htmlFor="player-name">Claim Username</label>
         <input
           id="player-name" name="username" value={username}
           onChange={e => { setUsername(e.target.value); setError(''); }}
           autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false}
           required minLength={3} maxLength={20} pattern="[a-zA-Z0-9_]{3,20}"
-          aria-describedby="username-help identity-error" placeholder="Username"
+          aria-describedby="username-help identity-error" placeholder="Claim Username"
           disabled={pending} readOnly={!!initialUsername}
         />
         <div className="claim-feedback">
@@ -272,15 +266,14 @@ export function PlayerIdentity({
         </div>
         <div className="welcome-play">
           <button type="submit" className="hold-commit welcome-play-button"
-            aria-label={pending ? 'Saving username' : beforeQuestions ? 'Start today’s questions' : 'See my results'}
+            aria-label={pending ? 'Saving username' : 'Begin'}
             disabled={pending || !validUsername(username.trim()) || (!initialUsername && checked === 'taken')}>
             <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>
             <svg className="commit-arrow" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 16h18m-7-7 7 7-7 7" /></svg>
           </button>
-          <span aria-hidden="true">{pending ? 'Saving…' : beforeQuestions ? 'Start today’s questions' : 'See my results'}</span>
+          <span aria-hidden="true">{pending ? 'Saving…' : 'Begin'}</span>
         </div>
       </form>
-      {!initialUsername && <button className="text-button identity-signin" onClick={onSignIn}>Already have a username? Sign in</button>}
     </section>
   );
 }
