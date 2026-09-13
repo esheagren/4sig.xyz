@@ -6,7 +6,6 @@ import {
   saveAnswer,
   finishGame,
   readGame,
-  resumeGame,
 } from "./_lib/session-storage.js";
 import {
   getDailyStats,
@@ -19,8 +18,7 @@ import {
   attachGuestGame,
   guestGameForEdition,
 } from "./_lib/guests.js";
-import { onboardingForOwner, hasDailyHistory, getOnboardingQuestions } from './_lib/onboarding.js';
-import { ONBOARDING_VERSION } from './_lib/onboarding-data.js';
+import { onboardingForOwner, isFirstVisit } from './_lib/onboarding.js';
 import { prepareShare } from "./_lib/shares.js";
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
@@ -39,37 +37,36 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     if (!owner) throw new HttpError(401, "Start a game first.");
     if (action === "start") {
       const edition = pacificDate();
-      if (auth && !body.practice) {
-        const guest = await guestOwner(req);
+      // Old scorecards remain reviewable, but this link never creates a baseline.
+      if (body.onboarding === true && !body.practice) {
+        const baseline = await onboardingForOwner(owner);
+        if (baseline) return res.json({ ...await readGame(baseline.id, owner), showIntro: false, dailyAvailable: true });
+      }
+      if (!body.practice) {
+        const guest = auth ? await guestOwner(req) : null;
         const candidates = new Set([
           body.resumeId,
-          await guestGameForEdition(guest, edition, auth.userId),
+          auth ? await guestGameForEdition(guest, edition, auth.userId) : null,
         ]);
         for (const id of candidates) {
           if (!id) continue;
-          await attachGuestGame(auth.userId, id, guest);
+          if (auth) await attachGuestGame(auth.userId, id, guest);
           try {
-            const resumed = await resumeGame(id, auth.userId);
-            if (!resumed.completed && (resumed.kind === 'onboarding' || (!body.onboarding && resumed.edition === edition))) return res.json(resumed);
+            const resumed = await readGame(id, owner);
+            // Preserve answers already given, including a pending claim across midnight.
+            const legacyInProgress = resumed.kind === 'onboarding' && resumed.savedAnswers.length > 0;
+            const dailyInProgress = resumed.kind === 'daily' && (resumed.edition === edition || resumed.savedAnswers.length === resumed.questions.length);
+            if (!resumed.completed && (legacyInProgress || dailyInProgress))
+              return res.json({ ...resumed, showIntro: !legacyInProgress && await isFirstVisit(owner, resumed.sessionId), dailyAvailable: legacyInProgress });
           } catch (error) {
-            if (!(error instanceof HttpError && error.status === 404))
-              throw error;
+            if (!(error instanceof HttpError && error.status === 404)) throw error;
           }
         }
       }
-      const baseline = await onboardingForOwner(owner);
-      // Keep the baseline on its completion day; later visits open today's game directly.
-      if (baseline && (!baseline.completed_at || baseline.completed_day >= edition)) {
-        return res.json({ ...await resumeGame(baseline.id, owner), dailyAvailable: !!baseline.completed_at && baseline.completed_day < edition });
-      }
-      // Rollout switch affects new starts only; unfinished baseline games still resume.
-      if (!baseline && process.env.FOUR_SIGMA_ONBOARDING !== 'off' &&
-          (body.onboarding === true || !(await hasDailyHistory(owner)))) {
-        return res.json(await startGame(owner, edition, await getOnboardingQuestions(), false, 'onboarding', ONBOARDING_VERSION));
-      }
       const questions = await getDailyQuestions(edition);
       if (!questions.length) throw new HttpError(503, "Today's numbers are not ready yet.");
-      return res.json(await startGame(owner, edition, questions, body.practice === true));
+      const game = await startGame(owner, edition, questions, body.practice === true);
+      return res.json({ ...game, showIntro: !body.practice && await isFirstVisit(owner, game.sessionId) });
     }
     if (action === "answer") {
       const judgement = await saveAnswer(owner, body.sessionId, body.questionId, body.lower, body.upper);

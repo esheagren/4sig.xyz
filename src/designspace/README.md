@@ -12,13 +12,19 @@ When a real component changes, the preview updates with it. Add new major states
 
 For review, select a screen, interact at a named viewport, use **Inspect component names**, or select **All screens** for the overview. **Copy view link** gives a direct review URL. Clipboard sharing inside a preview is real when explicitly clicked; account changes, game answers, and profile saves are simulated.
 
+## First visit and daily play
+
+Welcome → optional World Trade Center practice → scoring → topic overview → today’s five questions → claim username → daily scorecard. There is no separate starting game or calibration setup page. The old `setup` preview URL redirects to the topic overview; stable `calibration-estimate` and `starting-score` IDs now preview the first daily question and first daily scorecard. Returning players skip the introduction.
+
+New daily editions contain five questions. Already-frozen four-question editions and saved games retain their original questions and scores. Existing starting games remain available through the player’s history; no new ones are created.
+
 ## Shared results components
 
 `src/components/interval/ScoreStory.tsx` and `AnswerReview.tsx` power both the live game and R02/R03. The first page uses the player’s animated artwork and color, current score, calibration against 95%, and a round Share button near the bottom. The second snap point is **Today’s questions**: each answer has a range graphic, expandable context, and sources. Long reviews scroll freely, with buttons to return to the score or continue playing. Reduced motion disables the count-up and animation.
 
-Approved context for the eight starting questions is served by `api/_lib/answer-insights.ts` only with revealed judgements. Exact IDs also map the matching questions from the original ten-question edition. Other questions use their stored answer context. Context and reference answers are never bundled in public JavaScript. See `answer-review-sources.md` for editorial guidance and source verification. Fixtures include a miss and an exact answer.
+Approved context for the eight archived starting questions is served by `api/_lib/answer-insights.ts` only with revealed judgements. Exact IDs also map the matching questions from the original ten-question edition. Other questions use their stored answer context. Context and reference answers are never bundled in public JavaScript. See `answer-review-sources.md` for editorial guidance and source verification. Fixtures include a miss and an exact answer.
 
-Daily comparisons use completed, ranked games for the same edition. The API counts strictly lower scores, including correct handling of ties, and returns personal daily average and completed ranked daily count. Percent ahead excludes self, rounds down, and waits for 20 finishers. A single finisher sees “First to finish today”; a zero mean cannot produce a percentage comparison. Starting scores omit competition and completion count; practice is excluded from totals. Preview statistics remain isolated sample data.
+Daily comparisons use completed, ranked games for the same edition. The API counts strictly lower scores, including correct handling of ties, and returns personal daily average and completed ranked daily count. Percent ahead excludes self, rounds down, and waits for 20 finishers. A single finisher sees “First to finish today”; a zero mean cannot produce a percentage comparison. First daily scores use the same statistics as subsequent daily scores; practice is excluded from totals. Preview statistics remain isolated sample data.
 
 Only a small red mark appears at the bottom of the score page. It expands into dark navigation when the question review becomes active. Hidden navigation controls cannot receive keyboard focus. Review content has bottom padding to clear the navigation.
 

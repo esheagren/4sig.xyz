@@ -18,7 +18,6 @@ import "./style.css";
 import "./onboarding.css";
 import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
-import { CalibrationSetup } from "./CalibrationSetup";
 import { PracticeTip } from "./PracticeTip";
 import { WelcomeProbability } from "./WelcomeProbability";
 import { WorldviewGrid } from "./WorldviewGrid";
@@ -68,8 +67,8 @@ const DEMO_QUESTION: Question = {
 };
 function tutorialSeen(id: string, mark = false) {
   try {
-    if (mark) localStorage.setItem('four_sigma_tutorial_' + id, 'done');
-    return localStorage.getItem('four_sigma_tutorial_' + id) === 'done';
+    if (mark) localStorage.setItem('four_sigma_intro_done', 'done');
+    return localStorage.getItem('four_sigma_intro_done') === 'done' || localStorage.getItem('four_sigma_tutorial_' + id) === 'done';
   } catch { return false; }
 }
 
@@ -87,7 +86,6 @@ type Stage =
   | "welcome"
   | "scoring"
   | "worldview"
-  | "setup"
   | "identity"
   | "loading"
   | "estimate"
@@ -575,7 +573,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
         setStage("complete");
         activeGame(null);
         void refreshUser();
-      } else if (isOnboarding && answered === 0 && !tutorialSeen(data.sessionId)) {
+      } else if (data.showIntro === true && !practice && answered === 0 && !tutorialSeen(data.sessionId)) {
         setStage('welcome'); focusHeading();
       } else resetRound();
       if (preview && !previewApplied.current) {
@@ -807,17 +805,10 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
               <h1 ref={heading} tabIndex={-1}>The numbers we focus on.</h1>
               <p className="worldview-intro">We focus on mesofacts: important numbers that shape our world and change over years.</p>
               <WorldviewGrid />
-              <button className="primary" onClick={() => { setStage("setup"); focusHeading(); }}>
-                Next <span aria-hidden="true">→</span>
-              </button>
-            </section>
-          ) : stage === "setup" ? (
-            <section className="calibration-setup">
-              <h1 ref={heading} tabIndex={-1}>Four questions. Every day.</h1>
-              <CalibrationSetup count={orderedQuestions.length} />
+              <p className="worldview-daily">Five questions a day. The same for everyone.</p>
               <button className="primary" onClick={() => {
                 tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound();
-              }}>Begin <span aria-hidden="true">→</span></button>
+              }}>Start today’s questions <span aria-hidden="true">→</span></button>
             </section>
           ) : stage === "identity" ? (
             authLoading ? (
@@ -1113,6 +1104,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
           ) : null}
 
         </main>
+        {demo && ["estimate", "range"].includes(stage) && !practiceTip && <button className="text-button practice-skip" onClick={() => { setStage("scoring"); focusHeading(); }}>Skip practice</button>}
         {demo && practiceTip && <PracticeTip step={practiceTip} onDismiss={() => { setPracticeTip(null); focusHeading(); }} />}
         {["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) && <BottomNav initialPanel={preview?.menu} score={totalPoints(visibleResults)} onOpenChange={open => {
           dragCleanup.current?.();

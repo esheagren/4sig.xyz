@@ -70,7 +70,7 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
       );
     }
   }
-  const empty = <div className="menu-empty"><h3>Your data starts here</h3><p>Finish your starting quiz and claim a username to save your progress.</p><Link className="primary" to="/">Back to play →</Link></div>;
+  const empty = <div className="menu-empty"><h3>Your data starts here</h3><p>Finish today’s questions and claim a username to save your progress.</p><Link className="primary" to="/">Back to play →</Link></div>;
   return <div className="profile-page player-panel">
     <div className="player-menu-head">
       <div className="player-tabs" role="tablist" aria-label="Game information">
@@ -101,13 +101,13 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
                   </div>
                 ))}
               </dl>
-              <p className="onboarding-note">Overall points and calibration include your starting calibration and ranked daily answers. Daily averages and streaks count daily rounds only.</p>
+              <p className="onboarding-note">Calibration is the share of answers inside your ranges. Aim for 95% over time.{user.onboarding && " Overall totals also include your original starting calibration."}</p>
               <details className="profile-history"><summary>Calibration & history</summary>
               {user.onboarding ? <section>
                 <h2>Your starting calibration</h2>
                 <CalibrationScore score={user.onboarding.score} hits={user.onboarding.hits} count={user.onboarding.count} initial />
                 <Link className="text-button baseline-link" to="/?onboarding=1">Explore your original answers</Link>
-              </section> : <Link className="text-button baseline-link" to="/?onboarding=1">Start with eight questions to find your baseline</Link>}
+              </section> : null}
               <h2>Last 7 days</h2>
               <p className="muted">First attempts only.</p>
               <table className="history-table">

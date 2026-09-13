@@ -38,14 +38,14 @@ export function installPreviewData(screen: Screen) {
     color = "#276c66",
     icon = "wave",
     style = "wave";
-  const kind = screen.kind ?? "onboarding";
+  const kind = screen.kind ?? "daily";
   const supplied: (Question & { answerInsight?: AnswerInsight })[] = JSON.parse(
     document.getElementById("design-preview-data")?.textContent ?? "[]",
   );
   if (supplied.length !== 8)
     throw new Error("Preview data is unavailable. Reload the design space.");
   const questions =
-    kind === "daily" ? [supplied[3], ...supplied.slice(0, 3)] : supplied;
+    [supplied[3], ...supplied.slice(0, 3), supplied[4]];
   const sessionId = "design-preview-session";
   type Judgement = {
     answerInsight?: AnswerInsight;
@@ -87,25 +87,9 @@ export function installPreviewData(screen: Screen) {
     (_, i) => {
       const q = questions[i];
       const reviewBounds =
-        screen.id === "starting-score"
-          ? [
-              [25, 40],
-              [34, 42],
-              [25, 28],
-              [80, 80],
-              [5, 20],
-              [60, 75],
-              [400, 700],
-              [26, 29],
-            ][i]
-          : screen.id === "daily-score"
-            ? [
-                [70, 90],
-                [35, 40],
-                [30, 30],
-                [10, 60],
-              ][i]
-            : undefined;
+        ["starting-score", "daily-score"].includes(screen.id)
+          ? [[70, 90], [35, 40], [30, 30], [10, 60], [5, 20]][i]
+          : undefined;
       const bounds = reviewBounds
         ? { lower: reviewBounds[0], upper: reviewBounds[1] }
         : i === 0 && screen.preview.bounds
@@ -138,20 +122,13 @@ export function installPreviewData(screen: Screen) {
     bestSingleScore: 310,
     sessionCount: 4,
     createdAt: "2026-09-01",
-    onboarding: member
-      ? {
-          sessionId: "preview-baseline",
-          score: 1234.5,
-          hits: 7,
-          count: 8,
-          version: "first-eight-v1",
-        }
-      : null,
+    onboarding: null,
   });
   const game = () => ({
     sessionId,
     edition: "2026-09-12",
     kind,
+    showIntro: !member && answers.length === 0,
     isRanked: true,
     completed: answers.length === questions.length && member,
     questions: questions.map(
@@ -221,8 +198,8 @@ export function installPreviewData(screen: Screen) {
           kind === "daily"
             ? {
                 dailyRank: 12,
-                personalDailyAverage: (423 + 491 + score()) / 3,
-                personalDailyGames: 3,
+                personalDailyAverage: screen.id === "starting-score" ? score() : (423 + 491 + score()) / 3,
+                personalDailyGames: screen.id === "starting-score" ? 1 : 3,
                 todaysAverage: score() > 0 ? score() / 1.28 : 240,
                 playersBelowToday: score() > 0 ? 116 : 0,
                 totalParticipantsToday: 128,

@@ -13,11 +13,15 @@ export async function onboardingForOwner(owner: string) {
   );
   return rows[0] ?? null;
 }
-export async function hasDailyHistory(owner: string) {
+// A new session alone is not a completed introduction. Browser storage remembers
+// finishing the tutorial; server history suppresses it on later days and devices.
+export async function isFirstVisit(owner: string, sessionId: string) {
   const guest = owner.startsWith('guest:');
-  return !!(await query(
-    `SELECT 1 FROM game_sessions WHERE ${guest ? 'guest_session_hash' : 'user_id'}=$1 AND kind='daily' LIMIT 1`,
-    [guest ? owner.slice(6) : owner],
+  return !(await query(
+    `SELECT 1 FROM game_sessions s WHERE ${guest ? 'guest_session_hash' : 'user_id'}=$1
+     AND ((s.id<>$2 AND s.kind='daily') OR s.completed_at IS NOT NULL
+       OR EXISTS(SELECT 1 FROM game_answers a WHERE a.session_id=s.id)) LIMIT 1`,
+    [guest ? owner.slice(6) : owner, sessionId],
   )).rowCount;
 }
 export async function getOnboardingQuestions(): Promise<Question[]> {

@@ -226,7 +226,7 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     "concurrent starts resume the same ranked attempt",
   );
   const game = starts[0].data;
-  assert.equal(game.questions.length, 4);
+  assert.equal(game.questions.length, 5);
   assert.ok(
     !JSON.stringify(game).includes("trueValue"),
     "no answers exposed by start",
@@ -704,10 +704,10 @@ test("play first: anonymous resume, ownership, final identity, and existing-acco
   );
 });
 
-test("daily schedule fills imported three-question editions and stays stable at four", async () => {
+test("daily schedule fills imported three-question editions and stays stable at five", async () => {
   const date = "2099-01-01";
   const { rows: bank } = await query(
-    "SELECT id FROM questions WHERE is_active AND usage_type='daily' ORDER BY id LIMIT 4",
+    "SELECT id FROM questions WHERE is_active AND usage_type='daily' ORDER BY id LIMIT 5",
   );
   for (let i = 0; i < 3; i++)
     await query(
@@ -719,7 +719,7 @@ test("daily schedule fills imported three-question editions and stays stable at 
     getDailyQuestions(date),
   ]);
   for (const edition of editions) {
-    assert.equal(edition.length, 4);
+    assert.equal(edition.length, 5);
     assert.deepEqual(
       edition.slice(0, 3).map((q) => q.id),
       bank.slice(0, 3).map((q) => q.id),
@@ -735,9 +735,9 @@ test("daily schedule fills imported three-question editions and stays stable at 
         date,
       ])
     ).rows[0].n,
-    4,
+    5,
   );
-  assert.equal((await getDailyQuestions("2099-01-02")).length, 4);
+  assert.equal((await getDailyQuestions("2099-01-02")).length, 5);
 });
 
 test("daily statistics handle ties and average only completed ranked daily games", async () => {

@@ -8,7 +8,9 @@ export function HowToPlay() {
     <p>Hold the round submit button for half a second to give your answer.</p>
     <h3>See what you learn</h3>
     <p>A range that misses the answer earns zero points. A narrower range that contains it earns more, up to 10,000 points for an exact answer. Explore the source to learn the story behind the number.</p>
+    <h3>Calibration</h3>
+    <p>Calibration is how often your ranges contain the answer. Aim for 95% over time—about 19 out of 20 answers. It becomes more useful as you play more questions.</p>
     <h3>Come back tomorrow</h3>
-    <p>Start with eight questions to find your score and calibration. Then everyone gets four new questions each day. Your first daily attempt counts; replays are practice.</p>
+    <p>Everyone gets the same five new questions each day. Your first daily attempt counts; replays are practice.</p>
   </div>;
 }

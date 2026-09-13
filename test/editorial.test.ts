@@ -76,7 +76,7 @@ test("editorial release preserves games and today, repairs future schedules, bal
         },
       });
     const seed = [];
-    for (let i = 0; i < 10; i++) {
+    for (let i = 0; i < 12; i++) {
       const r = (
         await client.query(
           "INSERT INTO questions(question_text,answer_value) VALUES($1,100) RETURNING *",
@@ -88,7 +88,7 @@ test("editorial release preserves games and today, repairs future schedules, bal
         id: r.id,
         audit_number: i + 1,
         editorial_status: "ready",
-        editorial_role: i < 8 ? "core" : "reference",
+        editorial_role: i < 10 ? "core" : "reference",
         editorial_topic: "Topic " + (i % 4),
         verification_notes: "Verified test observation",
         expected: {
@@ -184,7 +184,7 @@ test("editorial release preserves games and today, repairs future schedules, bal
       await client.query("SELECT ($1::date+1)::text date", [today])
     ).rows[0].date;
     const next = await scheduleEdition(client, nextDate);
-    assert.equal(next.length, 4);
+    assert.equal(next.length, 5);
     assert.ok(next.every((q) => q.prompt.startsWith("Reviewed")));
     assert.ok(next.every((q) => q.unit === "genes"));
     const chosen = (
@@ -211,7 +211,7 @@ test("editorial release preserves games and today, repairs future schedules, bal
       [next.map((q) => q.id)],
     );
     const revised = await scheduleEdition(client, nextDate);
-    assert.equal(revised.length, 4);
+    assert.equal(revised.length, 5);
     assert.ok(revised.every((q) => !next.some((old) => old.id === q.id)));
     assert.deepEqual(await scheduleEdition(client, today), frozen);
     await client.query(

@@ -4,7 +4,7 @@ import { HttpError } from "./http.js";
 import type { Question } from "./types.js";
 export const pacificDate = () =>
   new Date().toLocaleDateString("en-CA", { timeZone: "America/Los_Angeles" });
-export const DAILY_QUESTION_COUNT = 4;
+export const DAILY_QUESTION_COUNT = 5;
 const questionSelect = `SELECT q.*,u.name unit FROM questions q LEFT JOIN units u ON u.id=q.unit_id`;
 export function question(row: QueryResultRow): Question {
   return {
@@ -44,7 +44,7 @@ export async function scheduleEdition(
     [edition],
   );
   if (
-    frozen.length === DAILY_QUESTION_COUNT &&
+    [4, DAILY_QUESTION_COUNT].includes(frozen.length) &&
     frozen.every((r) => r.question_snapshot)
   )
     return frozen.map((r) => r.question_snapshot as Question);

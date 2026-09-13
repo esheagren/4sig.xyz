@@ -74,28 +74,17 @@ export const screens: Screen[] = [
     name: "The numbers we focus on",
     group: "First visit",
     description: "The nine topic areas and the mesofacts we focus on.",
-    try: "Next opens the daily-game introduction.",
+    try: "Start today’s questions opens the first of five daily questions.",
     components: ["worldview-grid"],
     preview: { stage: "worldview" },
   },
   {
-    id: "setup",
-    code: "O07",
-    name: "Four questions. Every day.",
-    group: "First visit",
-    description:
-      "Four shared daily questions follow an initial eight-question calibration.",
-    try: "Begin opens question one of the starting quiz.",
-    components: ["calibration-setup"],
-    preview: { stage: "setup" },
-  },
-  {
     id: "calibration-estimate",
     code: "Q01",
-    name: "Starting quiz · estimate",
+    name: "First daily question",
     group: "Question loop",
     description:
-      "Eight initial questions, with an answer revealed after each submission.",
+      "Five shared daily questions, with an answer revealed after each submission.",
     try: "Enter an estimate with either keyboard, then set your range.",
     components: ["question", "number-pad", "bottom-nav"],
     preview: { stage: "estimate" },
@@ -189,7 +178,7 @@ export const screens: Screen[] = [
     code: "R01",
     name: "Claim username",
     group: "Results & identity",
-    answered: 8,
+    answered: 5,
     description:
       "Choose a username, one of eight styles, and a color beneath the pattern choices.",
     try: "Try a name and change the style. All saves here are simulated.",
@@ -199,12 +188,12 @@ export const screens: Screen[] = [
   {
     id: "starting-score",
     code: "R02",
-    name: "Starting scorecard",
+    name: "First daily scorecard",
     group: "Results & identity",
-    answered: 8,
+    answered: 5,
     member: true,
     description:
-      "A dark, animated starting score with a thumb-level Share action, followed by a separate question-review page.",
+      "A dark, animated first daily score with a thumb-level Share action, followed by a separate question-review page.",
     try: "Scroll or tap Today’s questions to snap to the review. Return with Your score. Share copies the chosen GIF and homepage URL.",
     components: [
       "score-story",
@@ -221,7 +210,7 @@ export const screens: Screen[] = [
     name: "Daily scorecard",
     group: "Results & identity",
     kind: "daily",
-    answered: 4,
+    answered: 5,
     member: true,
     description:
       "An animated daily score with percentile, rank, and comparison with today’s average, plus calibration against 95%; snap down to Today’s questions.",
@@ -262,7 +251,7 @@ export const screens: Screen[] = [
       "The existing-account dialog, available from the identity flow.",
     try: "Use any sample email and password to preview signing in. Nothing is sent to an account service.",
     components: ["auth-dialog"],
-    answered: 8,
+    answered: 5,
     preview: { stage: "identity", auth: true },
   },
   {
@@ -421,13 +410,6 @@ export const components = [
     screen: "worldview",
   },
   {
-    id: "calibration-setup",
-    name: "Score & calibration tiles",
-    source: "CalibrationSetup",
-    description: "Two side-by-side explanations of the starting point.",
-    screen: "setup",
-  },
-  {
     id: "personality",
     name: "Style & color picker",
     source: "PersonalityPicker / PlayerMark",
@@ -476,4 +458,4 @@ export const components = [
   },
 ];
 export const screenById = (id: string | null) =>
-  screens.find((s) => s.id === id) ?? screens[0];
+  screens.find((s) => s.id === (id === "setup" ? "worldview" : id)) ?? screens[0];

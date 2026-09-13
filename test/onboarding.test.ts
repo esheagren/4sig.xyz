@@ -4,7 +4,6 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import auth from '../api/auth.ts';
 import session from '../api/session.ts';
 import { query } from '../api/_lib/db.ts';
-import { execFileSync } from 'node:child_process';
 import { startGame } from '../api/_lib/session-storage.ts';
 import { onboardingQuestions as legacyQuestions, ONBOARDING_VERSION as legacyVersion } from '../api/_lib/onboarding-data-v1.ts';
 import { onboardingQuestions } from '../api/_lib/onboarding-data.ts';
@@ -83,140 +82,61 @@ test('two phones on the same network cannot resume or finalize each other’s sc
   assert.equal((await call(session, '/api/session/start', firstPhone)).data.sessionId, first.data.sessionId);
 });
 
-test('first eight: per-answer reveal, ownership, cross-day resume, identity, daily gating and calibration', async () => {
-  const browser: Browser = { ip: 'onboarding-first' };
-  const outsider: Browser = { ip: 'onboarding-outsider' };
+test('first visit plays five shared daily questions, then claims a name and saves the score', async () => {
+  const browser: Browser = { ip: 'daily-first' }, peer: Browser = { ip: 'daily-peer' };
   const before = (await query('SELECT count(*)::int n FROM users')).rows[0].n;
-  const first = await call(session, '/api/session/start', browser);
+  const first = await call(session, '/api/session/start', browser, {onboarding:true});
   assert.equal(first.status, 200);
-  assert.equal(first.data.kind, 'onboarding');
-  assert.equal(first.data.questions.length, 8);
+  assert.equal(first.data.kind, 'daily');
+  assert.equal(first.data.showIntro, true);
+  assert.equal(first.data.questions.length, 5);
   assert.equal((await query('SELECT count(*)::int n FROM users')).rows[0].n, before);
-  assert.deepEqual(first.data.judgements, []);
   assert.doesNotMatch(JSON.stringify(first.data), /trueValue|answerContext|answerInsight|sourceUrl|"hit"|"score"/);
-  const maritime = first.data.questions[3];
-  assert.equal(maritime.prompt, 'What percentage of international trade in goods is carried by sea, by volume?');
-  assert.equal(maritime.prompt.slice(maritime.glossary[0].start, maritime.glossary[0].end), 'by volume');
-  assert.equal((await query('SELECT snapshot FROM game_questions WHERE session_id=$1 AND question_id=$2',
-    [first.data.sessionId, maritime.id])).rows[0].snapshot.prompt, onboardingQuestions[3].prompt);
-  await call(session, '/api/session/start', outsider);
-  assert.equal((await call(session, '/api/session/answer', outsider, {
-    sessionId: first.data.sessionId, questionId: first.data.questions[0].id, lower: 0, upper: 100,
-  })).status, 404);
-  assert.equal((await call(session, '/api/session/answer', browser, {
-    sessionId: first.data.sessionId, questionId: first.data.questions[1].id, lower: 0, upper: 100,
-  })).status, 409);
-  for (let i = 0; i < 8; i++) {
-    const payload = { sessionId: first.data.sessionId, questionId: first.data.questions[i].id, lower: 0, upper: i === 6 ? 1 : 100 };
-    if (i === 1) assert.equal((await call(session, '/api/session/answer', browser, { ...payload, upper: 101 })).status, 400);
-    const responses = await Promise.all([
-      call(session, '/api/session/answer', browser, payload),
-      call(session, '/api/session/answer', browser, payload),
-    ]);
-    for (const r of responses) {
-      assert.equal(r.status, 200);
-      assert.equal(r.data.savedAnswers.length, i + 1);
-      assert.equal(r.data.judgement.questionId, onboardingQuestions[i].id);
-      assert.equal(r.data.judgement.trueValue, onboardingQuestions[i].trueValue);
-      assert.ok(r.data.judgement.answerInsight.short);
-      assert.ok(r.data.judgement.answerInsight.sources.length);
-      assert.equal(r.data.judgement.prompt, first.data.questions[i].prompt);
-      assert.equal(r.data.judgement.sourceUrl, onboardingQuestions[i].sourceUrl);
-      assert.equal(typeof r.data.judgement.score, 'number');
-      assert.equal(r.data.judgement.hit, i !== 6);
-      assert.equal(r.data.judgements, undefined, 'answer response only reveals this submitted question');
-    }
-    assert.equal((await call(session, '/api/session/answer', browser, { ...payload, lower: 1 })).status, 409);
-    if (i === 4) await query("UPDATE game_sessions SET edition='2000-01-01' WHERE id=$1", [first.data.sessionId]);
-    const resumed = await call(session, '/api/session/start', browser);
-    assert.equal(resumed.data.sessionId, first.data.sessionId);
-    assert.equal(resumed.data.savedAnswers.length, i + 1);
-    assert.equal(resumed.data.judgements.length, i + 1);
-    assert.deepEqual(resumed.data.judgements[i].answerInsight, responses[0].data.judgement.answerInsight);
-    assert.deepEqual(resumed.data.judgements.map((j: { questionId: string }) => j.questionId), onboardingQuestions.slice(0, i + 1).map(q => q.id));
-    assert.doesNotMatch(JSON.stringify(resumed.data.questions), /trueValue|answerContext|answerInsight|sourceUrl|"hit"|"score"/, 'question list never contains future answers');
+  const other = await call(session, '/api/session/start', peer);
+  assert.deepEqual(other.data.questions, first.data.questions);
+  assert.equal((await call(session, '/api/session/finalize', browser, {sessionId:first.data.sessionId})).status, 401);
+  for (const [i,q] of first.data.questions.entries()) {
+    const saved = await call(session, '/api/session/answer', browser, {sessionId:first.data.sessionId,questionId:q.id,lower:0,upper:1e100});
+    assert.equal(saved.status,200);
+    assert.equal(saved.data.judgement.questionId,q.id);
+    assert.equal(typeof saved.data.judgement.trueValue,'number');
+    assert.equal(saved.data.savedAnswers.length,i+1);
+    const resumed = await call(session,'/api/session/start',browser);
+    assert.equal(resumed.data.sessionId,first.data.sessionId);
+    assert.equal(resumed.data.showIntro,false);
+    assert.equal(resumed.data.judgements.length,i+1);
+    assert.doesNotMatch(JSON.stringify(resumed.data.questions),/trueValue|answerContext|answerInsight|sourceUrl/);
   }
-  assert.equal((await call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId })).status, 401);
-  const claimed = await call(auth, '/api/auth/claim-username', browser, { username: 'FirstTenPlayer' });
-  assert.equal(claimed.status, 200);
-  assert.equal((await call(auth, '/api/auth/check-username', outsider, { username: 'firsttenplayer' })).data.available, false);
-  assert.equal((await call(auth, '/api/auth/claim-username', outsider, { username: 'firsttenplayer' })).status, 409);
-  const resumed = await call(session, '/api/session/start', browser);
-  assert.equal(resumed.data.sessionId, first.data.sessionId, 'claim-step resume without local storage, even across dates');
-  assert.equal(resumed.data.savedAnswers.length, 8);
-  assert.equal(resumed.data.judgements.length, 8);
-  assert.equal((await call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId })).status, 409);
-  await call(auth, '/api/auth/profile', browser, { avatarIcon: 'wave', avatarColor: '#276c66' });
-  const finished = await Promise.all([
-    call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId }),
-    call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId }),
-  ]);
-  assert.equal(finished[0].status, 200);
-  assert.equal(finished[0].data.share.id, finished[1].data.share.id);
-  assert.equal(finished[0].data.share.kind, 'onboarding');
-  assert.equal(finished[0].data.dailyStats, null);
-  assert.equal(finished[0].data.judgements.filter((j: { hit: boolean }) => j.hit).length, 7);
-  let user = (await call(auth, '/api/auth/me', browser, {}, 'GET')).data.user;
-  assert.equal(user.gamesPlayed, 0);
-  assert.equal(user.questionsAnswered, 8);
-  assert.equal(user.calibrationRate, 0.875);
-  assert.equal(user.totalScore, finished[0].data.score);
-  assert.equal(user.onboarding.sessionId, first.data.sessionId);
-  for (const body of [{}, { playDaily: true }, { practice: true }]) {
-    const sameDay = await call(session, '/api/session/start', browser, body);
-    assert.equal(sameDay.data.sessionId, first.data.sessionId);
-    assert.equal(sameDay.data.dailyAvailable, false);
-  }
-  await query("UPDATE game_sessions SET completed_at=now()-interval '2 days' WHERE id=$1", [first.data.sessionId]);
-  const daily = await call(session, '/api/session/start', browser);
-  assert.equal(daily.status, 200);
-  assert.equal(daily.data.kind, 'daily');
-  assert.equal(daily.data.questions.length, 4);
-  assert.deepEqual(daily.data.savedAnswers, []);
-  assert.deepEqual(daily.data.judgements, []);
-  assert.equal(daily.data.completed, false);
-  assert.notEqual(daily.data.sessionId, first.data.sessionId);
-  // Neither a stale baseline hint nor the old daily button can restart onboarding.
-  for (const body of [{ resumeId: first.data.sessionId }, { playDaily: true }]) {
-    assert.equal((await call(session, '/api/session/start', browser, body)).data.sessionId, daily.data.sessionId);
-  }
-  await call(auth, '/api/auth/claim-account', browser, { email: 'firstten@example.invalid', password: 'A-long-test-password-123' });
-  const returning: Browser = { ip: 'returning-without-local-storage' };
-  assert.equal((await call(auth, '/api/auth/login', returning, { email: 'firstten@example.invalid', password: 'A-long-test-password-123' })).status, 200);
-  const loggedBackIn = await call(session, '/api/session/start', returning);
-  assert.equal(loggedBackIn.data.sessionId, daily.data.sessionId);
-  assert.equal(loggedBackIn.data.kind, 'daily');
-  assert.deepEqual(loggedBackIn.data.savedAnswers, []);
-  for (const q of daily.data.questions) await call(session, '/api/session/answer', browser, {
-    sessionId: daily.data.sessionId, questionId: q.id, lower: 0, upper: 1e100,
-  });
-  const dayResult = await call(session, '/api/session/finalize', browser, { sessionId: daily.data.sessionId });
-  assert.equal(dayResult.status, 200);
-  user = (await call(auth, '/api/auth/me', browser, {}, 'GET')).data.user;
-  const dailyHits = dayResult.data.judgements.filter((j: { hit: boolean }) => j.hit).length;
-  assert.equal(user.gamesPlayed, 1);
-  assert.equal(user.questionsAnswered, 12);
-  assert.equal(user.calibrationRate, (7 + dailyHits) / 12);
-  assert.equal(user.onboarding.hits, 7, 'original baseline stays fixed');
-  const standings = dayResult.data.dailyStats.todayLeaderboard.filter((r: { username: string }) => r.username === 'FirstTenPlayer');
-  assert.equal(standings.length, 1);
-  assert.equal(standings[0].score, dayResult.data.score);
-
-  // A guest can sign in to an account with a baseline without replacing it.
-  const duplicate = (await call(session, '/api/session/start', outsider)).data;
-  for (const q of duplicate.questions) await call(session, '/api/session/answer', outsider, {
-    sessionId: duplicate.sessionId, questionId: q.id, lower: 0, upper: 100,
-  });
-  await call(auth, '/api/auth/login', outsider, { email: 'firstten@example.invalid', password: 'A-long-test-password-123' });
-  const attached = await call(session, '/api/session/start', outsider, { resumeId: duplicate.sessionId });
-  assert.equal(attached.data.isRanked, false);
-  assert.equal(attached.data.judgements.length, 8);
-  assert.equal((await call(session, '/api/session/finalize', outsider, { sessionId: duplicate.sessionId })).status, 200);
-  assert.equal((await call(auth, '/api/auth/me', outsider, {}, 'GET')).data.user.questionsAnswered, 12);
+  await call(auth,'/api/auth/claim-username',browser,{username:'FirstDailyPlayer'});
+  assert.equal((await call(session,'/api/session/finalize',browser,{sessionId:first.data.sessionId})).status,409);
+  await call(auth,'/api/auth/profile',browser,{avatarIcon:'wave',avatarColor:'#276c66'});
+  const finished = await call(session,'/api/session/finalize',browser,{sessionId:first.data.sessionId});
+  assert.equal(finished.status,200);
+  assert.equal(finished.data.share.kind,'daily');
+  assert.equal(finished.data.judgements.length,5);
+  assert.equal(finished.data.dailyStats.personalDailyGames,1);
+  const user = (await call(auth,'/api/auth/me',browser,{},'GET')).data.user;
+  assert.equal(user.gamesPlayed,1);
+  assert.equal(user.questionsAnswered,5);
+  assert.equal(user.onboarding,null);
+  assert.equal(user.totalScore,finished.data.score);
+  assert.equal((await call(session,'/api/session/start',browser)).data.sessionId,first.data.sessionId);
+  await call(auth,'/api/auth/claim-account',browser,{email:'firstdaily@example.invalid',password:'A-long-test-password-123'});
+  // An older game is history, so a new daily session skips the intro even on another device.
+  await query("UPDATE game_sessions SET edition='2000-01-01' WHERE id=$1",[first.data.sessionId]);
+  const returning: Browser = {ip:'daily-new-device'};
+  await call(auth,'/api/auth/login',returning,{email:'firstdaily@example.invalid',password:'A-long-test-password-123'});
+  const nextDay = await call(session,'/api/session/start',returning);
+  assert.equal(nextDay.data.kind,'daily');
+  assert.equal(nextDay.data.showIntro,false);
+  assert.notEqual(nextDay.data.sessionId,first.data.sessionId);
+  assert.equal(nextDay.data.questions.length,5);
+  const practice = await call(session,'/api/session/start',returning,{practice:true});
+  assert.equal(practice.data.showIntro,false);
+  assert.equal(practice.data.isRanked,false);
 });
 
-
-test('ten-question games survive the eight-question upgrade and finish with their original baseline', async () => {
+test('previous ten-question games retain their answers and can still be completed and reviewed', async () => {
   const browser: Browser = { ip: 'onboarding-legacy' };
   await call(auth, '/api/auth/claim-username', browser, { username: 'LegacyBaseline' });
   await call(auth, '/api/auth/profile', browser, { avatarIcon: 'wave', avatarColor: '#276c66' });
@@ -227,8 +147,7 @@ test('ten-question games survive the eight-question upgrade and finish with thei
       sessionId: original.sessionId, questionId: q.id, lower: 0, upper: q.max ?? 1000,
     })).status, 200);
   }
-  execFileSync('npx', ['tsx', 'scripts/postgres/upgrade-onboarding.ts', '/dev/null'], { env: process.env });
-  const resumed = await call(session, '/api/session/start', browser);
+  const resumed = await call(session, '/api/session/start', browser, {resumeId:original.sessionId});
   assert.equal(resumed.data.sessionId, original.sessionId);
   assert.equal(resumed.data.questions.length, 10);
   assert.equal(resumed.data.savedAnswers.length, 8);
@@ -240,43 +159,51 @@ test('ten-question games survive the eight-question upgrade and finish with thei
   const completed = await call(session, '/api/session/finalize', browser, { sessionId: original.sessionId });
   assert.equal(completed.status, 200);
   assert.equal(completed.data.judgements.length, 10);
+  assert.ok(completed.data.judgements[0].answerInsight.short);
   const user = (await call(auth, '/api/auth/me', browser, {}, 'GET')).data.user;
   assert.equal(user.onboarding.count, 10);
   assert.equal(user.onboarding.hits, 10);
   assert.equal(user.questionsAnswered, 10);
+  const daily = await call(session, '/api/session/start', browser);
+  assert.equal(daily.data.kind, 'daily');
+  assert.equal(daily.data.showIntro, false);
+  const review = await call(session, '/api/session/start', browser, {onboarding:true});
+  assert.equal(review.data.sessionId, original.sessionId);
+  assert.equal(review.data.completed, true);
+  assert.equal(review.data.dailyAvailable, true);
 });
 
-test('untouched legacy quizzes resume as eight questions for guests and signed-in players', async () => {
-  for (const signedIn of [false, true]) {
-    const browser: Browser = { ip: `untouched-${signedIn}` };
-    let owner: string;
-    if (signedIn) {
-      await call(auth, '/api/auth/claim-username', browser, { username: 'UntouchedLegacy' });
-      owner = (await query("SELECT id FROM users WHERE username='UntouchedLegacy'")).rows[0].id;
-    } else {
-      const fresh = (await call(session, '/api/session/start', browser)).data;
-      const row = (await query('SELECT guest_session_hash FROM game_sessions WHERE id=$1', [fresh.sessionId])).rows[0];
-      owner = `guest:${row.guest_session_hash}`;
-      await query('DELETE FROM game_sessions WHERE id=$1', [fresh.sessionId]);
-    }
-    const original = await startGame(owner, '2000-01-01', legacyQuestions, false, 'onboarding', legacyVersion);
-    assert.equal(original.questions.length, 10);
-    const resumes = await Promise.all([
-      call(session, '/api/session/start', browser, { resumeId: original.sessionId }),
-      call(session, '/api/session/start', browser, { resumeId: original.sessionId }),
-    ]);
-    for (const resumed of resumes) {
-      assert.equal(resumed.status, 200);
-      assert.equal(resumed.data.sessionId, original.sessionId);
-      assert.equal(resumed.data.questions.length, 8);
-      assert.deepEqual(resumed.data.questions.map((q: { id: string }) => q.id), onboardingQuestions.map(q => q.id));
-      assert.deepEqual(resumed.data.savedAnswers, []);
-      assert.doesNotMatch(JSON.stringify(resumed.data), /trueValue|answerContext|answerInsight|sourceUrl|"hit"|"score"/);
-    }
-    const answer = await call(session, '/api/session/answer', browser, {
-      sessionId: original.sessionId, questionId: onboardingQuestions[0].id, lower: 0, upper: 100,
-    });
-    assert.equal(answer.status, 200);
-    assert.equal(answer.data.savedAnswers.length, 1);
-  }
+test('untouched legacy introductions open daily play without rewriting old snapshots', async () => {
+  const browser: Browser = {ip:'untouched-legacy'};
+  const fresh = (await call(session,'/api/session/start',browser)).data;
+  const row = (await query('SELECT guest_session_hash FROM game_sessions WHERE id=$1',[fresh.sessionId])).rows[0];
+  const original = await startGame(`guest:${row.guest_session_hash}`,'2000-01-01',legacyQuestions,false,'onboarding',legacyVersion);
+  const resumed = await call(session,'/api/session/start',browser,{resumeId:original.sessionId});
+  assert.equal(resumed.data.kind,'daily');
+  assert.equal(resumed.data.showIntro,true, 'an unopened legacy introduction has not taught the controls');
+  assert.equal(resumed.data.questions.length,5);
+  assert.equal((await query('SELECT count(*)::int n FROM game_questions WHERE session_id=$1',[original.sessionId])).rows[0].n,10);
+  assert.equal((await query('SELECT count(*)::int n FROM game_answers WHERE session_id=$1',[original.sessionId])).rows[0].n,0);
+});
+
+test('a finished guest daily game can be claimed across midnight without losing answers', async () => {
+  const browser: Browser = {ip:'midnight-claim'};
+  const game = (await call(session,'/api/session/start',browser)).data;
+  for (const q of game.questions) await call(session,'/api/session/answer',browser,{sessionId:game.sessionId,questionId:q.id,lower:0,upper:1e100});
+  await query("UPDATE game_sessions SET edition='2000-02-01' WHERE id=$1",[game.sessionId]);
+  const resumed = await call(session,'/api/session/start',browser,{resumeId:game.sessionId});
+  assert.equal(resumed.data.sessionId,game.sessionId);
+  assert.equal(resumed.data.judgements.length,5);
+  assert.equal(resumed.data.showIntro,false);
+  await call(auth,'/api/auth/claim-username',browser,{username:'MidnightDaily'});
+  await call(auth,'/api/auth/profile',browser,{avatarIcon:'orbit',avatarColor:'#ad4128'});
+  const attached = await call(session,'/api/session/start',browser,{resumeId:game.sessionId});
+  assert.equal(attached.data.sessionId,game.sessionId);
+  const finished = await call(session,'/api/session/finalize',browser,{sessionId:game.sessionId});
+  assert.equal(finished.status,200);
+  assert.equal(finished.data.totalQuestions,5);
+  assert.equal(finished.data.edition,'2000-02-01');
+  const today = await call(session,'/api/session/start',browser);
+  assert.notEqual(today.data.sessionId,game.sessionId);
+  assert.equal(today.data.showIntro,false);
 });

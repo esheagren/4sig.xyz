@@ -40,7 +40,6 @@ const selectors: Record<string, string> = {
   points: ".round-score",
   "scoring-examples": ".scoring-examples",
   "worldview-grid": ".worldview-grid",
-  "calibration-setup": ".setup-measures",
   personality: ".personality-picker",
   scorecard: ".score-story-hero, .scorecard-button",
   share: ".scorecard-share-actions",

@@ -199,10 +199,10 @@ export function ScoreStory({
           <div className="score-story-daily">
             {dailyAvailable ? (
               <button className="primary" onClick={onPlayDaily}>
-                Play today’s four <span>→</span>
+                Play today’s questions <span>→</span>
               </button>
             ) : (
-              <p>Four new questions tomorrow.</p>
+              <p>Five new questions tomorrow.</p>
             )}
           </div>
         )}

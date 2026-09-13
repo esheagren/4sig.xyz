@@ -113,3 +113,7 @@
 .interval-app .practice-tip-heading h2:focus { outline: none; }
 .interval-app .practice-tip-heading button { display: grid; place-items: center; flex: 0 0 44px; height: 44px; margin-right: -12px; background: transparent; color: var(--muted); }
 .interval-app .practice-tip > p { margin: 6px 0 0; font-size: 15px; line-height: 1.55; }
+
+.interval-app .practice-skip { display: block; margin: 12px auto; font-size: 11px; }
+
+.interval-app .worldview-daily { font-size: 12px; color: var(--muted); margin: 22px 0 -12px; text-align: center; }

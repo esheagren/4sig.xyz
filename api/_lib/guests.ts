@@ -46,7 +46,7 @@ export async function guestGameForEdition(
   if (!owner) return null;
   const { rows } = await query(
     `SELECT g.id FROM game_sessions g JOIN guest_sessions v ON v.token_hash=$1
-    WHERE (g.edition=$2 OR g.kind='onboarding') AND ((g.guest_session_hash=v.token_hash AND g.is_ranked)
+    WHERE g.kind='daily' AND g.edition=$2 AND ((g.guest_session_hash=v.token_hash AND g.is_ranked)
       OR (g.id=v.claimed_game_id AND g.user_id=$3 AND g.completed_at IS NULL))
     ORDER BY g.created_at DESC LIMIT 1`,
     [owner.slice(6), edition, userId],

@@ -68,7 +68,7 @@ test("design previews isolate identity and storage, score locally, and never for
         ).json();
       const game = await request("/api/session/start");
       assert.equal(game.kind, "daily");
-      assert.equal(game.questions.length, 4);
+      assert.equal(game.questions.length, 5);
       assert.deepEqual(game.savedAnswers, []);
       const saved = await request("/api/session/answer", {
         questionId: game.questions[0].id,

@@ -11,7 +11,7 @@ if [ -n "${1:-}" ]; then
   npx tsx scripts/postgres/migrate.ts "$1"
 else
   psql -v ON_ERROR_STOP=1 -f scripts/postgres/001_schema.sql > "$test_db_dir/schema.log"
-  psql -v ON_ERROR_STOP=1 -c "INSERT INTO questions(question_text,answer_value) VALUES ('Test one',123),('Test two',-196),('Test three',0.005),('Test four',5000);" >/dev/null
+  psql -v ON_ERROR_STOP=1 -c "INSERT INTO questions(question_text,answer_value) VALUES ('Test one',123),('Test two',-196),('Test three',0.005),('Test four',5000),('Test five',90);" >/dev/null
 fi
 psql -v ON_ERROR_STOP=1 -f scripts/postgres/002_player_identity.sql > "$test_db_dir/identity.log"
 psql -v ON_ERROR_STOP=1 -f scripts/postgres/003_play_first.sql > "$test_db_dir/guest.log"
