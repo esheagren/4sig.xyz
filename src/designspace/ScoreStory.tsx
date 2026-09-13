@@ -172,12 +172,6 @@ export function ScoreStory({
                 <dt>Daily average</dt>
                 <dd>{average === null ? "—" : scoreText(average)}</dd>
               </div>
-              <div>
-                <dt>
-                  {onboarding ? "Quizzes completed" : "Daily games played"}
-                </dt>
-                <dd>{onboarding ? 1 : games.length}</dd>
-              </div>
             </dl>
           )}
         </div>

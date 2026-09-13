@@ -24,7 +24,7 @@ The studio uses a compact toolbar and a window-height workbench. The screen libr
 
 The second snap point is **Today's questions**, whose content can scroll beyond one viewport. Its top button returns to the score; the starting quiz's invitation to the daily game remains below the answers. Native scroll snap works with touch/trackpads; explicit buttons support keyboards. Reduced-motion preferences disable the score count-up and pattern animation.
 
-Calibration here is for this completed game: hits divided by answers, with an absolute percentage-point distance from 95%. The daily average and daily-game count use the preview's sample history plus the current daily result (deduplicated by date); the initial quiz has no daily average yet and shows one quiz completed. No real history or account state is read. The live results layout remains unchanged.
+Calibration here is for this completed game: hits divided by answers, with an absolute percentage-point distance from 95%. The daily average and daily-game count use the preview's sample history plus the current daily result (deduplicated by date); the starting score has no daily average yet and omits the completion count. No real history or account state is read. The live results layout remains unchanged.
 
 ## Competitive results and navigation study
 
