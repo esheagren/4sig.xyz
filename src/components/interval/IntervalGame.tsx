@@ -3,6 +3,7 @@ import { normalizeStyle } from '../../../shared/player-profile';
 import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   CSSProperties,
+  ReactNode,
   PointerEvent as ReactPointerEvent,
   KeyboardEvent,
 } from "react";
@@ -150,6 +151,7 @@ type Standings = {
 export type GamePreview = {
   stage?: Stage; demo?: boolean; tip?: 'estimate' | 'range'; calculator?: boolean;
   bounds?: Bounds; menu?: 'stats' | 'profile' | 'settings' | 'play'; auth?: boolean;
+  renderResults?: (results: Result[]) => ReactNode;
 };
 export default function IntervalGame({ preview }: { preview?: GamePreview } = {}) {
   const {
@@ -1127,7 +1129,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                 {dailyAvailable && <button className="primary" onClick={() => void startSession(false, true)}>Play today's four <span>→</span></button>}
                 {(user?.questionsAnswered ?? 0) > results.length && <p className="onboarding-note">Overall: {scoreText(user!.totalScore)} points · {Math.round(user!.calibrationRate * 1000) / 10}% calibration across {user!.questionsAnswered} questions. Target: 95%.</p>}
               </div>}
-              <div className="result-list">
+              {preview?.renderResults ? preview.renderResults(results) : <div className="result-list">
                 {results.map((r, i) => (
                   <details key={r.question.id}>
                     <summary>
@@ -1162,7 +1164,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                     </div>
                   </details>
                 ))}
-              </div>
+              </div>}
               {standings && (
                 <details className="standings-detail">
                   <summary>Today’s standings</summary>

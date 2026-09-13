@@ -83,8 +83,29 @@ export function installPreviewData(screen: Screen) {
     { length: screen.answered ?? 0 },
     (_, i) => {
       const q = questions[i];
-      const bounds =
-        i === 0 && screen.preview.bounds
+      const reviewBounds =
+        screen.id === "starting-score"
+          ? [
+              [25, 40],
+              [34, 42],
+              [25, 28],
+              [80, 80],
+              [5, 20],
+              [60, 75],
+              [400, 700],
+              [26, 29],
+            ][i]
+          : screen.id === "daily-score"
+            ? [
+                [70, 90],
+                [35, 40],
+                [30, 30],
+                [10, 60],
+              ][i]
+            : undefined;
+      const bounds = reviewBounds
+        ? { lower: reviewBounds[0], upper: reviewBounds[1] }
+        : i === 0 && screen.preview.bounds
           ? screen.preview.bounds
           : {
               lower: q.trueValue * 0.85,

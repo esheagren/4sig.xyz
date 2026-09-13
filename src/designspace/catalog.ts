@@ -205,8 +205,8 @@ export const screens: Screen[] = [
     member: true,
     description:
       "A single animated identity combines username, points, and calibration.",
-    try: "Share copies the image and https://4sig.xyz/. Expand an answer to review it.",
-    components: ["scorecard", "share", "bottom-nav"],
+    try: "Below the card, compare your range with the actual answer. Tap each short insight to read more. This answer-review layout is a design study.",
+    components: ["scorecard", "share", "answer-review", "bottom-nav"],
     preview: { stage: "complete" },
   },
   {
@@ -219,8 +219,8 @@ export const screens: Screen[] = [
     member: true,
     description:
       "Today’s result, question review, and standings after four answers.",
-    try: "Share your sample card or open the bottom menu.",
-    components: ["scorecard", "share", "bottom-nav"],
+    try: "Explore the range graphics and expandable insights below the scorecard. This answer-review layout is a design study.",
+    components: ["scorecard", "share", "answer-review", "bottom-nav"],
     preview: { stage: "complete" },
   },
   ...(["stats", "profile", "settings", "play"] as const).map((tab, i) => ({
@@ -287,6 +287,14 @@ export const screens: Screen[] = [
   },
 ];
 export const components = [
+  {
+    id: "answer-review",
+    name: "Answer review · study",
+    source: "AnswerReview / AnswerRange",
+    description:
+      "A design-only exploration: a range and actual-answer graphic, with one sentence that expands to three. Draft editorial copy; the live game keeps its current answer list.",
+    screen: "starting-score",
+  },
   {
     id: "brand",
     name: "4σ mark",

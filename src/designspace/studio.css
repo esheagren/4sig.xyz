@@ -49,25 +49,28 @@ button[aria-pressed="true"] {
   border-color: #9ebbb1;
 }
 .ds-shell {
-  max-width: 1920px;
-  margin: auto;
-  padding: 0 32px;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .ds-header {
-  height: 84px;
+  min-height: 44px;
+  flex-shrink: 0;
+  padding: 0 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-bottom: 1px solid #dbd5ca;
-  gap: 20px;
+  gap: 16px;
 }
 .ds-brand {
   display: flex;
   align-items: baseline;
   font:
-    36px Georgia,
+    26px Georgia,
     serif;
-  letter-spacing: -3px;
+  letter-spacing: -2px;
   white-space: nowrap;
 }
 .ds-brand > span {
@@ -78,20 +81,53 @@ button[aria-pressed="true"] {
     12px "IBM Plex Mono",
     monospace;
   letter-spacing: 0;
-  margin-left: 24px;
+  margin-left: 10px;
 }
-.ds-header nav {
-  display: flex;
-  gap: 26px;
-  font-size: 12px;
-  color: #756b62;
+#workspace {
+  flex: 1;
+  min-height: 0;
 }
-.ds-intro {
-  padding: 37px 0 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
+.ds-resources {
+  position: relative;
+  font-size: 11px;
+}
+.ds-resources summary {
+  cursor: pointer;
+  padding: 5px 0;
+}
+.ds-resources nav {
+  position: absolute;
+  top: 32px;
+  right: 0;
+  z-index: 5;
+  display: grid;
+  gap: 12px;
+  min-width: 190px;
+  padding: 16px;
+  background: #faf8f3;
+  border: 1px solid #dcd6cc;
+  border-radius: 5px;
+  box-shadow: 0 8px 24px #352a2515;
+}
+.ds-resources form {
+  margin: 0;
+}
+.ds-resources form button {
+  border: 0;
+  padding: 0;
+}
+.ds-tab-actions [role="status"]:not(:empty) {
+  position: fixed;
+  right: 12px;
+  top: 52px;
+  z-index: 6;
+  background: #faf8f3;
+  padding: 8px 12px;
+  border: 1px solid #dcd6cc;
+  border-radius: 5px;
+}
+.ds-details-toggle {
+  display: none;
 }
 .ds-eyebrow {
   font:
@@ -101,19 +137,6 @@ button[aria-pressed="true"] {
   letter-spacing: 1px;
   color: #83786e;
   margin: 0 0 12px;
-}
-.ds-intro h1 {
-  font:
-    400 40px/1.08 "Newsreader",
-    Georgia,
-    serif;
-  letter-spacing: -1px;
-  margin: 0 0 11px;
-}
-.ds-intro p:not(.ds-eyebrow) {
-  margin: 0;
-  color: #807368;
-  font-size: 13px;
 }
 .ds-sample {
   font:
@@ -135,14 +158,14 @@ button[aria-pressed="true"] {
 .ds-tabs {
   display: flex;
   align-items: center;
-  gap: 22px;
-  border-bottom: 1px solid #d5cec3;
-  min-height: 52px;
+  gap: 18px;
+  align-self: stretch;
 }
 .ds-tabs > [role="tab"] {
   border: 0;
   border-radius: 0;
-  padding: 15px 1px;
+  padding: 0 1px;
+  font-size: 12px;
   background: transparent;
   position: relative;
   color: #867a6e;
@@ -163,7 +186,7 @@ button[aria-pressed="true"] {
   font:
     10px "IBM Plex Mono",
     monospace;
-  margin-left: 9px;
+  margin-left: 5px;
   color: #a6998c;
 }
 .ds-tab-actions {
@@ -174,7 +197,7 @@ button[aria-pressed="true"] {
 }
 .ds-tab-actions button {
   font-size: 11px;
-  padding: 7px 12px;
+  padding: 4px 8px;
 }
 .ds-tab-actions [role="status"] {
   font-size: 11px;
@@ -182,11 +205,14 @@ button[aria-pressed="true"] {
 }
 .ds-workbench {
   display: grid;
-  grid-template-columns: 230px minmax(0, 1fr) 245px;
-  min-height: 900px;
+  grid-template-columns: 200px minmax(0, 1fr) 220px;
+  height: 100%;
+  min-height: 0;
+  position: relative;
 }
 .ds-library {
-  padding: 24px 20px 24px 0;
+  padding: 10px 8px;
+  overflow: auto;
   border-right: 1px solid #ddd6cb;
 }
 .ds-search {
@@ -196,18 +222,18 @@ button[aria-pressed="true"] {
   display: block;
   font-size: 10px;
   color: #8d8175;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 .ds-search input {
   width: 100%;
   background: #faf8f3;
   border: 1px solid #ded7cc;
   border-radius: 5px;
-  padding: 10px 11px;
+  padding: 6px 8px;
   font-size: 12px;
 }
 .ds-group {
-  margin-top: 23px;
+  margin-top: 12px;
 }
 .ds-group h2 {
   font:
@@ -216,15 +242,15 @@ button[aria-pressed="true"] {
   text-transform: uppercase;
   letter-spacing: 0.6px;
   color: #8b7f72;
-  margin: 0 0 8px;
+  margin: 0 0 4px;
 }
 .ds-group button {
   display: flex;
-  gap: 10px;
+  gap: 6px;
   text-align: left;
   border: 0;
   width: 100%;
-  padding: 9px 8px;
+  padding: 4px 6px;
   font-size: 11px;
   margin: 1px 0;
   align-items: baseline;
@@ -247,23 +273,27 @@ button[aria-pressed="true"] {
 }
 .ds-archive {
   display: block;
-  margin-top: 30px;
+  margin-top: 14px;
   font-size: 10px;
   color: #968879;
 }
 .ds-canvas {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
   min-width: 0;
   background: #eae5dc;
 }
 .ds-canvas-bar {
   background: #f4f1ea;
-  min-height: 76px;
-  padding: 17px 22px;
+  min-height: 42px;
+  flex-shrink: 0;
+  padding: 6px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-wrap: wrap;
-  gap: 14px;
+  gap: 8px;
   border-bottom: 1px solid #dbd4c8;
 }
 .ds-canvas-bar > div:first-child {
@@ -288,9 +318,9 @@ button[aria-pressed="true"] {
 }
 .ds-tools button,
 .ds-tools select {
-  padding: 7px 9px;
+  padding: 4px 7px;
   font-size: 10px;
-  min-height: 32px;
+  min-height: 28px;
 }
 .ds-tools select {
   border: 1px solid #dcd6cc;
@@ -299,9 +329,10 @@ button[aria-pressed="true"] {
   max-width: 150px;
 }
 .ds-stage {
-  padding: 23px 0 30px;
-  overflow-x: auto;
-  min-height: 840px;
+  padding: 0;
+  overflow: auto;
+  flex: 1;
+  min-height: 0;
   background-image: radial-gradient(#cfc6b8 0.65px, transparent 0.65px);
   background-size: 12px 12px;
 }
@@ -313,7 +344,7 @@ button[aria-pressed="true"] {
   justify-content: center;
   gap: 12px;
   color: #817569;
-  margin-bottom: 13px;
+  margin: 8px 0;
 }
 .ds-device-label span {
   color: #a19587;
@@ -336,17 +367,18 @@ button[aria-pressed="true"] {
   text-align: center;
   font-size: 10px;
   color: #8c8071;
-  margin: 20px 10px 0;
+  margin: 8px 10px;
 }
 .ds-inspector {
   border-left: 1px solid #d8d1c6;
-  padding: 25px 0 25px 20px;
+  padding: 14px 12px;
+  overflow: auto;
 }
 .ds-inspector h2 {
   font:
-    400 25px/1.1 "Newsreader",
+    400 22px/1.1 "Newsreader",
     serif;
-  margin: 0 0 14px;
+  margin: 0 0 8px;
 }
 .ds-inspector > p:not(.ds-eyebrow) {
   font-size: 12px;
@@ -366,12 +398,12 @@ button[aria-pressed="true"] {
   letter-spacing: 0.4px;
   text-transform: uppercase;
   font-weight: 500;
-  margin: 23px 0 8px;
+  margin: 14px 0 6px;
   color: #7e7062;
 }
 .ds-try {
   border-top: 1px solid #dcd4c8;
-  margin-top: 20px;
+  margin-top: 12px;
 }
 .ds-try p {
   font-size: 12px;
@@ -379,7 +411,7 @@ button[aria-pressed="true"] {
 }
 .ds-inspect-button {
   font-size: 11px;
-  padding: 9px 10px;
+  padding: 6px 8px;
   width: 100%;
   margin-top: 13px;
 }
@@ -399,7 +431,7 @@ button[aria-pressed="true"] {
   border-bottom: 1px solid #e2d9cd;
   border-radius: 0;
   font-size: 11px;
-  padding: 10px 0;
+  padding: 6px 0;
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -418,17 +450,17 @@ button[aria-pressed="true"] {
 .ds-open {
   font-size: 11px;
   display: block;
-  margin-top: 28px;
+  margin-top: 16px;
   color: #276c66;
 }
 .ds-component-list {
-  margin-top: 20px;
+  margin-top: 12px;
 }
 .ds-component-list button {
   display: block;
   border: 0;
   width: 100%;
-  padding: 11px 9px;
+  padding: 6px;
   text-align: left;
 }
 .ds-component-list strong {
@@ -448,8 +480,10 @@ button[aria-pressed="true"] {
 .ds-gallery {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-  gap: 28px 18px;
-  padding: 22px;
+  gap: 18px 12px;
+  padding: 14px;
+  overflow: auto;
+  min-height: 0;
 }
 .ds-gallery article {
   min-width: 0;
@@ -512,7 +546,7 @@ button[aria-pressed="true"] {
 }
 .ds-section-heading h2 {
   font:
-    32px "Newsreader",
+    24px "Newsreader",
     serif;
   margin: 0 0 6px;
 }
@@ -521,12 +555,14 @@ button[aria-pressed="true"] {
   color: #8d7d6d;
 }
 .ds-journeys {
-  padding: 35px 0 50px;
+  padding: 16px 20px;
+  height: 100%;
+  overflow: auto;
 }
 .ds-journey {
   border-top: 1px solid #dbd2c6;
-  padding: 25px 0 22px;
-  margin-top: 27px;
+  padding: 14px 0;
+  margin-top: 14px;
 }
 .ds-journey h3 {
   font:
@@ -537,7 +573,7 @@ button[aria-pressed="true"] {
 .ds-journey > p {
   color: #887769;
   font-size: 12px;
-  margin: 0 0 22px;
+  margin: 0 0 12px;
 }
 .ds-journey ol {
   display: flex;
@@ -558,10 +594,10 @@ button[aria-pressed="true"] {
   color: #b7a58e;
 }
 .ds-journey button {
-  padding: 16px;
+  padding: 10px;
   text-align: left;
   width: 155px;
-  min-height: 94px;
+  min-height: 68px;
   background: #faf7f1;
   border-color: #ded4c6;
 }
@@ -583,7 +619,7 @@ button[aria-pressed="true"] {
 }
 .ds-principles {
   background: #e9e5db;
-  padding: 22px;
+  padding: 12px;
   border-radius: 5px;
   max-width: 750px;
 }
@@ -596,26 +632,6 @@ button[aria-pressed="true"] {
   color: #7c6d5d;
   margin-bottom: 0;
 }
-.ds-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 20px;
-  border-top: 1px solid #d8cebf;
-  font:
-    10px "IBM Plex Mono",
-    monospace;
-  color: #9b8c7c;
-  padding: 24px 0;
-}
-.ds-footer form {
-  margin: 0;
-}
-.ds-footer button {
-  border: 0;
-  padding: 5px 0;
-  font-size: 10px;
-}
 .ds-empty {
   font-size: 12px;
   color: #927e6d;
@@ -627,150 +643,127 @@ button[aria-pressed="true"] {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
 }
-@media (min-width: 1600px) {
-  .ds-shell {
-    padding: 0 48px;
-  }
-  .ds-workbench {
-    grid-template-columns: 250px minmax(0, 1fr) 280px;
-  }
-  .ds-inspector {
-    padding-left: 28px;
-  }
-  .ds-canvas-bar {
-    padding: 20px 28px;
-  }
-}
-@media (max-width: 1150px) {
-  .ds-shell {
-    padding: 0 20px;
-  }
-  .ds-workbench {
-    grid-template-columns: 210px minmax(0, 1fr);
-  }
-  .ds-inspector {
-    grid-column: 2;
-    border-top: 1px solid #d8d1c6;
-    padding: 24px;
-    display: block;
-  }
-  .ds-library {
-    grid-row: span 2;
-  }
-  .ds-sample {
-    white-space: normal;
-    max-width: 190px;
-  }
-  .ds-header nav {
-    gap: 16px;
-  }
-  .ds-intro h1 {
-    font-size: 34px;
-  }
-}
-@media (max-width: 700px) {
-  .ds-shell {
-    padding: 0 14px;
-  }
-  .ds-header {
-    height: auto;
-    padding: 19px 0;
-    align-items: flex-start;
-  }
-  .ds-brand {
-    font-size: 30px;
-  }
-  .ds-brand small {
-    margin-left: 13px;
-    font-size: 10px;
-  }
-  .ds-header nav {
-    flex-direction: column;
-    gap: 6px;
-    font-size: 10px;
-    text-align: right;
-  }
-  .ds-intro {
-    padding: 27px 0 20px;
-    display: block;
-  }
-  .ds-intro h1 {
-    font-size: 31px;
-  }
-  .ds-sample {
-    margin-top: 16px;
-    max-width: none;
-    font-size: 9px;
-  }
-  .ds-tabs {
-    gap: 16px;
-    flex-wrap: wrap;
-  }
-  .ds-tab-actions {
-    width: 100%;
-    padding: 0 0 10px;
-  }
-  .ds-tabs > [role="tab"] {
-    font-size: 12px;
-  }
-  .ds-workbench {
-    display: flex;
-    flex-direction: column;
-  }
-  .ds-library {
-    border-right: 0;
-    padding: 18px 0;
-    max-height: 270px;
-    overflow: auto;
-    border-bottom: 1px solid #d5cabd;
-  }
-  .ds-group {
-    margin-top: 14px;
-  }
-  .ds-group button {
-    padding: 8px;
-    font-size: 12px;
-  }
-  .ds-archive {
-    margin-top: 16px;
-  }
-  .ds-canvas-bar {
-    padding: 16px 10px;
-  }
-  .ds-tools {
-    flex-wrap: wrap;
-  }
-  .ds-inspector {
-    padding: 22px 5px;
-    border-left: 0;
-  }
-  .ds-stage {
-    min-height: 0;
-  }
-  .ds-stage-help {
-    font-size: 9px;
-  }
-  .ds-footer {
-    font-size: 8px;
-    gap: 10px;
-  }
-  .ds-footer > span:nth-child(2) {
-    display: none;
-  }
-  .ds-journey button {
-    width: 135px;
-  }
-  .ds-gallery {
-    padding: 18px 10px;
-  }
-  .ds-journey ol {
-    gap: 8px;
-  }
-}
-
 .ds-tools button:disabled,
 .ds-tools select:disabled,
 .ds-inspect-button:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+@media (max-width: 1100px) {
+  .ds-workbench {
+    grid-template-columns: 185px minmax(0, 1fr);
+  }
+  .ds-details-toggle {
+    display: block;
+  }
+  .ds-inspector {
+    display: none;
+  }
+  .ds-show-details .ds-inspector {
+    display: block;
+    position: absolute;
+    z-index: 3;
+    top: 44px;
+    right: 0;
+    bottom: 0;
+    width: 240px;
+    background: #f4f1ea;
+    box-shadow: -6px 0 20px #352a2510;
+  }
+  .ds-brand small {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .ds-header {
+    flex-wrap: wrap;
+    gap: 0 14px;
+    padding: 0 8px;
+  }
+  .ds-brand {
+    font-size: 24px;
+    height: 36px;
+    align-items: center;
+  }
+  .ds-tabs {
+    order: 3;
+    width: 100%;
+    height: 32px;
+    gap: 22px;
+  }
+  .ds-tabs > [role="tab"] {
+    font-size: 11px;
+  }
+  .ds-tab-actions {
+    gap: 12px;
+  }
+  .ds-workbench {
+    grid-template-columns: 128px minmax(0, 1fr);
+  }
+  .ds-library {
+    padding: 8px 5px;
+  }
+  .ds-group h2 {
+    font-size: 9px;
+    letter-spacing: 0;
+  }
+  .ds-group button {
+    font-size: 10px;
+    padding: 6px 4px;
+    gap: 4px;
+  }
+  .ds-group button > span {
+    flex-basis: 22px;
+    font-size: 8px;
+  }
+  .ds-search input {
+    font-size: 11px;
+    padding: 6px;
+  }
+  .ds-canvas-bar {
+    padding: 6px;
+  }
+  .ds-canvas-bar h2 {
+    font-size: 11px;
+  }
+  .ds-tools {
+    flex-wrap: wrap;
+    gap: 4px;
+  }
+  .ds-tools button,
+  .ds-tools select {
+    padding: 4px 5px;
+  }
+  .ds-tools select {
+    max-width: 122px;
+  }
+  .ds-device-label {
+    font-size: 8px;
+    gap: 5px;
+  }
+  .ds-stage-help {
+    font-size: 9px;
+  }
+  .ds-show-details .ds-inspector {
+    top: 100px;
+    width: min(240px, 100%);
+  }
+  .ds-gallery {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 10px 4px;
+  }
+  .ds-thumbnail {
+    width: 156px;
+    height: 338px;
+  }
+  .ds-thumbnail iframe {
+    transform: scale(0.4);
+  }
+  .ds-journeys {
+    padding: 12px;
+  }
+  .ds-journey button {
+    width: 135px;
+  }
 }

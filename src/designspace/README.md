@@ -11,3 +11,9 @@ The authenticated `/designspace` home is the current product reference. The ques
 When a real component changes, the preview updates with it. Add new major states to the catalog and seed only what is needed to reach that state. Avoid duplicating product markup in the studio. Keep visual experiments distinct from the current implementation.
 
 For review, select a screen, interact at a named viewport, use **Inspect component names**, or select **All screens** for the overview. **Copy view link** gives a direct review URL. Clipboard sharing inside a preview is real when explicitly clicked; account changes, game answers, and profile saves are simulated.
+
+## Answer-review study
+
+`AnswerReview.tsx` and `answer-review.css` are a design-only exploration on R02/R03. Each result has a range graphic and draft explanation: one visible sentence plus two on expansion. The optional `GamePreview.renderResults` slot supplies it only from the design entry; the live game retains its original result list. The scorecard fixtures include a miss and an exact answer for comparison.
+
+The studio uses a compact toolbar and a window-height workbench. The screen library stays on the left; the library, gallery, and reference panel scroll independently. Fit scales the preview to both available width and height. On smaller windows, Details toggles the reference panel; Resources holds the libraries, live-game link, and sign-out action.

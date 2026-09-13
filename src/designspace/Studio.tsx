@@ -40,11 +40,21 @@ export default function Studio() {
     [inspect, setInspect] = useState(false),
     [status, setStatus] = useState(""),
     [fit, setFit] = useState(true),
-    [available, setAvailable] = useState(800);
+    [showDetails, setShowDetails] = useState(false),
+    [available, setAvailable] = useState({ width: 800, height: 800 });
   const frame = useRef<HTMLIFrameElement>(null),
     stage = useRef<HTMLDivElement>(null);
   const [label, width, height] = sizes[size],
-    scale = fit ? Math.min(1, (available - 40) / width) : 1;
+    scale = fit
+      ? Math.max(
+          0.1,
+          Math.min(
+            1,
+            (available.width - 24) / width,
+            (available.height - 60) / height,
+          ),
+        )
+      : 1;
   const filtered = screens.filter((s) =>
     (
       s.code +
@@ -93,7 +103,10 @@ export default function Studio() {
     const node = stage.current;
     if (!node) return;
     const resize = new ResizeObserver(([entry]) =>
-      setAvailable(entry.contentRect.width),
+      setAvailable({
+        width: entry.contentRect.width,
+        height: entry.contentRect.height,
+      }),
     );
     resize.observe(node);
     return () => resize.disconnect();
@@ -150,52 +163,51 @@ export default function Studio() {
           4<span>σ</span>
           <small>Design space</small>
         </a>
-        <nav aria-label="Design resources">
-          <a href="/designspace?view=questions">Question library ↗</a>
-          <a href="/designspace?view=scorecards">Ink collection ↗</a>
-          <a href="/" target="_blank" rel="noreferrer">
-            Live game ↗
-          </a>
-        </nav>
-      </header>
-      <div className="ds-intro">
-        <div>
-          <p className="ds-eyebrow">
-            The current product · Interactive reference
-          </p>
-          <h1>One place to shape the game.</h1>
-          <p>Explore the screens, follow the journeys, and name the details.</p>
+        <div className="ds-tabs" role="tablist" aria-label="Design workspace">
+          {[
+            ["screens", "Screens", screens.length],
+            ["flow", "Journeys", 3],
+            ["components", "Components", components.length],
+          ].map(([id, name, count]) => (
+            <button
+              key={id}
+              role="tab"
+              id={"tab-" + id}
+              aria-selected={view === id}
+              aria-controls="workspace"
+              onClick={() => {
+                setView(String(id));
+                setComponent("");
+              }}
+            >
+              {name}
+              <small>{count}</small>
+            </button>
+          ))}
         </div>
-        <span className="ds-sample">
-          <i /> Sample data · Your game stays untouched
-        </span>
-      </div>
-      <div className="ds-tabs" role="tablist" aria-label="Design workspace">
-        {[
-          ["screens", "Screens", screens.length],
-          ["flow", "Journeys", 3],
-          ["components", "Components", components.length],
-        ].map(([id, name, count]) => (
-          <button
-            key={id}
-            role="tab"
-            id={"tab-" + id}
-            aria-selected={view === id}
-            aria-controls="workspace"
-            onClick={() => {
-              setView(String(id));
-              setComponent("");
-            }}
-          >
-            {name}
-            <small>{count}</small>
-          </button>
-        ))}
         <div className="ds-tab-actions">
-          <button onClick={copyLink}>Copy view link</button>
+          <button onClick={copyLink}>Copy link</button>
+          <details className="ds-resources">
+            <summary>Resources</summary>
+            <nav aria-label="Design resources">
+              <a href="/designspace?view=questions">Question library ↗</a>
+              <a href="/designspace?view=scorecards">Ink collection ↗</a>
+              <a href="/designspace?view=archive">Earlier explorations ↗</a>
+              <a href="/" target="_blank" rel="noreferrer">
+                Live game ↗
+              </a>
+              <span className="ds-sample">
+                <i /> Sample data
+              </span>
+              <form action="/designspace" method="post">
+                <input type="hidden" name="action" value="logout" />
+                <button>Sign out</button>
+              </form>
+            </nav>
+          </details>
           <span role="status">{status}</span>
         </div>
-      </div>
+      </header>
       <main id="workspace" role="tabpanel" aria-labelledby={"tab-" + view}>
         {view === "flow" ? (
           <section className="ds-journeys">
@@ -272,10 +284,14 @@ export default function Studio() {
           </section>
         ) : (
           <>
-            <div className="ds-workbench">
+            <div
+              className={
+                "ds-workbench" + (showDetails ? " ds-show-details" : "")
+              }
+            >
               <aside className="ds-library">
                 <label className="ds-search">
-                  <span>Find a screen or component</span>
+                  <span className="ds-sr">Find a screen or component</span>
                   <input
                     type="search"
                     placeholder="Search names…"
@@ -351,6 +367,14 @@ export default function Studio() {
                     <h2>{detail?.name ?? selected.name}</h2>
                   </div>
                   <div className="ds-tools">
+                    <button
+                      className="ds-details-toggle"
+                      aria-pressed={showDetails}
+                      aria-controls="screen-details"
+                      onClick={() => setShowDetails(!showDetails)}
+                    >
+                      Details
+                    </button>
                     {view === "screens" && (
                       <button
                         aria-pressed={gallery}
@@ -461,7 +485,7 @@ export default function Studio() {
                   </div>
                 )}
               </section>
-              <aside className="ds-inspector">
+              <aside className="ds-inspector" id="screen-details">
                 <p className="ds-eyebrow">
                   {detail ? "Component reference" : "Screen reference"}
                 </p>
@@ -534,14 +558,6 @@ export default function Studio() {
           </>
         )}
       </main>
-      <footer className="ds-footer">
-        <span>4σ · Built from the live components</span>
-        <span>Private design reference</span>
-        <form action="/designspace" method="post">
-          <input type="hidden" name="action" value="logout" />
-          <button>Sign out</button>
-        </form>
-      </footer>
     </div>
   );
 }

@@ -2,6 +2,8 @@ import { useEffect } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import { PreviewAnalyticsProvider } from "../context/PostHogContext";
+import { AnswerReview } from "./AnswerReview";
+import reviewCss from "./answer-review.css?inline";
 import IntervalGame from "../components/interval/IntervalGame";
 import { installPreviewData } from "./fixtures";
 import { screenById, components } from "./catalog";
@@ -19,6 +21,7 @@ style.textContent =
   gameCss +
   onboardingCss +
   glossaryCss +
+  reviewCss +
   `
 html.ds-inspecting [data-design-name]:hover { outline:2px solid #276c66; outline-offset:3px; cursor:crosshair; }
 `;
@@ -43,6 +46,7 @@ const selectors: Record<string, string> = {
   "bottom-nav": ".bottom-nav",
   "player-menu": ".player-panel",
   "auth-dialog": ".auth-modal",
+  "answer-review": ".answer-review",
 };
 export default function Preview() {
   useEffect(() => {
@@ -95,7 +99,12 @@ export default function Preview() {
     <MemoryRouter>
       <AuthProvider>
         <PreviewAnalyticsProvider>
-          <IntervalGame preview={screen.preview} />
+          <IntervalGame
+            preview={{
+              ...screen.preview,
+              renderResults: (results) => <AnswerReview results={results} />,
+            }}
+          />
         </PreviewAnalyticsProvider>
       </AuthProvider>
     </MemoryRouter>
