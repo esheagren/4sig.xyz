@@ -1,4 +1,9 @@
 /* The immersive result study is mounted exclusively by Design Space. */
+.interval-page:has(.score-story) {
+  height: 100dvh;
+  padding: 0;
+  overflow: hidden;
+}
 .interval-app:has(.score-story) {
   width: 100%;
   padding: 0;
@@ -11,7 +16,7 @@
   --story-muted: #c4bdb2;
   --story-red: #d9684e;
   position: relative;
-  height: calc(100dvh - 45px - env(safe-area-inset-bottom));
+  height: 100dvh;
   overflow-y: auto;
   overflow-x: hidden;
   scroll-snap-type: y mandatory;
@@ -28,7 +33,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  padding: max(20px, env(safe-area-inset-top)) 26px 10px;
+  padding: max(20px, env(safe-area-inset-top)) 26px
+    max(32px, calc(env(safe-area-inset-bottom) + 22px));
   scroll-snap-align: start;
   scroll-snap-stop: always;
   overflow: hidden;
@@ -286,7 +292,8 @@
   position: relative;
   min-height: 100%;
   background: #f6f0e6;
-  padding: 22px max(24px, calc((100% - 580px) / 2)) 36px;
+  padding: 22px max(24px, calc((100% - 580px) / 2))
+    calc(80px + env(safe-area-inset-bottom));
 }
 .score-story-review-top {
   display: flex;
@@ -308,16 +315,64 @@
   margin-top: 20px;
   font-size: 12px;
 }
-.interval-app:has(.score-story[data-page="score"]) > .bottom-nav {
+.interval-app:has(.score-story) > .bottom-nav {
   --ink: #f6f0e6;
   --muted: #b7b0a6;
   background: #171718;
   border-color: #f6f0e621;
   color: #f6f0e6;
+  transition:
+    width 320ms ease,
+    height 320ms ease,
+    background 240ms ease,
+    border-color 240ms ease,
+    bottom 320ms ease;
 }
-.interval-app:has(.score-story[data-page="score"]) > .bottom-nav > a,
-.interval-app:has(.score-story[data-page="score"]) > .bottom-nav > button {
+.interval-app:has(.score-story) > .bottom-nav > a,
+.interval-app:has(.score-story) > .bottom-nav > button {
   color: #c4bdb2;
+}
+.interval-app:has(.score-story) > .bottom-nav > * {
+  transition: opacity 180ms ease 100ms;
+}
+.interval-app:has(.score-story) > .bottom-nav::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 3px;
+  border-radius: 3px;
+  background: #d9684e;
+  opacity: 0;
+  transition: opacity 160ms ease;
+}
+.interval-app:has(.score-story[data-page="score"]) > .bottom-nav {
+  width: 32px;
+  height: 20px;
+  min-height: 0;
+  padding: 0;
+  bottom: max(5px, env(safe-area-inset-bottom));
+  background: transparent;
+  border-color: transparent;
+  pointer-events: none;
+}
+.interval-app:has(.score-story[data-page="score"]) > .bottom-nav::before {
+  opacity: 1;
+}
+.interval-app:has(.score-story[data-page="score"]) > .bottom-nav > * {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition-delay: 0ms;
+}
+@media (prefers-reduced-motion: reduce) {
+  .interval-app:has(.score-story) > .bottom-nav,
+  .interval-app:has(.score-story) > .bottom-nav > *,
+  .interval-app:has(.score-story) > .bottom-nav::before {
+    transition: none;
+  }
 }
 @media (max-height: 680px) {
   .interval-app .score-story-hero {
@@ -425,5 +480,95 @@
 @media (min-width: 701px) {
   .interval-app .score-story-art .scorecard-button {
     left: var(--story-art-left-wide, -10%);
+  }
+}
+
+.story-competition {
+  border-top: 1px solid #f6f0e629;
+  padding-top: 17px;
+}
+.story-competition-grid {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 10px;
+  margin: 0;
+}
+.story-competition-grid dt {
+  font-size: 10px;
+  color: var(--story-muted);
+  margin-bottom: 8px;
+}
+.story-competition-grid dd {
+  margin: 0;
+  font: 25px/1 var(--mono);
+  letter-spacing: -1px;
+  white-space: nowrap;
+}
+.story-competition-grid dd small {
+  font-size: 11px;
+  letter-spacing: -0.3px;
+}
+.story-competition-grid .is-ahead {
+  color: color-mix(in srgb, var(--story-accent) 24%, #f6f0e6);
+}
+.interval-app .story-competition-note {
+  color: var(--story-muted);
+  font-size: 9px;
+  margin-top: 12px;
+}
+.interval-app .story-personal-line {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  color: var(--story-muted);
+  font-size: 10px;
+  margin-top: 16px;
+}
+.story-personal-line strong {
+  font-weight: 400;
+  color: var(--story-paper);
+  margin-left: 4px;
+}
+.interval-app .story-competition-empty {
+  font-size: 12px;
+}
+@media (max-width: 360px) {
+  .story-competition-grid {
+    gap: 7px;
+  }
+  .story-competition-grid dd {
+    font-size: 21px;
+  }
+  .story-competition-grid dd small {
+    font-size: 9px;
+  }
+  .story-competition-grid dt,
+  .interval-app .story-personal-line {
+    font-size: 9px;
+  }
+}
+@media (max-height: 680px) {
+  .story-competition {
+    padding-top: 12px;
+  }
+  .story-competition-grid dt {
+    margin-bottom: 6px;
+  }
+  .interval-app .story-competition-note {
+    margin-top: 8px;
+    font-size: 8px;
+  }
+  .interval-app .story-personal-line {
+    margin-top: 10px;
+  }
+  .score-story:has(.story-competition) .score-story-main {
+    padding: 10px 0;
+  }
+  .interval-app .score-story:has(.story-competition) .score-story-label {
+    padding-bottom: 12px;
+  }
+  .score-story:has(.story-competition) .score-story-gauge {
+    margin-bottom: 12px;
   }
 }

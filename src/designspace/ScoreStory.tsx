@@ -4,9 +4,12 @@ import { ScoreCard } from "../components/interval/ScoreCard";
 import { ScorecardShare } from "../components/interval/ScorecardShare";
 import { scoreText, type Result } from "../components/interval/game";
 import { AnswerReview } from "./AnswerReview";
+import { DailyCompetition } from "./DailyCompetition";
+import type { CompetitionStats } from "./competition-stats";
 
 export type ScoreStoryProps = {
   results: Result[];
+  standings: CompetitionStats | null;
   cardData: ScorecardData;
   onboarding: boolean;
   dailyAvailable: boolean;
@@ -37,6 +40,7 @@ function RisingScore({ score }: { score: number }) {
 
 export function ScoreStory({
   results,
+  standings,
   cardData,
   onboarding,
   dailyAvailable,
@@ -155,16 +159,27 @@ export function ScoreStory({
               <span>100</span>
             </div>
           </div>
-          <dl className="score-story-stats">
-            <div>
-              <dt>Daily average</dt>
-              <dd>{average === null ? "—" : scoreText(average)}</dd>
-            </div>
-            <div>
-              <dt>{onboarding ? "Quizzes completed" : "Daily games played"}</dt>
-              <dd>{onboarding ? 1 : games.length}</dd>
-            </div>
-          </dl>
+          {!onboarding ? (
+            <DailyCompetition
+              score={cardData.score}
+              stats={standings}
+              personalAverage={average}
+              games={games.length}
+            />
+          ) : (
+            <dl className="score-story-stats">
+              <div>
+                <dt>Daily average</dt>
+                <dd>{average === null ? "—" : scoreText(average)}</dd>
+              </div>
+              <div>
+                <dt>
+                  {onboarding ? "Quizzes completed" : "Daily games played"}
+                </dt>
+                <dd>{onboarding ? 1 : games.length}</dd>
+              </div>
+            </dl>
+          )}
         </div>
         <div className="score-story-actions">
           <ScorecardShare data={cardData} showCard={false} />

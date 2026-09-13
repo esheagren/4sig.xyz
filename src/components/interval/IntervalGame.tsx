@@ -140,6 +140,7 @@ type Standings = {
   dailyRank?: number | null;
   todaysAverage?: number | null;
   totalParticipantsToday?: number;
+  playersBelowToday?: number;
   todayLeaderboard?: Array<{
     rank: number;
     username: string;
@@ -151,7 +152,7 @@ type Standings = {
 export type GamePreview = {
   stage?: Stage; demo?: boolean; tip?: 'estimate' | 'range'; calculator?: boolean;
   bounds?: Bounds; menu?: 'stats' | 'profile' | 'settings' | 'play'; auth?: boolean;
-  renderSummary?: (data: { results: Result[]; cardData: ScorecardData; onboarding: boolean; dailyAvailable: boolean; onPlayDaily: () => void }) => ReactNode;
+  renderSummary?: (data: { results: Result[]; standings: Standings | null; cardData: ScorecardData; onboarding: boolean; dailyAvailable: boolean; onPlayDaily: () => void }) => ReactNode;
 };
 export default function IntervalGame({ preview }: { preview?: GamePreview } = {}) {
   const {
@@ -1117,7 +1118,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                 })}
               </ol>
             </>
-          ) : preview?.renderSummary && cardData ? preview.renderSummary({ results, cardData, onboarding, dailyAvailable, onPlayDaily: () => void startSession(false, true) }) : (
+          ) : preview?.renderSummary && cardData ? preview.renderSummary({ results, standings, cardData, onboarding, dailyAvailable, onPlayDaily: () => void startSession(false, true) }) : (
             <section className="summary">
               <h1 className="sr-only" ref={heading} tabIndex={-1}>
                 {onboarding ? 'Your starting snapshot' : 'Your score'}

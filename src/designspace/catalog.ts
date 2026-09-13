@@ -224,10 +224,11 @@ export const screens: Screen[] = [
     answered: 4,
     member: true,
     description:
-      "An animated daily score, calibration against 95%, daily average, and games played; snap down to Today’s questions.",
-    try: "Scroll to snap between the dark result and Today’s questions. Expand an insight, return to your score, or share the GIF. Sample daily history supplies the average.",
+      "An animated daily score with percentile, rank, and comparison with today’s average, plus calibration against 95%; snap down to Today’s questions.",
+    try: "Scroll to snap between the dark result and Today’s questions. Expand an insight, return to your score, or share the GIF. Daily comparisons use sample standings: 12th of 128, ahead of 91%, and 28% above today’s mean.",
     components: [
       "score-story",
+      "daily-comparison",
       "scorecard",
       "share",
       "answer-review",
@@ -299,6 +300,14 @@ export const screens: Screen[] = [
   },
 ];
 export const components = [
+  {
+    id: "daily-comparison",
+    name: "Daily comparisons · study",
+    source: "DailyCompetition",
+    description:
+      "Percent of other finishers scored below you, daily rank, and percentage difference from today's mean. Comparisons cover completed ranked daily games so far. Exact ties are not counted as beaten; percentiles wait for 20 players.",
+    screen: "daily-score",
+  },
   {
     id: "score-story",
     name: "Two-page score · study",

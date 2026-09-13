@@ -218,7 +218,8 @@ export function installPreviewData(screen: Screen) {
           kind === "daily"
             ? {
                 dailyRank: 12,
-                todaysAverage: 240,
+                todaysAverage: score() > 0 ? score() / 1.28 : 240,
+                playersBelowToday: score() > 0 ? 116 : 0,
                 totalParticipantsToday: 128,
                 todayLeaderboard: [
                   { rank: 12, username: name, score: score() },

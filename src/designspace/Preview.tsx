@@ -50,6 +50,7 @@ const selectors: Record<string, string> = {
   "auth-dialog": ".auth-modal",
   "answer-review": ".answer-review",
   "score-story": ".score-story",
+  "daily-comparison": ".story-competition",
 };
 export default function Preview() {
   useEffect(() => {
