@@ -5,11 +5,12 @@ import { shareScorecardSvg, SHARE_CARD_WIDTH, SHARE_CARD_HEIGHT } from '../share
 import { inkCollection } from '../shared/ink-collection.js';
 
 test('chat cards keep every chosen style and score in one shallow animated composition', () => {
-  assert.equal(SHARE_CARD_WIDTH / SHARE_CARD_HEIGHT, 10 / 3);
+  assert.equal(SHARE_CARD_HEIGHT, 360, 'keep the compact export height');
+  assert.equal(SHARE_CARD_WIDTH / SHARE_CARD_HEIGHT, 16 / 9);
   for (const card of inkCollection('longest_username_123')) {
     const data = { ...card, score: 50000, hits: [true, true, false, true, true] };
     const svg = shareScorecardSvg(data);
-    assert.match(svg, /width="1200" height="360" viewBox="0 0 1200 360"/);
+    assert.match(svg, /width="640" height="360" viewBox="0 0 640 360"/);
     assert.match(svg, /50,000/); assert.match(svg, /80%/);
     assert.match(svg, /longest_username_123/); assert.match(svg, /4sig.xyz/);
     assert.doesNotMatch(svg, /NaN|undefined|Infinity/);
@@ -70,7 +71,9 @@ test('GIF-capable clipboards receive the animation and only the main game URL in
     assert.equal(caption, url);
     const html = await (await formats['text/html']).text();
     assert.match(html, /data:image\/gif/);
-    assert.match(html, /width="600" height="180"/);
+    assert.match(html, /width="320"/);
+    assert.match(html, /max-width:100%;height:auto/);
+    assert.doesNotMatch(html, /\bheight="/);
     assert.equal(html.replace(/<[^>]+>/g, ''), url);
     assert.ok(html.includes(`<a href="${url}">${url}</a>`));
   } finally {

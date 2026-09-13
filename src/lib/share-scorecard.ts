@@ -61,7 +61,8 @@ export async function copyScorecard(png: Promise<Blob>, gif: Blob | null = null,
       const canCopyGif = !!gif && typeof ClipboardItem.supports === 'function' && ClipboardItem.supports('image/gif');
       // One item carries the image and URL, so each destination can choose its supported format.
       const html = Promise.resolve(gif ?? png).then(dataUrl).then(src => new Blob([
-        `<p><img src="${src}" alt="4σ scorecard" width="${SHARE_CARD_WIDTH / 2}" height="${SHARE_CARD_HEIGHT / 2}"></p><p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
+        // A fixed height can survive a destination's width clamp and stretch the image.
+        `<p><img src="${src}" alt="4σ scorecard" width="${SHARE_CARD_WIDTH / 2}" style="display:block;max-width:100%;height:auto"></p><p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
       ], { type: 'text/html' }));
       void html.catch(() => {});
       const formats: Record<string, Blob | Promise<Blob>> = { 'image/png': png,
