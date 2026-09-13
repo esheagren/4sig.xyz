@@ -5,7 +5,7 @@ export function HowToPlay() {
     <p>Enter your best guess. Use the on-screen keys, your computer keyboard, or the calculator.</p>
     <h3>Say how sure you are</h3>
     <p>Move the brackets until you’re 95% sure the true answer lies between them. Tap either number to edit it, or hold a bracket at the edge to widen the ruler.</p>
-    <p>Hold the round submit button for half a second to give your answer.</p>
+    <p>Tap the round Submit button to give your answer.</p>
     <h3>See what you learn</h3>
     <p>A range that misses the answer earns zero points. A narrower range that contains it earns more, up to 10,000 points for an exact answer. Explore the source to learn the story behind the number.</p>
     <h3>Calibration</h3>

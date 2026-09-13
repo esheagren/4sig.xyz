@@ -49,7 +49,7 @@ import {
   validBounds,
 } from "./game";
 import type { Bounds } from "./game";
-import { HoldToConfirm } from "./HoldToConfirm";
+import { SubmitButton } from "./SubmitButton";
 import { rulerScale } from "./ruler-scale";
 import { moveBound, startDrag, stepDrag } from "./range-drag";
 import { RulerFeedback, RulerTickGate } from "./ruler-feedback";
@@ -1033,9 +1033,8 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                       <p className="entry-error" role="status">
                         {error}
                       </p>
-                      <HoldToConfirm
-                        onConfirm={() => void submit()}
-                        revision={`${index}:${bounds.lower}:${bounds.upper}`}
+                      <SubmitButton
+                        onSubmit={() => void submit()}
                         disabled={help || editing !== null}
                       />
                     </>

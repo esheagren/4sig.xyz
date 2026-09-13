@@ -41,9 +41,9 @@ export const screens: Screen[] = [
     name: "Practice · range",
     group: "First visit",
     description:
-      "The 95% confidence instruction introduces holding Submit for half a second.",
-    try: "Close the tip, move either bracket, and hold the round button.",
-    components: ["practice-tip", "range", "hold-submit"],
+      "The 95% confidence instruction introduces tapping Submit.",
+    try: "Close the tip, move either bracket, and tap the round button.",
+    components: ["practice-tip", "range", "submit"],
     preview: { stage: "range", demo: true, tip: "range", bounds: practice },
   },
   {
@@ -133,8 +133,8 @@ export const screens: Screen[] = [
     member: true,
     description:
       "Brackets move horizontally around the fixed estimate. The page stays vertically stable.",
-    try: "Drag brackets, edit either bound, or hold Submit. Pull both brackets onto the estimate for an exact answer.",
-    components: ["range", "hold-submit", "bottom-nav"],
+    try: "Drag brackets, edit either bound, or tap Submit. Pull both brackets onto the estimate for an exact answer.",
+    components: ["range", "submit", "bottom-nav"],
     preview: { stage: "range", bounds: { lower: 60, estimate: 80, upper: 95 } },
   },
   {
@@ -179,8 +179,8 @@ export const screens: Screen[] = [
     member: true,
     description:
       "Both brackets meet at the original estimate, showing the limits of movement.",
-    try: "Pull a bracket outward to restore a range, or hold Submit to commit the exact answer.",
-    components: ["range", "hold-submit"],
+    try: "Pull a bracket outward to restore a range, or tap Submit to commit the exact answer.",
+    components: ["range", "submit"],
     preview: { stage: "range", bounds: { lower: 80, estimate: 80, upper: 80 } },
   },
   {
@@ -329,7 +329,7 @@ export const components = [
   {
     id: "round-action",
     name: "Round action",
-    source: "IntervalGame / HoldToConfirm",
+    source: "IntervalGame / SubmitButton",
     description:
       "The circular action language used for Start, Submit, and Share.",
     screen: "welcome",
@@ -367,11 +367,11 @@ export const components = [
     screen: "range",
   },
   {
-    id: "hold-submit",
-    name: "Hold to submit",
-    source: "HoldToConfirm",
+    id: "submit",
+    name: "Submit",
+    source: "SubmitButton",
     description:
-      "A half-second hold with progress around the circle. Early release cancels.",
+      "One tap submits the range. Enter or Space works when the button is focused.",
     screen: "range",
   },
   {

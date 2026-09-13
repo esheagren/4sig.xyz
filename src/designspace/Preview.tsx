@@ -35,7 +35,8 @@ const selectors: Record<string, string> = {
   question: ".question-block",
   "number-pad": ".number-entry",
   range: ".instrument",
-  "hold-submit": ".commit-control",
+  "submit": ".commit-control",
+  "hold-submit": ".commit-control", // Preserve old component links.
   "answer-pin": ".truth",
   points: ".round-score",
   "scoring-examples": ".scoring-examples",

@@ -2019,7 +2019,6 @@
   margin: 12px 0 18px;
 }
 .interval-app .hold-commit {
-  --hold: 0;
   position: relative;
   display: grid;
   place-items: center;
@@ -2031,7 +2030,7 @@
   border-radius: 50%;
   background: transparent;
   color: #fff9ee;
-  touch-action: none;
+  touch-action: manipulation;
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
@@ -2056,13 +2055,6 @@
 .interval-app .commit-track {
   stroke: var(--line);
 }
-.interval-app .commit-progress {
-  stroke: var(--lime);
-  stroke-width: 3;
-  stroke-dasharray: 100;
-  stroke-dashoffset: calc(100 * (1 - var(--hold)));
-  stroke-linecap: round;
-}
 .interval-app .commit-arrow {
   position: relative;
   width: 29px;
@@ -2074,9 +2066,6 @@
   pointer-events: none;
   transition: transform 0.12s;
 }
-.interval-app .hold-commit.committed .commit-arrow {
-  transform: translateX(2px);
-}
 .interval-app .hold-commit:focus-visible {
   outline: 2px solid var(--ink);
   outline-offset: 5px;
@@ -2084,9 +2073,6 @@
 @media (prefers-reduced-motion: reduce) {
   .interval-app .commit-arrow {
     transition: none;
-  }
-  .interval-app .hold-commit.committed .commit-arrow {
-    transform: none;
   }
 }
 
