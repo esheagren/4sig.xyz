@@ -40,7 +40,7 @@ export function ScorecardShare({ data, variant = 'ink', showCard = true }: { dat
     finally { setSharing(false); }
   }
   return <>
-    {showCard && <ScoreCard data={data} variant={variant} onShare={() => void copy()} disabled={preparing || sharing} />}
+    {showCard && <ScoreCard data={data} variant={variant} compact onShare={() => void copy()} disabled={preparing || sharing} />}
     <div className="share-actions scorecard-share-actions">
       <button type="button" className="hold-commit scorecard-share-button" onClick={() => void copy()} disabled={preparing || sharing}>
         <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>

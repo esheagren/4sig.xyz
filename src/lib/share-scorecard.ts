@@ -1,4 +1,5 @@
-import { scorecardSvg, type ScorecardData, type ScorecardVariant } from '../../shared/scorecard';
+import type { ScorecardData, ScorecardVariant } from '../../shared/scorecard';
+import { shareScorecardSvg, SHARE_CARD_WIDTH, SHARE_CARD_HEIGHT } from '../../shared/share-scorecard-svg';
 
 export async function drawScorecardFrame(context: CanvasRenderingContext2D, svg: string): Promise<void> {
   const image = new Image();
@@ -11,10 +12,10 @@ export async function drawScorecardFrame(context: CanvasRenderingContext2D, svg:
 }
 
 export async function scorecardPng(data: ScorecardData, variant?: ScorecardVariant): Promise<Blob> {
-  const canvas = document.createElement('canvas'); canvas.width = 1920; canvas.height = 1440;
+  const canvas = document.createElement('canvas'); canvas.width = SHARE_CARD_WIDTH * 2; canvas.height = SHARE_CARD_HEIGHT * 2;
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Could not prepare scorecard.');
-  await drawScorecardFrame(context, scorecardSvg(data, variant));
+  await drawScorecardFrame(context, shareScorecardSvg(data, variant));
   return new Promise<Blob>((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('Could not prepare scorecard.')), 'image/png'));
 }
 
@@ -60,7 +61,7 @@ export async function copyScorecard(png: Promise<Blob>, gif: Blob | null = null,
       const canCopyGif = !!gif && typeof ClipboardItem.supports === 'function' && ClipboardItem.supports('image/gif');
       // One item carries the image and URL, so each destination can choose its supported format.
       const html = Promise.resolve(gif ?? png).then(dataUrl).then(src => new Blob([
-        `<p><img src="${src}" alt="4σ scorecard" width="480" height="360"></p><p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
+        `<p><img src="${src}" alt="4σ scorecard" width="${SHARE_CARD_WIDTH / 2}" height="${SHARE_CARD_HEIGHT / 2}"></p><p><a href="${escapeHtml(url)}">${escapeHtml(url)}</a></p>`,
       ], { type: 'text/html' }));
       void html.catch(() => {});
       const formats: Record<string, Blob | Promise<Blob>> = { 'image/png': png,

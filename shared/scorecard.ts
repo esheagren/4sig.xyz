@@ -8,7 +8,7 @@ export type ScorecardData = { player: Player; score: number; hits: boolean[]; la
 const escape = (value: string) => value.replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&apos;' })[c]!);
 export const calibrationText = (hits: boolean[]) => hits.length ? `${Math.round(hits.filter(Boolean).length / hits.length * 1000) / 10}%` : '—';
 
-/** One self-contained SVG for the live card, exported PNG/GIF and design studies. */
+/** Full-size identity card for the live UI and design studies. */
 export function scorecardSvg(data: ScorecardData, variant: ScorecardVariant = 'ink', phase = .125): string {
   if (data.design) return inkExplorationSvg(data, phase);
   const dark = variant === 'ink', emblem = variant === 'emblem';

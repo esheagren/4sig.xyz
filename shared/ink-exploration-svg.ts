@@ -1,17 +1,23 @@
 import { normalizeColor } from './player-profile.js';
 import type { ScorecardData } from './scorecard.js';
+import type { InkDesign } from './ink-exploration.js';
 import { patternFrame } from '../src/components/interval/patterns.js';
 
 const xml = (value: string) => value.replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&apos;'})[character]!);
 const mix = (a: string, b: string, amount: number) => '#' + [1, 3, 5].map(offset => Math.round(parseInt(a.slice(offset, offset + 2), 16) * (1 - amount) + parseInt(b.slice(offset, offset + 2), 16) * amount).toString(16).padStart(2, '0')).join('');
 const luminance = (hex: string) => [1, 3, 5].map(offset => parseInt(hex.slice(offset, offset + 2), 16) / 255).map(v => v <= .04045 ? v / 12.92 : ((v + .055) / 1.055) ** 2.4).reduce((sum, v, i) => sum + v * [.2126, .7152, .0722][i], 0);
 
-export function inkExplorationSvg(data: ScorecardData, phase: number): string {
-  const design = data.design!, unified = !!design.collection;
-  const accent = normalizeColor(data.player.color), light = '#f6f0e6', dark = '#201b1c';
+export function inkPalette(design: InkDesign, color: string) {
+  const accent = normalizeColor(color), light = '#f6f0e6', dark = '#201b1c';
   const background = design.surface === 'color field' ? accent : design.surface === 'color wash' ? mix(accent, light, .79) : design.surface === 'duotone' ? mix(accent, dark, .32) : mix(accent, dark, .75);
   const lum = luminance(background), ink = (luminance(light) + .05) / (lum + .05) >= (lum + .05) / (luminance(dark) + .05) ? light : dark;
   const muted = mix(background, ink, .76), line = mix(background, ink, .28);
+  return { accent, background, ink, muted, line };
+}
+
+export function inkExplorationSvg(data: ScorecardData, phase: number): string {
+  const design = data.design!, unified = !!design.collection;
+  const { accent, background, ink, muted, line } = inkPalette(design, data.player.color);
   const font = unified ? 'Arial,sans-serif' : design.type === 'serif' ? 'Georgia,serif' : design.type === 'mono' ? 'Courier New,monospace' : 'Arial,sans-serif';
   const score = Math.max(0, data.score).toLocaleString('en-US', { maximumFractionDigits: 1 });
   const hitCount = data.hits.filter(Boolean).length, rate = data.hits.length ? `${Math.round(hitCount / data.hits.length * 1000) / 10}%` : '—';

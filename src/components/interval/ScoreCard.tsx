@@ -1,10 +1,11 @@
 import { memo, useEffect, useMemo, useRef } from 'react';
 import { calibrationText, scorecardSvg, type ScorecardData, type ScorecardVariant } from '../../../shared/scorecard';
 import { patternFrame } from './patterns';
+import { shareScorecardSvg } from '../../../shared/share-scorecard-svg';
 
-const AnimatedScorecard = memo(function AnimatedScorecard({ data, variant }: { data: ScorecardData; variant: ScorecardVariant }) {
+const AnimatedScorecard = memo(function AnimatedScorecard({ data, variant, compact }: { data: ScorecardData; variant: ScorecardVariant; compact: boolean }) {
   const root = useRef<HTMLSpanElement>(null);
-  const svg = useMemo(() => scorecardSvg(data, variant), [data, variant]);
+  const svg = useMemo(() => compact ? shareScorecardSvg(data, variant) : scorecardSvg(data, variant), [data, variant, compact]);
   useEffect(() => {
     const pattern = root.current?.querySelector('[data-scorecard-pattern]');
     if (!pattern) return;
@@ -28,16 +29,16 @@ const AnimatedScorecard = memo(function AnimatedScorecard({ data, variant }: { d
   return <span ref={root} aria-hidden="true" dangerouslySetInnerHTML={{ __html: svg }} />;
 });
 
-export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShare, disabled = false }: {
-  data: ScorecardData; variant?: ScorecardVariant; disabled?: boolean; onShare?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+export const ScoreCard = memo(function ScoreCard({ data, variant = 'ink', onShare, disabled = false, compact = false }: {
+  data: ScorecardData; variant?: ScorecardVariant; disabled?: boolean; compact?: boolean; onShare?: (event: React.MouseEvent<HTMLButtonElement>) => void;
 }) {
   if (!onShare) return <div className="scorecard-button scorecard-preview" role="img"
     aria-label={`${data.player.username}'s scorecard: ${data.score.toLocaleString('en-US')} points, ${calibrationText(data.hits)} calibration`}>
-    <AnimatedScorecard data={data} variant={variant} />
+    <AnimatedScorecard data={data} variant={variant} compact={compact} />
   </div>;
   // Sharing status must not replace the SVG nodes being animated.
   return <button className="scorecard-button" onClick={onShare} disabled={disabled}
     aria-label={`Share ${data.player.username}'s scorecard: ${data.score.toLocaleString('en-US')} points, ${calibrationText(data.hits)} calibration`}>
-    <AnimatedScorecard data={data} variant={variant} />
+    <AnimatedScorecard data={data} variant={variant} compact={compact} />
   </button>;
 });
