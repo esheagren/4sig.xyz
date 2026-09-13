@@ -1,3 +1,4 @@
+import { trackProductEvent } from '../../lib/product-events';
 import { useEffect, useRef, useState } from 'react';
 import type { ScorecardData, ScorecardVariant } from '../../../shared/scorecard';
 import { GAME_URL, scorecardPng, copyScorecard } from '../../lib/share-scorecard';
@@ -30,13 +31,15 @@ export function ScorecardShare({ data, variant = 'ink', showCard = true }: { dat
     if (sharing) return;
     if (preparing) { setStatus('Preparing your animation. Tap again in a moment.'); return; }
     const cached = image.current?.data === data ? image.current : null;
+    trackProductEvent('share_attempt');
     setSharing(true); setFallback(false); setStatus('');
     try {
       const png = cached?.png ?? scorecardPng(data, variant);
       const outcome = await copyScorecard(png, cached?.gif ?? null);
+      trackProductEvent('share_result',{outcome});
       setFallback(outcome === 'unavailable');
       setStatus(outcome === 'copied-gif' || outcome === 'copied' ? 'Copied' : outcome === 'copied-text' ? 'Link copied. This browser couldn’t copy the image.' : 'Select and copy the link below.');
-    } catch { setFallback(true); setStatus('Select and copy the link below.'); }
+    } catch { trackProductEvent('share_result',{outcome:'unavailable'}); setFallback(true); setStatus('Select and copy the link below.'); }
     finally { setSharing(false); }
   }
   return <>

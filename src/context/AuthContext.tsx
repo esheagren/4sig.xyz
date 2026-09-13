@@ -1,3 +1,4 @@
+import { trackProductEvent } from '../lib/product-events';
 import {
   createContext,
   useCallback,
@@ -64,6 +65,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       body: unknown = {},
       method = "POST",
     ): Promise<Outcome> => {
+      if(action==='claim-username')trackProductEvent('claim_attempt');
       const changing = action !== "me";
       if (!changing && authChanging.current) return { success: true };
       if (changing) { authRevision.current++; authChanging.current++; }
@@ -76,6 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           ...(method === "GET" ? {} : { body: JSON.stringify(body) }),
         });
         const data = await response.json();
+        if(action==='claim-username')trackProductEvent('claim_result',{outcome:response.ok?'success':'failed',status:response.status});
         if (!response.ok)
           return {
             success: false,
@@ -85,6 +88,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             (changing || (!authChanging.current && sequence === readSequence.current))) setUser(data.user);
         return { success: true };
       } catch {
+        if(action==='claim-username')trackProductEvent('claim_result',{outcome:'network'});
         return {
           success: false,
           error: "Could not connect. Please try again.",

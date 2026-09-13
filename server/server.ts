@@ -8,7 +8,20 @@ import feedback from "../api/feedback.js";
 import health from "../api/health.js";
 import share from "../api/share.js";
 import designspace from "../api/designspace.js";
+import admin from "../api/admin.js";
+import events from "../api/events.js";
 const app = express();
+app.all(
+  ["/admin", "/admin/"],
+  express.json({ limit: "32kb" }),
+  express.urlencoded({ extended: false }),
+  (req, res) => {
+    void admin(
+      req as unknown as VercelRequest,
+      res as unknown as VercelResponse,
+    );
+  },
+);
 app.use(express.json({ limit: "32kb" }));
 app.use(express.urlencoded({ extended: false, limit: "4kb" }));
 app.all(["/designspace", "/designspace/"], (req, res) => {
@@ -18,6 +31,8 @@ app.all(["/designspace", "/designspace/"], (req, res) => {
   );
 });
 for (const [path, handler] of Object.entries({
+  admin,
+  events,
   auth,
   session,
   user,

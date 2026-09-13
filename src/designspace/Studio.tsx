@@ -13,7 +13,7 @@ const sizes = [
   ["Desktop", 1280, 900],
 ] as const;
 const frameUrl = (id: string) =>
-  "/designspace?view=screen&screen=" + encodeURIComponent(id);
+  "/admin?view=screen&screen=" + encodeURIComponent(id);
 function locationState() {
   const q = new URLSearchParams(location.hash.slice(1));
   return {
@@ -157,7 +157,7 @@ export default function Studio() {
       <header className="ds-header">
         <a
           className="ds-brand"
-          href="/designspace"
+          href="/admin?view=design"
           aria-label="4σ design space"
         >
           4<span>σ</span>
@@ -190,16 +190,16 @@ export default function Studio() {
           <details className="ds-resources">
             <summary>Resources</summary>
             <nav aria-label="Design resources">
-              <a href="/designspace?view=questions">Question library ↗</a>
-              <a href="/designspace?view=scorecards">Ink collection ↗</a>
-              <a href="/designspace?view=archive">Earlier explorations ↗</a>
+              <a href="/admin?view=questions">Question library ↗</a>
+              <a href="/admin?view=scorecards">Ink collection ↗</a>
+              <a href="/admin?view=archive">Earlier explorations ↗</a>
               <a href="/" target="_blank" rel="noreferrer">
                 Live game ↗
               </a>
               <span className="ds-sample">
                 <i /> Sample data
               </span>
-              <form action="/designspace" method="post">
+              <form action="/admin" method="post">
                 <input type="hidden" name="action" value="logout" />
                 <button>Sign out</button>
               </form>
@@ -355,7 +355,7 @@ export default function Studio() {
                     No matches. Try “range”, “score”, or “menu”.
                   </p>
                 )}
-                <a className="ds-archive" href="/designspace?view=archive">
+                <a className="ds-archive" href="/admin?view=archive">
                   Earlier visual explorations ↗
                 </a>
               </aside>

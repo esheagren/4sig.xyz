@@ -21,3 +21,5 @@ npx tsx scripts/postgres/upgrade-onboarding.ts /dev/null
 FOUR_SIGMA_ONBOARDING=off npx tsx --test test/glossary.test.ts test/postgres.test.ts test/designspace.test.ts test/designspace-preview.test.ts test/designspace-competition.test.ts test/answer-review.test.ts test/share-scorecard.test.ts test/ink-exploration.test.ts test/ink-collection.test.ts test/number-entry.test.ts test/range-drag.test.ts test/ruler-feedback.test.ts test/designspace-hold.test.mjs test/ruler-scale.test.ts test/number-display.test.ts test/question-copy.test.ts test/citations.test.ts test/editorial.test.ts
 
 FOUR_SIGMA_ONBOARDING=on npx tsx --test test/onboarding.test.ts
+
+FOUR_SIGMA_ONBOARDING=off npx tsx --test test/admin.test.ts

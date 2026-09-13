@@ -81,6 +81,7 @@ export interface CrowdData {
 }
 
 export interface Judgement {
+  initialEstimate?: number;
   answerInsight?: AnswerInsight;
   topic?: string;
   observationPeriod?: string;

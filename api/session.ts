@@ -69,7 +69,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.json({ ...game, showIntro: !body.practice && await isFirstVisit(owner, game.sessionId) });
     }
     if (action === "answer") {
-      const judgement = await saveAnswer(owner, body.sessionId, body.questionId, body.lower, body.upper);
+      const judgement = await saveAnswer(owner, body.sessionId, body.questionId, body.lower, body.upper, body.estimate);
       const game = await readGame(body.sessionId, owner);
       return res.json({ success: true, judgement, savedAnswers: game.savedAnswers });
     }

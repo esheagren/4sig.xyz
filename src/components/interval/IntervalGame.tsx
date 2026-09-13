@@ -1,3 +1,4 @@
+import { trackProductEvent, useScreenTracking } from '../../lib/product-events';
 import { playerScorecard } from '../../../shared/ink-collection';
 import { normalizeStyle } from '../../../shared/player-profile';
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -97,6 +98,7 @@ type Stage =
   | "complete";
 
 type ServerJudgement = {
+  initialEstimate?: number;
   answerInsight?: AnswerInsight;
   questionId: string;
   prompt: string;
@@ -116,7 +118,7 @@ function toResult(j: ServerJudgement): Result {
   return {
     lower: j.lower,
     upper: j.upper,
-    estimate: (j.lower + j.upper) / 2,
+    estimate: j.initialEstimate ?? (j.lower + j.upper) / 2,
     hit: j.hit,
     score: j.score,
     assisted: false,
@@ -173,20 +175,47 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
     };
   }
   async function request(path: string, body?: unknown) {
-    const response = await fetch(`/api/${path}`, {
-      method: "POST",
-      headers: headers(),
-      body: JSON.stringify(body ?? {}),
-    });
-    const data = await response.json().catch(() => {
-      throw new Error("Could not connect. Please try again.");
-    });
-    if (!response.ok)
-      throw new Error(data.error || "Could not save. Please try again.");
-    return data;
+    let reported = false;
+    try {
+      const response = await fetch(`/api/${path}`, {
+        method: "POST",
+        headers: headers(),
+        body: JSON.stringify(body ?? {}),
+      });
+      const data = await response.json();
+      if (!response.ok) {
+        trackProductEvent("flow_error", {
+          action: path,
+          status: response.status,
+        });
+        reported = true;
+        throw new Error(data.error || "Could not save. Please try again.");
+      }
+      return data;
+    } catch (error) {
+      if (!reported)
+        trackProductEvent("flow_error", {
+          action: path,
+          status: 0,
+          outcome: "network",
+        });
+      throw error instanceof Error
+        ? error
+        : new Error("Could not connect. Please try again.");
+    }
   }
   const [index, setIndex] = useState(0),
     [stage, setStage] = useState<Stage>("loading");
+  useScreenTracking(
+    preview || ["loading", "saving", "sweeping", "finalizing"].includes(stage)
+      ? null
+      : demo && ["estimate", "range", "revealed"].includes(stage)
+        ? `practice-${stage}`
+        : stage,
+    sessionId,
+    demo ? "" : (orderedQuestions[index]?.id ?? ""),
+    index + 1,
+  );
   const [text, setText] = useState(""),
     [bounds, setBounds] = useState<Bounds>({ lower: 0, estimate: 0, upper: 1 });
   const [domain, setDomain] = useState<[number, number]>([0, 1]),
@@ -441,6 +470,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
         questionId: question.id,
         lower: bounds.lower,
         upper: bounds.upper,
+        estimate: bounds.estimate,
       });
       if (!data.judgement)
         throw new Error("Your answer could not be confirmed. Try again.");

@@ -5,8 +5,8 @@ import type { PoolClient, QueryResultRow } from "pg";
 import type { Question, Judgement } from "./types.js";
 import { HttpError } from "./http.js";
 import { Score } from "./scoring.js";
-import { ONBOARDING_VERSION } from './onboarding-data.js';
-import { questionPrompt, withQuestionCopy } from './question-copy.js';
+import { ONBOARDING_VERSION } from "./onboarding-data.js";
+import { questionPrompt, withQuestionCopy } from "./question-copy.js";
 const isUuid = (s: unknown): s is string =>
   typeof s === "string" &&
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(s);
@@ -19,26 +19,48 @@ const ownerKey = (owner: string) =>
 // A visitor may have opened the tutorial before the current release was published.
 // Refresh only untouched quizzes; a submitted answer fixes the original release.
 export async function resumeGame(id: string, owner: string) {
-  if (!isUuid(id)) throw new HttpError(404, 'Game not found.');
-  return transaction(async client => {
+  if (!isUuid(id)) throw new HttpError(404, "Game not found.");
+  return transaction(async (client) => {
     const { rows } = await client.query(
       `SELECT kind,onboarding_version,completed_at FROM game_sessions
-       WHERE id=$1 AND ${ownerColumn(owner)}=$2 FOR UPDATE`, [id, ownerKey(owner)],
+       WHERE id=$1 AND ${ownerColumn(owner)}=$2 FOR UPDATE`,
+      [id, ownerKey(owner)],
     );
-    if (!rows[0]) throw new HttpError(404, 'Game not found.');
+    if (!rows[0]) throw new HttpError(404, "Game not found.");
     const game = rows[0];
-    if (game.kind === 'onboarding' && !game.completed_at && game.onboarding_version !== ONBOARDING_VERSION) {
-      const answered = await client.query('SELECT 1 FROM game_answers WHERE session_id=$1 LIMIT 1', [id]);
+    if (
+      game.kind === "onboarding" &&
+      !game.completed_at &&
+      game.onboarding_version !== ONBOARDING_VERSION
+    ) {
+      const answered = await client.query(
+        "SELECT 1 FROM game_answers WHERE session_id=$1 LIMIT 1",
+        [id],
+      );
       if (!answered.rowCount) {
-        const edition = await client.query('SELECT questions FROM onboarding_editions WHERE version=$1', [ONBOARDING_VERSION]);
-        if (!edition.rows[0]) throw new HttpError(503, 'Your starting calibration is not ready yet. Please try again shortly.');
+        const edition = await client.query(
+          "SELECT questions FROM onboarding_editions WHERE version=$1",
+          [ONBOARDING_VERSION],
+        );
+        if (!edition.rows[0])
+          throw new HttpError(
+            503,
+            "Your starting calibration is not ready yet. Please try again shortly.",
+          );
         const questions: Question[] = edition.rows[0].questions;
-        await client.query('DELETE FROM game_questions WHERE session_id=$1', [id]);
+        await client.query("DELETE FROM game_questions WHERE session_id=$1", [
+          id,
+        ]);
         for (const [position, question] of questions.entries()) {
-          await client.query('INSERT INTO game_questions(session_id,question_id,position,snapshot) VALUES($1,$2,$3,$4)',
-            [id, question.id, position, JSON.stringify(question)]);
+          await client.query(
+            "INSERT INTO game_questions(session_id,question_id,position,snapshot) VALUES($1,$2,$3,$4)",
+            [id, question.id, position, JSON.stringify(question)],
+          );
         }
-        await client.query('UPDATE game_sessions SET onboarding_version=$2 WHERE id=$1', [id, ONBOARDING_VERSION]);
+        await client.query(
+          "UPDATE game_sessions SET onboarding_version=$2 WHERE id=$1",
+          [id, ONBOARDING_VERSION],
+        );
       }
     }
     return readGame(id, owner, client);
@@ -50,7 +72,7 @@ export async function startGame(
   edition: string,
   questions: Question[],
   practice = false,
-  kind: 'daily' | 'onboarding' = 'daily',
+  kind: "daily" | "onboarding" = "daily",
   version: string | null = null,
 ) {
   return transaction(async (client) => {
@@ -82,16 +104,20 @@ export async function startGame(
 }
 function judgement(row: QueryResultRow): Judgement {
   const q: Question = row.snapshot;
-  const insight = answerInsight(row.question_id);
+  const insight = row.answer_insight ?? answerInsight(row.question_id);
   return {
     questionId: row.question_id,
+    initialEstimate:
+      row.initial_estimate == null ? undefined : Number(row.initial_estimate),
     prompt: questionPrompt(q.prompt),
     unit: q.unit,
     trueValue: q.trueValue,
     source: q.source,
     sourceUrl: q.sourceUrl,
     // Refresh editorial prose without changing the frozen scored question.
-    answerContext: insight ? `${insight.short} ${insight.more}` : q.answerContext,
+    answerContext: insight
+      ? `${insight.short} ${insight.more}`
+      : q.answerContext,
     answerInsight: insight,
     topic: q.topic,
     observationPeriod: q.observationPeriod,
@@ -114,7 +140,8 @@ export async function readGame(
   );
   if (!rows[0]) throw new HttpError(404, "Game not found.");
   const { rows: items } = await run(
-    `SELECT q.question_id,q.snapshot,a.lower_bound,a.upper_bound,a.captured,a.score FROM game_questions q
+    `SELECT q.question_id,q.snapshot,a.lower_bound,a.upper_bound,a.captured,a.score,a.initial_estimate,canonical.answer_insight FROM game_questions q
+    LEFT JOIN questions canonical ON canonical.id=q.question_id
     LEFT JOIN game_answers a ON (q.session_id,q.question_id)=(a.session_id,a.question_id)
     WHERE q.session_id=$1 ORDER BY q.position`,
     [id],
@@ -126,20 +153,33 @@ export async function readGame(
     kind: rows[0].kind as "daily" | "onboarding",
     onboardingVersion: rows[0].onboarding_version,
     completed: !!rows[0].completed_at,
-    questions: (await withGlossary(
-      items.map((r) => ({
-        id: r.question_id,
-        prompt: r.snapshot.prompt,
-        unit: r.snapshot.unit,
+    questions: (
+      await withGlossary(
+        items.map((r) => ({
+          id: r.question_id,
+          prompt: r.snapshot.prompt,
+          unit: r.snapshot.unit,
+        })),
+        client,
+      )
+    ).map((q, i) =>
+      withQuestionCopy({
+        ...q,
+        max: items[i].snapshot.max,
+        topic: items[i].snapshot.topic,
+        observationPeriod: items[i].snapshot.observationPeriod,
+        ...(rows[0].kind === "onboarding"
+          ? { glossary: items[i].snapshot.glossary ?? q.glossary }
+          : {}),
+      }),
+    ),
+    savedAnswers: items
+      .filter((r) => r.lower_bound !== null)
+      .map((r) => ({
+        questionId: r.question_id,
+        lower: Number(r.lower_bound),
+        upper: Number(r.upper_bound),
       })),
-      client,
-    )).map((q, i) => withQuestionCopy({ ...q, max: items[i].snapshot.max, topic: items[i].snapshot.topic,
-      observationPeriod: items[i].snapshot.observationPeriod,
-      ...(rows[0].kind === 'onboarding' ? { glossary: items[i].snapshot.glossary ?? q.glossary } : {}),
-    })),
-    savedAnswers: items.filter((r) => r.lower_bound !== null).map((r) => ({
-      questionId: r.question_id, lower: Number(r.lower_bound), upper: Number(r.upper_bound),
-    })),
     // Only locked answers are revealed, for both daily and calibration games.
     judgements: items.filter((r) => r.lower_bound !== null).map(judgement),
   };
@@ -150,6 +190,7 @@ export async function saveAnswer(
   questionId: unknown,
   lower: unknown,
   upper: unknown,
+  estimate?: unknown,
 ) {
   if (
     !isUuid(sessionId) ||
@@ -160,6 +201,14 @@ export async function saveAnswer(
     lower > upper
   )
     throw new HttpError(400, "Enter finite, ordered bounds.");
+  if (
+    estimate !== undefined &&
+    (typeof estimate !== "number" ||
+      !Number.isFinite(estimate) ||
+      estimate < lower ||
+      estimate > upper)
+  )
+    throw new HttpError(400, "Keep the initial estimate within the bounds.");
   return transaction(async (client) => {
     const { rows } = await client.query(
       `SELECT completed_at,kind FROM game_sessions WHERE id=$1 AND ${ownerColumn(userId)}=$2 FOR UPDATE`,
@@ -167,8 +216,9 @@ export async function saveAnswer(
     );
     if (!rows[0]) throw new HttpError(404, "Game not found.");
     const { rows: items } = await client.query(
-      `SELECT q.*,a.lower_bound,a.upper_bound,a.score,a.captured FROM game_questions q
-      LEFT JOIN game_answers a ON (q.session_id,q.question_id)=(a.session_id,a.question_id)
+      `SELECT q.*,a.lower_bound,a.upper_bound,a.score,a.captured,a.initial_estimate,canonical.answer_insight FROM game_questions q
+      LEFT JOIN questions canonical ON canonical.id=q.question_id
+    LEFT JOIN game_answers a ON (q.session_id,q.question_id)=(a.session_id,a.question_id)
       WHERE q.session_id=$1 ORDER BY q.position`,
       [sessionId],
     );
@@ -177,7 +227,10 @@ export async function saveAnswer(
     if (item.lower_bound !== null) {
       if (
         Number(item.lower_bound) !== lower ||
-        Number(item.upper_bound) !== upper
+        Number(item.upper_bound) !== upper ||
+        (estimate !== undefined &&
+          item.initial_estimate != null &&
+          Number(item.initial_estimate) !== estimate)
       )
         throw new HttpError(409, "This range is already locked.");
       return judgement(item);
@@ -187,7 +240,10 @@ export async function saveAnswer(
     if (items.find((r) => r.lower_bound === null)?.question_id !== questionId)
       throw new HttpError(409, "Answer the current question first.");
     const q: Question = item.snapshot;
-    if (rows[0].kind === "onboarding" && (lower < 0 || upper > (q.max ?? 1e100)))
+    if (
+      rows[0].kind === "onboarding" &&
+      (lower < 0 || upper > (q.max ?? 1e100))
+    )
       throw new HttpError(400, "Keep your bounds within the question units.");
     const score = Score.calculateScore(
         lower,
@@ -197,8 +253,8 @@ export async function saveAnswer(
       ),
       hit = Score.inBounds(lower, upper, q.trueValue);
     await client.query(
-      "INSERT INTO game_answers(session_id,question_id,lower_bound,upper_bound,score,captured) VALUES($1,$2,$3,$4,$5,$6)",
-      [sessionId, questionId, lower, upper, score, hit],
+      "INSERT INTO game_answers(session_id,question_id,lower_bound,upper_bound,score,captured,initial_estimate) VALUES($1,$2,$3,$4,$5,$6,$7)",
+      [sessionId, questionId, lower, upper, score, hit, estimate ?? null],
     );
     return judgement({
       ...item,
@@ -206,6 +262,7 @@ export async function saveAnswer(
       upper_bound: upper,
       score,
       captured: hit,
+      initial_estimate: estimate ?? null,
     });
   });
 }

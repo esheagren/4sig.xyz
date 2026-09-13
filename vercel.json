@@ -5,6 +5,9 @@
   "functions": {
     "api/designspace.ts": {
       "includeFiles": "api/_lib/*.html"
+    },
+    "api/admin.ts": {
+      "includeFiles": "api/_lib/*.html"
     }
   },
   "redirects": [
@@ -15,6 +18,14 @@
     }
   ],
   "rewrites": [
+    {
+      "source": "/admin",
+      "destination": "/api/admin"
+    },
+    {
+      "source": "/admin/",
+      "destination": "/api/admin"
+    },
     {
       "source": "/designspace",
       "destination": "/api/designspace"
@@ -81,6 +92,15 @@
     },
     {
       "source": "/assets/designspace.js",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=0, must-revalidate"
+        }
+      ]
+    },
+    {
+      "source": "/assets/admin.js",
       "headers": [
         {
           "key": "Cache-Control",

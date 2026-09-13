@@ -152,7 +152,7 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     const scorecardNonce = /script nonce="([^"]+)"/.exec(scorecards.body)?.[1];
     assert.ok(scorecards.headers["content-security-policy"].includes(`'nonce-${scorecardNonce}'`));
     const lockedCards = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards");
-    assert.match(lockedCards.body, /action="\/designspace\?view=scorecards"/);
+    assert.match(lockedCards.body, /action="\/admin\?view=scorecards"/);
     assert.doesNotMatch(lockedCards.body, /<svg/);
     const seededLogin = await request(undefined, "GET", undefined, undefined, "/designspace?view=scorecards&seed=AB12CD34EF56&name=custom&color=%23795078");
     assert.match(seededLogin.body, /view=scorecards&amp;seed=AB12CD34EF56&amp;name=custom&amp;color=%23795078/);
@@ -250,7 +250,7 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
       action: "logout",
     });
     assert.equal(logout.status, 303);
-    assert.equal(logout.headers.location, "/designspace");
+    assert.equal(logout.headers.location, "/admin");
     assert.equal((await request(undefined, "POST", "null")).status, 403);
     assert.equal(
       (await request(undefined, "POST", "https://other.example")).status,

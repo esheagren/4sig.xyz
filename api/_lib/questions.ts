@@ -1,3 +1,4 @@
+import { chooseQuestions } from './question-planner.js';
 import { query, transaction } from "./db.js";
 import type { PoolClient, QueryResultRow } from "pg";
 import { HttpError } from "./http.js";
@@ -11,6 +12,8 @@ export function question(row: QueryResultRow): Question {
     id: row.id,
     prompt: row.question_text,
     unit: row.unit ?? "",
+    topic: row.editorial_topic ?? undefined,
+    observationPeriod: row.observation_period ?? undefined,
     trueValue: Number(row.answer_value),
     scoringReference: Number(row.scoring_reference),
     source: row.source_name ?? "",
@@ -69,16 +72,7 @@ export async function scheduleEdition(
     md5(q.id::text||$1)`,
     [edition],
   );
-  while (selected.length < DAILY_QUESTION_COUNT && candidates.length) {
-    const topics = new Set(selected.map((r) => r.editorial_topic));
-    const hasReference = selected.some((r) => r.editorial_role === "reference");
-    const permitted = candidates.filter(
-      (r) => !hasReference || r.editorial_role !== "reference",
-    );
-    if (!permitted.length) break;
-    const next =
-      permitted.find((r) => !topics.has(r.editorial_topic)) ?? permitted[0];
-    candidates.splice(candidates.indexOf(next), 1);
+  for (const next of chooseQuestions(selected, candidates).slice(selected.length)) {
     await client.query(
       `INSERT INTO daily_questions(question_id,date,display_order) VALUES($1,$2,
       (SELECT COALESCE(max(display_order),-1)+1 FROM daily_questions WHERE date=$2))`,
