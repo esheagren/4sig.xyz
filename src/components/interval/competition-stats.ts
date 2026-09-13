@@ -2,9 +2,10 @@ export type CompetitionStats = {
   dailyRank?: number | null;
   totalParticipantsToday?: number;
   todaysAverage?: number | null;
-  // Design fixture only for now. A live percentile needs this server aggregate;
-  // rank alone cannot distinguish the number of tied and lower scores.
-  playersBelowToday?: number;
+  personalDailyAverage?: number | null;
+  personalDailyGames?: number;
+  // Strictly lower scores in the same ranked daily cohort; ties are not beaten.
+  playersBelowToday?: number | null;
 };
 
 export function competitionValues(
@@ -25,7 +26,7 @@ export function competitionValues(
   const below = stats?.playersBelowToday;
   const percentile =
     count >= 20 &&
-    below !== undefined &&
+    below != null &&
     Number.isInteger(below) &&
     below >= 0 &&
     below <= count - rank

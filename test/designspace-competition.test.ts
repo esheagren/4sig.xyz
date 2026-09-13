@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { competitionValues } from '../src/designspace/competition-stats';
+import { competitionValues } from '../src/components/interval/competition-stats';
 
 test('daily comparisons exclude self, count only strictly lower scores, and compare with the mean', () => {
   assert.deepEqual(competitionValues(1280, { dailyRank: 12, totalParticipantsToday: 128, playersBelowToday: 116, todaysAverage: 1000 }), { count: 128, rank: 12, percentile: 91, difference: 28 });

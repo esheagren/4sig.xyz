@@ -14,6 +14,7 @@ import { patternFrame } from "../src/components/interval/patterns.ts";
 import userApi from "../api/user.ts";
 import { pool, query } from "../api/_lib/db.ts";
 import { getDailyQuestions } from "../api/_lib/questions.js";
+import { getDailyStats } from "../api/_lib/sessions.ts";
 import { Score } from "../api/_lib/scoring.ts";
 import {
   quantity,
@@ -737,6 +738,42 @@ test("daily schedule fills imported three-question editions and stays stable at 
     4,
   );
   assert.equal((await getDailyQuestions("2099-01-02")).length, 4);
+});
+
+test("daily statistics handle ties and average only completed ranked daily games", async () => {
+  const ids: string[] = [];
+  const questionId = (await query("SELECT id FROM questions LIMIT 1")).rows[0].id;
+  async function game(userId: string, edition: string, score: number, ranked = true, kind = 'daily', completed = true) {
+    const id = (await query(`INSERT INTO game_sessions(user_id,edition,is_ranked,kind,onboarding_version,completed_at)
+      VALUES($1,$2,$3,$4,$5,$6) RETURNING id`, [userId, edition, ranked, kind, kind === 'onboarding' ? 'first-eight-v1' : null, completed ? new Date() : null])).rows[0].id;
+    await query("INSERT INTO game_questions(session_id,question_id,position,snapshot) VALUES($1,$2,0,'{}')", [id, questionId]);
+    await query("INSERT INTO game_answers(session_id,question_id,lower_bound,upper_bound,score,captured) VALUES($1,$2,0,100,$3,true)", [id, questionId, score]);
+  }
+  try {
+    for (let i = 0; i < 5; i++) ids.push((await query("INSERT INTO users(username) VALUES($1) RETURNING id", [`StatsFixture${i}`])).rows[0].id);
+    for (const [i, score] of [100,100,25,0].entries()) await game(ids[i], '2001-02-03', score);
+    await game(ids[0], '2001-02-02', 0);
+    await game(ids[0], '2001-02-03', 9999, false);
+    await game(ids[0], '2001-02-03', 9999, true, 'onboarding');
+    await game(ids[0], '2001-02-04', 9999, true, 'daily', false);
+    for (let i = 0; i < 4; i++) {
+      const stats = await getDailyStats(ids[i], '2001-02-03');
+      assert.equal(stats.dailyRank, [1,1,3,4][i]);
+      assert.equal(stats.playersBelowToday, [2,2,1,0][i]);
+      assert.equal(stats.totalParticipantsToday, 4);
+      assert.equal(stats.todaysAverage, 56.25);
+      assert.equal(stats.personalDailyAverage, [50,100,25,0][i]);
+      assert.equal(stats.personalDailyGames, i === 0 ? 2 : 1);
+    }
+    const outsider = await getDailyStats(ids[4], '2001-02-03');
+    assert.equal(outsider.dailyRank, null);
+    assert.equal(outsider.playersBelowToday, null);
+    assert.equal(outsider.personalDailyAverage, null);
+    assert.equal(outsider.personalDailyGames, 0);
+  } finally {
+    await query("DELETE FROM game_sessions WHERE user_id=ANY($1::uuid[])", [ids]);
+    await query("DELETE FROM users WHERE id=ANY($1::uuid[])", [ids]);
+  }
 });
 
 test.after(async () => {

@@ -1,6 +1,6 @@
 # Answer-review editorial notes
 
-Checked 2026-09-12. These are Design Space drafts, not edits to the live question bank.
+Checked 2026-09-12. Approved context is now shared by live scorecards and Design Space. Scoring benchmarks in the question bank remain unchanged.
 
 Use plain sentences for substantial ideas. The first sentence should add a trend, a meaningful contrast, or a surprising fact. The two expanded sentences should add evidence and texture. Avoid generic lessons about why knowledge matters, obvious policy implications, or telling the reader what to value. Keep dates, denominators, geography, and data editions clear; distinguish percentage changes from percentage-point changes. Each draft carries its own context links alongside the existing answer source.
 

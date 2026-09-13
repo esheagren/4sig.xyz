@@ -12,24 +12,14 @@ When a real component changes, the preview updates with it. Add new major states
 
 For review, select a screen, interact at a named viewport, use **Inspect component names**, or select **All screens** for the overview. **Copy view link** gives a direct review URL. Clipboard sharing inside a preview is real when explicitly clicked; account changes, game answers, and profile saves are simulated.
 
-## Answer-review study
+## Shared results components
 
-`AnswerReview.tsx` and `answer-review.css` are a design-only exploration on R02/R03. Each result has a range graphic and draft explanation: one visible sentence plus two on expansion. Use concrete historical trends and geographic contrasts in plain language, with context citations; see `answer-review-sources.md` for editorial guidance and verification. The optional `GamePreview.renderSummary` slot supplies the `ScoreStory` study only from the design entry; the live game retains its original result list. The scorecard fixtures include a miss and an exact answer for comparison.
+`src/components/interval/ScoreStory.tsx` and `AnswerReview.tsx` power both the live game and R02/R03. The first page uses the player’s animated artwork and color, current score, calibration against 95%, and a round Share button near the bottom. The second snap point is **Today’s questions**: each answer has a range graphic, expandable context, and sources. Long reviews scroll freely, with buttons to return to the score or continue playing. Reduced motion disables the count-up and animation.
+
+Approved context for the eight starting questions is served by `api/_lib/answer-insights.ts` only with revealed judgements. Exact IDs also map the matching questions from the original ten-question edition. Other questions use their stored answer context. Context and reference answers are never bundled in public JavaScript. See `answer-review-sources.md` for editorial guidance and source verification. Fixtures include a miss and an exact answer.
+
+Daily comparisons use completed, ranked games for the same edition. The API counts strictly lower scores, including correct handling of ties, and returns personal daily average and completed ranked daily count. Percent ahead excludes self, rounds down, and waits for 20 finishers. A single finisher sees “First to finish today”; a zero mean cannot produce a percentage comparison. Starting scores omit competition and completion count; practice is excluded from totals. Preview statistics remain isolated sample data.
+
+Only a small red mark appears at the bottom of the score page. It expands into dark navigation when the question review becomes active. Hidden navigation controls cannot receive keyboard focus. Review content has bottom padding to clear the navigation.
 
 The studio uses a compact toolbar and a window-height workbench. The screen library stays on the left; the library, gallery, and reference panel scroll independently. Fit scales the preview to both available width and height. On smaller windows, Details toggles the reference panel; Resources holds the libraries, live-game link, and sign-out action.
-
-## Two-page results study
-
-`ScoreStory.tsx` and `score-story.css` wrap R02/R03 in a viewport-height scroll container. The first snap point is a dark results page using the player's existing animated scorecard artwork (with its text hidden behind accessible HTML metrics), chosen color, and restrained red accents. Share sits at the bottom and uses the same GIF/PNG plus homepage clipboard behavior as the live game. `ScorecardShare.showCard` defaults to true; only this study hides the foreground card.
-
-The second snap point is **Today's questions**, whose content can scroll beyond one viewport. Its top button returns to the score; the starting quiz's invitation to the daily game remains below the answers. Native scroll snap works with touch/trackpads; explicit buttons support keyboards. Reduced-motion preferences disable the score count-up and pattern animation.
-
-Calibration here is for this completed game: hits divided by answers, with an absolute percentage-point distance from 95%. The daily average and daily-game count use the preview's sample history plus the current daily result (deduplicated by date); the starting score has no daily average yet and omits the completion count. No real history or account state is read. The live results layout remains unchanged.
-
-## Competitive results and navigation study
-
-The daily first page now uses `DailyCompetition`: percent of other finishers scoring strictly below the player, competition rank, and percentage difference from the day's mean. Personal daily average and games played sit beneath in a small line. This cohort is completed, ranked games for the same edition, so standings can move while the day is open. The starting quiz does not show daily comparisons.
-
-The existing daily endpoint supplies rank, participant count, and mean. `playersBelowToday` is **a preview-fixture addition only**, not a new production statistic: before shipping percentiles, compute the strictly-lower count from the same ranked daily cohort in `getDailyStats`. Rank alone cannot establish this when scores tie. The study divides that count by participants minus one, rounds down so it never claims to have beaten a player it has not, and waits for at least 20 finishers to show a percentage. All-tied scores give 0% ahead; a single finisher gets “First to finish today”; absent standings and a zero mean do not produce invented percentages. Tests: `npx tsx --test test/designspace-competition.test.ts`.
-
-Only a small red mark appears at the bottom of the first page. As the question review becomes active, the mark expands into the dark navigation bar. On the first page, the full navigation's contents are hidden from both focus and accessibility navigation. Reduced-motion mode switches directly. The results occupy the full viewport; review content has extra bottom padding to clear the navigation.

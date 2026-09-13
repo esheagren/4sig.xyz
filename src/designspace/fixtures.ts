@@ -1,3 +1,4 @@
+import type { AnswerInsight } from "../../shared/answer-insight";
 import type { Question } from "../../api/_lib/types";
 import { Score } from "../../shared/scoring";
 import type { Screen } from "./catalog";
@@ -38,7 +39,7 @@ export function installPreviewData(screen: Screen) {
     icon = "wave",
     style = "wave";
   const kind = screen.kind ?? "onboarding";
-  const supplied: Question[] = JSON.parse(
+  const supplied: (Question & { answerInsight?: AnswerInsight })[] = JSON.parse(
     document.getElementById("design-preview-data")?.textContent ?? "[]",
   );
   if (supplied.length !== 8)
@@ -47,6 +48,7 @@ export function installPreviewData(screen: Screen) {
     kind === "daily" ? [supplied[3], ...supplied.slice(0, 3)] : supplied;
   const sessionId = "design-preview-session";
   type Judgement = {
+    answerInsight?: AnswerInsight;
     questionId: string;
     prompt: string;
     unit?: string;
@@ -75,6 +77,7 @@ export function installPreviewData(screen: Screen) {
       source: q.source,
       sourceUrl: q.sourceUrl,
       answerContext: q.answerContext,
+      answerInsight: q.answerInsight,
       topic: q.topic,
       observationPeriod: q.observationPeriod,
     };
@@ -218,6 +221,8 @@ export function installPreviewData(screen: Screen) {
           kind === "daily"
             ? {
                 dailyRank: 12,
+                personalDailyAverage: (423 + 491 + score()) / 3,
+                personalDailyGames: 3,
                 todaysAverage: score() > 0 ? score() / 1.28 : 240,
                 playersBelowToday: score() > 0 ? 116 : 0,
                 totalParticipantsToday: 128,

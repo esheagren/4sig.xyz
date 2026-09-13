@@ -93,7 +93,7 @@ test('first eight: per-answer reveal, ownership, cross-day resume, identity, dai
   assert.equal(first.data.questions.length, 8);
   assert.equal((await query('SELECT count(*)::int n FROM users')).rows[0].n, before);
   assert.deepEqual(first.data.judgements, []);
-  assert.doesNotMatch(JSON.stringify(first.data), /trueValue|answerContext|sourceUrl|"hit"|"score"/);
+  assert.doesNotMatch(JSON.stringify(first.data), /trueValue|answerContext|answerInsight|sourceUrl|"hit"|"score"/);
   const maritime = first.data.questions[3];
   assert.equal(maritime.prompt, 'What percentage of international trade in goods is carried by sea, by volume?');
   assert.equal(maritime.prompt.slice(maritime.glossary[0].start, maritime.glossary[0].end), 'by volume');
@@ -118,6 +118,8 @@ test('first eight: per-answer reveal, ownership, cross-day resume, identity, dai
       assert.equal(r.data.savedAnswers.length, i + 1);
       assert.equal(r.data.judgement.questionId, onboardingQuestions[i].id);
       assert.equal(r.data.judgement.trueValue, onboardingQuestions[i].trueValue);
+      assert.ok(r.data.judgement.answerInsight.short);
+      assert.ok(r.data.judgement.answerInsight.sources.length);
       assert.equal(r.data.judgement.prompt, first.data.questions[i].prompt);
       assert.equal(r.data.judgement.sourceUrl, onboardingQuestions[i].sourceUrl);
       assert.equal(typeof r.data.judgement.score, 'number');
@@ -130,8 +132,9 @@ test('first eight: per-answer reveal, ownership, cross-day resume, identity, dai
     assert.equal(resumed.data.sessionId, first.data.sessionId);
     assert.equal(resumed.data.savedAnswers.length, i + 1);
     assert.equal(resumed.data.judgements.length, i + 1);
+    assert.deepEqual(resumed.data.judgements[i].answerInsight, responses[0].data.judgement.answerInsight);
     assert.deepEqual(resumed.data.judgements.map((j: { questionId: string }) => j.questionId), onboardingQuestions.slice(0, i + 1).map(q => q.id));
-    assert.doesNotMatch(JSON.stringify(resumed.data.questions), /trueValue|answerContext|sourceUrl|"hit"|"score"/, 'question list never contains future answers');
+    assert.doesNotMatch(JSON.stringify(resumed.data.questions), /trueValue|answerContext|answerInsight|sourceUrl|"hit"|"score"/, 'question list never contains future answers');
   }
   assert.equal((await call(session, '/api/session/finalize', browser, { sessionId: first.data.sessionId })).status, 401);
   const claimed = await call(auth, '/api/auth/claim-username', browser, { username: 'FirstTenPlayer' });
@@ -268,7 +271,7 @@ test('untouched legacy quizzes resume as eight questions for guests and signed-i
       assert.equal(resumed.data.questions.length, 8);
       assert.deepEqual(resumed.data.questions.map((q: { id: string }) => q.id), onboardingQuestions.map(q => q.id));
       assert.deepEqual(resumed.data.savedAnswers, []);
-      assert.doesNotMatch(JSON.stringify(resumed.data), /trueValue|answerContext|sourceUrl|"hit"|"score"/);
+      assert.doesNotMatch(JSON.stringify(resumed.data), /trueValue|answerContext|answerInsight|sourceUrl|"hit"|"score"/);
     }
     const answer = await call(session, '/api/session/answer', browser, {
       sessionId: original.sessionId, questionId: onboardingQuestions[0].id, lower: 0, upper: 100,

@@ -190,3 +190,5 @@
     font-size: 21px;
   }
 }
+
+.interval-app .review-unit { font: 10px/1.4 var(--mono); color: var(--muted); margin: -4px 0 10px; overflow-wrap: anywhere; }

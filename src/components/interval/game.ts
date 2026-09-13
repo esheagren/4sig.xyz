@@ -1,7 +1,9 @@
+import type { AnswerInsight } from "../../../shared/answer-insight";
 import { playerSymbol, playerLabel, colorName } from "./player";
 import type { Player } from "./player";
 import type { GlossaryAnnotation } from "../../lib/glossary";
 export type Question = {
+  insight?: AnswerInsight;
   glossary?: GlossaryAnnotation[];
   id: string;
   category: string;

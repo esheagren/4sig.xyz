@@ -2,9 +2,8 @@ import { useEffect } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import { PreviewAnalyticsProvider } from "../context/PostHogContext";
-import { ScoreStory } from "./ScoreStory";
-import storyCss from "./score-story.css?inline";
-import reviewCss from "./answer-review.css?inline";
+import storyCss from "../components/interval/score-story.css?inline";
+import reviewCss from "../components/interval/answer-review.css?inline";
 import IntervalGame from "../components/interval/IntervalGame";
 import { installPreviewData } from "./fixtures";
 import { screenById, components } from "./catalog";
@@ -103,12 +102,7 @@ export default function Preview() {
     <MemoryRouter>
       <AuthProvider>
         <PreviewAnalyticsProvider>
-          <IntervalGame
-            preview={{
-              ...screen.preview,
-              renderSummary: (data) => <ScoreStory {...data} />,
-            }}
-          />
+          <IntervalGame preview={screen.preview} />
         </PreviewAnalyticsProvider>
       </AuthProvider>
     </MemoryRouter>

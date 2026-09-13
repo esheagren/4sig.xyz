@@ -1,4 +1,4 @@
-import { scoreText } from "../components/interval/game";
+import { scoreText } from "./game";
 
 import { competitionValues, type CompetitionStats } from "./competition-stats";
 

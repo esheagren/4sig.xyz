@@ -13,11 +13,17 @@ export async function getDailyStats(
   );
   const own = rows.find((r) => r.user_id === userId);
   const { rows: hit } = await query(
-    "SELECT sum(questions_captured)::float8/nullif(sum(questions_answered),0)*100 rate FROM completed_games WHERE user_id=$1 AND is_ranked",
+    `SELECT sum(questions_captured)::float8/nullif(sum(questions_answered),0)*100 rate,
+    avg(score) FILTER (WHERE kind='daily')::float8 daily_average,
+    count(*) FILTER (WHERE kind='daily')::int daily_games
+    FROM completed_games WHERE user_id=$1 AND is_ranked`,
     [userId],
   );
   return {
     dailyRank: own?.rank ?? null,
+    playersBelowToday: own ? rows.filter(row => row.score < own.score).length : null,
+    personalDailyAverage: hit[0]?.daily_average ?? null,
+    personalDailyGames: hit[0]?.daily_games ?? 0,
     topScoreToday: rows[0]?.score ?? null,
     todaysAverage: rows.length
       ? rows.reduce((sum, r) => sum + r.score, 0) / rows.length

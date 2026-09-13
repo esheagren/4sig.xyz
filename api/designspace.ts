@@ -1,3 +1,4 @@
+import { answerInsight } from "./_lib/answer-insights.js";
 import { onboardingQuestions } from './_lib/onboarding-data.js';
 import { withQuestionCopy } from './_lib/question-copy.js';
 import { randomBytes } from "node:crypto";
@@ -143,7 +144,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         ? "import('/assets/designspace.js');"
         : "import('/@react-refresh').then(({default: runtime}) => { runtime.injectIntoGlobalHook(window); window.$RefreshReg$ = () => {}; window.$RefreshSig$ = () => type => type; window.__vite_plugin_react_preamble_installed__ = true; return import('/src/designspace.tsx'); });";
       page = page.replace('__DESIGNSPACE_BOOTSTRAP__', bootstrap)
-        .replace('__PREVIEW_DATA__', JSON.stringify(view === 'screen' ? onboardingQuestions.map(withQuestionCopy) : []).replaceAll('<', '\\u003c'));
+        .replace('__PREVIEW_DATA__', JSON.stringify(view === 'screen' ? onboardingQuestions.map(question => ({ ...withQuestionCopy(question), answerInsight: answerInsight(question.id) })) : []).replaceAll('<', '\\u003c'));
     }
     if (view === 'scorecards') {
       const bootstrap = process.env.NODE_ENV === 'production'

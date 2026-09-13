@@ -1,3 +1,4 @@
+import type { AnswerInsight } from "../../shared/answer-insight.js";
 // Core data types for API
 
 export interface User {
@@ -80,6 +81,7 @@ export interface CrowdData {
 }
 
 export interface Judgement {
+  answerInsight?: AnswerInsight;
   topic?: string;
   observationPeriod?: string;
   questionId: string;
@@ -110,6 +112,9 @@ export interface TodayLeaderboardEntry {
 }
 
 export interface DailyStats {
+  playersBelowToday: number | null;
+  personalDailyAverage: number | null;
+  personalDailyGames: number;
   dailyRank: number | null;
   topScoreToday: number | null;
   todaysAverage: number | null;

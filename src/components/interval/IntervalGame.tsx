@@ -3,12 +3,10 @@ import { normalizeStyle } from '../../../shared/player-profile';
 import { useEffect, useMemo, useRef, useState } from "react";
 import type {
   CSSProperties,
-  ReactNode,
   PointerEvent as ReactPointerEvent,
   KeyboardEvent,
 } from "react";
 import { flushSync } from "react-dom";
-import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { useAnalytics } from "../../context/PostHogContext";
 import { getDeviceId } from "../../lib/device";
@@ -24,9 +22,11 @@ import { CalibrationSetup } from "./CalibrationSetup";
 import { PracticeTip } from "./PracticeTip";
 import { WelcomeProbability } from "./WelcomeProbability";
 import { WorldviewGrid } from "./WorldviewGrid";
-import { ScorecardShare } from './ScorecardShare';
+import { ScoreStory } from './ScoreStory';
+import type { DailyStats } from '../../../api/_lib/types';
+import type { AnswerInsight } from '../../../shared/answer-insight';
 import type { ScorecardData } from '../../../shared/scorecard';
-import { PlayerIdentity, PlayerMark } from "./PlayerIdentity";
+import { PlayerIdentity } from "./PlayerIdentity";
 import {
   validPlayerIcon,
   normalizeColor,
@@ -99,6 +99,7 @@ type Stage =
   | "complete";
 
 type ServerJudgement = {
+  answerInsight?: AnswerInsight;
   questionId: string;
   prompt: string;
   unit?: string;
@@ -130,29 +131,17 @@ function toResult(j: ServerJudgement): Result {
       source: j.source ?? "",
       url: j.sourceUrl ?? "",
       context: j.answerContext ?? "",
+      insight: j.answerInsight,
       category: j.topic ?? "Daily",
       date: j.observationPeriod ?? "",
       scale: 1,
     },
   };
 }
-type Standings = {
-  dailyRank?: number | null;
-  todaysAverage?: number | null;
-  totalParticipantsToday?: number;
-  playersBelowToday?: number;
-  todayLeaderboard?: Array<{
-    rank: number;
-    username: string;
-    score: number;
-    avatarIcon?: string;
-    avatarColor?: string;
-  }>;
-};
+type Standings = DailyStats;
 export type GamePreview = {
   stage?: Stage; demo?: boolean; tip?: 'estimate' | 'range'; calculator?: boolean;
   bounds?: Bounds; menu?: 'stats' | 'profile' | 'settings' | 'play'; auth?: boolean;
-  renderSummary?: (data: { results: Result[]; standings: Standings | null; cardData: ScorecardData; onboarding: boolean; dailyAvailable: boolean; onPlayDaily: () => void }) => ReactNode;
 };
 export default function IntervalGame({ preview }: { preview?: GamePreview } = {}) {
   const {
@@ -1118,92 +1107,11 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                 })}
               </ol>
             </>
-          ) : preview?.renderSummary && cardData ? preview.renderSummary({ results, standings, cardData, onboarding, dailyAvailable, onPlayDaily: () => void startSession(false, true) }) : (
-            <section className="summary">
-              <h1 className="sr-only" ref={heading} tabIndex={-1}>
-                {onboarding ? 'Your starting snapshot' : 'Your score'}
-              </h1>
-              {cardData && player && <ScorecardShare data={cardData} />}
-              {!isRanked && <p className="summary-caption">Practice: excluded from your totals.</p>}
-              {onboarding && <div className="daily-invitation">
-                <p>{dailyAvailable ? 'Four more numbers to explore. Your starting calibration stays here as your baseline.' : 'Your starting calibration is complete. Four new questions arrive tomorrow, on the Pacific daily schedule.'}</p>
-                {dailyAvailable && <button className="primary" onClick={() => void startSession(false, true)}>Play today's four <span>→</span></button>}
-                {(user?.questionsAnswered ?? 0) > results.length && <p className="onboarding-note">Overall: {scoreText(user!.totalScore)} points · {Math.round(user!.calibrationRate * 1000) / 10}% calibration across {user!.questionsAnswered} questions. Target: 95%.</p>}
-              </div>}
-              <div className="result-list">
-                {results.map((r, i) => (
-                  <details key={r.question.id}>
-                    <summary>
-                      <span className={`result-dot ${r.hit ? "hit" : ""}`}>
-                        {i + 1}
-                      </span>
-                      <span>
-                        {r.question.short}
-                        <small>
-                          {r.assisted ? "Hint used" : r.question.category}
-                        </small>
-                      </span>
-                      <strong>
-                        {scoreText(points(r))}
-                        <small>pts</small>
-                      </strong>
-                    </summary>
-                    <div className="result-expanded">
-                      <p>
-                        Your range: {quantity(r.lower, r.question.unit)} –{" "}
-                        {quantity(r.upper, r.question.unit)}
-                      </p>
-                      <p>
-                        Actual:{" "}
-                        <b>{quantity(r.question.answer, r.question.unit)}</b>
-                      </p>
-                      <p>{r.question.context}</p>
-                      <SourceLinks
-                        urls={r.question.url}
-                        names={r.question.source}
-                      />
-                    </div>
-                  </details>
-                ))}
-              </div>
-              {standings && (
-                <details className="standings-detail">
-                  <summary>Today’s standings</summary>
-                  <p>
-                    {standings.dailyRank
-                      ? `Your rank: ${standings.dailyRank}`
-                      : "Your score is saved."}
-                    {standings.todaysAverage != null
-                      ? ` · Average: ${scoreText(standings.todaysAverage)} pts`
-                      : ""}
-                  </p>
-                  {standings.todayLeaderboard?.length ? (
-                    <ol>
-                      {standings.todayLeaderboard.map((row) => (
-                        <li key={row.username}>
-                          <span className="standings-person">
-                            <PlayerMark
-                              icon={normalizeIcon(row.avatarIcon)}
-                              color={normalizeColor(row.avatarColor)}
-                              paused
-                            />
-                            {row.rank}. {row.username}
-                          </span>
-                          <strong>{scoreText(row.score)} pts</strong>
-                        </li>
-                      ))}
-                    </ol>
-                  ) : null}
-                </details>
-              )}
-              <div className="summary-links">
-                <Link className="text-button" to="/profile">
-                  Your profile & history
-                </Link>
-                {!onboarding && <button className="text-button" onClick={restart}>Practice ↻</button>}
-              </div>
-            </section>
-          )}
+          ) : cardData ? (
+            <ScoreStory results={results} standings={standings} cardData={cardData} onboarding={onboarding}
+              dailyAvailable={dailyAvailable} onPlayDaily={() => void startSession(false, true)} onPractice={restart} />
+          ) : null}
+
         </main>
         {demo && practiceTip && <PracticeTip step={practiceTip} onDismiss={() => { setPracticeTip(null); focusHeading(); }} />}
         {["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) && <BottomNav initialPanel={preview?.menu} score={totalPoints(visibleResults)} onOpenChange={open => {

@@ -1,3 +1,4 @@
+import { answerInsight } from "./answer-insights.js";
 import { withGlossary } from "./glossary.js";
 import { transaction, query } from "./db.js";
 import type { PoolClient, QueryResultRow } from "pg";
@@ -89,6 +90,7 @@ function judgement(row: QueryResultRow): Judgement {
     source: q.source,
     sourceUrl: q.sourceUrl,
     answerContext: q.answerContext,
+    answerInsight: answerInsight(row.question_id),
     topic: q.topic,
     observationPeriod: q.observationPeriod,
     lower: Number(row.lower_bound),

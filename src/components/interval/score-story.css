@@ -1,4 +1,4 @@
-/* The immersive result study is mounted exclusively by Design Space. */
+/* Shared by live results and the interactive design reference. */
 .interval-page:has(.score-story) {
   height: 100dvh;
   padding: 0;
@@ -572,3 +572,5 @@
     margin-bottom: 12px;
   }
 }
+
+.interval-app .story-practice-note { color: var(--story-muted); font-size: 11px; }

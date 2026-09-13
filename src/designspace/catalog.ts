@@ -205,7 +205,7 @@ export const screens: Screen[] = [
     member: true,
     description:
       "A dark, animated starting score with a thumb-level Share action, followed by a separate question-review page.",
-    try: "Scroll or tap Today’s questions to snap to the review. Return with Your score. Share copies the chosen GIF and homepage URL. This two-page layout is a design study.",
+    try: "Scroll or tap Today’s questions to snap to the review. Return with Your score. Share copies the chosen GIF and homepage URL.",
     components: [
       "score-story",
       "scorecard",
@@ -302,7 +302,7 @@ export const screens: Screen[] = [
 export const components = [
   {
     id: "daily-comparison",
-    name: "Daily comparisons · study",
+    name: "Daily comparisons",
     source: "DailyCompetition",
     description:
       "Percent of other finishers scored below you, daily rank, and percentage difference from today's mean. Comparisons cover completed ranked daily games so far. Exact ties are not counted as beaten; percentiles wait for 20 players.",
@@ -310,7 +310,7 @@ export const components = [
   },
   {
     id: "score-story",
-    name: "Two-page score · study",
+    name: "Two-page score",
     source: "ScoreStory",
     description:
       "A full-height, animated result in the player’s color, with a 95% calibration target and Share at the bottom. Scroll snaps to Today’s questions; its longer review scrolls freely.",
@@ -318,10 +318,10 @@ export const components = [
   },
   {
     id: "answer-review",
-    name: "Answer review · study",
+    name: "Answer review",
     source: "AnswerReview / AnswerRange",
     description:
-      "A design-only exploration: a range and actual-answer graphic, with one sentence that expands to three. Draft editorial copy; the live game keeps its current answer list.",
+      "The live range and actual-answer graphic, with concise context that expands into further detail and sources.",
     screen: "starting-score",
   },
   {

@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import type { ScorecardData } from "../../shared/scorecard";
-import { ScoreCard } from "../components/interval/ScoreCard";
-import { ScorecardShare } from "../components/interval/ScorecardShare";
-import { scoreText, type Result } from "../components/interval/game";
+import type { ScorecardData } from "../../../shared/scorecard";
+import { ScoreCard } from "./ScoreCard";
+import { ScorecardShare } from "./ScorecardShare";
+import { scoreText, type Result } from "./game";
 import { AnswerReview } from "./AnswerReview";
 import { DailyCompetition } from "./DailyCompetition";
 import type { CompetitionStats } from "./competition-stats";
+import "./score-story.css";
 
 export type ScoreStoryProps = {
   results: Result[];
@@ -14,6 +15,7 @@ export type ScoreStoryProps = {
   onboarding: boolean;
   dailyAvailable: boolean;
   onPlayDaily: () => void;
+  onPractice: () => void;
 };
 
 function RisingScore({ score }: { score: number }) {
@@ -45,33 +47,13 @@ export function ScoreStory({
   onboarding,
   dailyAvailable,
   onPlayDaily,
+  onPractice,
 }: ScoreStoryProps) {
   const root = useRef<HTMLDivElement>(null),
     review = useRef<HTMLElement>(null);
   const [page, setPage] = useState("score");
-  const [history, setHistory] = useState<{ date: string; userScore: number }[]>(
-    [],
-  );
-  useEffect(() => {
-    if (onboarding) return;
-    const abort = new AbortController();
-    void fetch("/api/user/performance-history", { signal: abort.signal })
-      .then((response) => (response.ok ? response.json() : null))
-      .then((data) => {
-        if (Array.isArray(data?.history)) setHistory(data.history);
-      })
-      .catch(() => {});
-    return () => abort.abort();
-  }, [onboarding]);
-  const games = onboarding
-    ? []
-    : [
-        ...history.filter((item) => item.date !== cardData.label),
-        { date: cardData.label, userScore: cardData.score },
-      ];
-  const average = games.length
-    ? games.reduce((sum, item) => sum + item.userScore, 0) / games.length
-    : null;
+  const average = standings?.personalDailyAverage ?? null;
+  const games = standings?.personalDailyGames ?? 0;
   const hits = results.filter((result) => result.hit).length;
   const rate = results.length ? (hits / results.length) * 100 : 0;
   const distance = Math.round(Math.abs(95 - rate) * 10) / 10;
@@ -125,7 +107,11 @@ export function ScoreStory({
             <RisingScore score={cardData.score} />
           </h1>
           <p className="score-story-label">
-            {onboarding ? "Your starting score" : "Today’s score"}
+            {cardData.practice
+              ? "Practice score"
+              : onboarding
+                ? "Your starting score"
+                : "Today’s score"}
             <span>points</span>
           </p>
           <div className="score-story-calibration">
@@ -159,12 +145,16 @@ export function ScoreStory({
               <span>100</span>
             </div>
           </div>
-          {!onboarding ? (
+          {cardData.practice ? (
+            <p className="story-practice-note">
+              Practice · excluded from your totals
+            </p>
+          ) : !onboarding ? (
             <DailyCompetition
               score={cardData.score}
               stats={standings}
               personalAverage={average}
-              games={games.length}
+              games={games}
             />
           ) : (
             <dl className="score-story-stats">
@@ -198,6 +188,13 @@ export function ScoreStory({
           <span>02 / 02</span>
         </div>
         <AnswerReview results={results} />
+        {!onboarding && (
+          <div className="score-story-daily">
+            <button className="text-button" onClick={onPractice}>
+              Practice again ↻
+            </button>
+          </div>
+        )}
         {onboarding && (
           <div className="score-story-daily">
             {dailyAvailable ? (
