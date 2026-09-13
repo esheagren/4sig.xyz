@@ -133,7 +133,7 @@ export const screens: Screen[] = [
     member: true,
     description:
       "Brackets move horizontally around the fixed estimate. The page stays vertically stable.",
-    try: "Drag brackets, edit either bound, or tap Submit. Pull both brackets onto the estimate for an exact answer.",
+    try: "Drag a bracket to either edge and keep holding to expand the ruler. Move inward or release to stop. Pull both brackets onto the estimate for an exact answer.",
     components: ["range", "submit", "bottom-nav"],
     preview: { stage: "range", bounds: { lower: 60, estimate: 80, upper: 95 } },
   },

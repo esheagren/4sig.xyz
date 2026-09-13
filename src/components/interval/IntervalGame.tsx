@@ -192,6 +192,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
   const [domain, setDomain] = useState<[number, number]>([0, 1]),
     [results, setResults] = useState<Result[]>([]);
   const [dragCue, setDragCue] = useState("");
+  const [dragEdge, setDragEdge] = useState<"lower" | "upper" | null>(null);
   const [soundOn] = useRulerSound();
   const [feedback] = useState(() => new RulerFeedback());
   const keyboardTicks = useRef(new RulerTickGate());
@@ -362,6 +363,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
       )
         setDomain(next.domain);
       if (next.cue !== current.cue) setDragCue(next.cue);
+      if (next.edge !== current.edge) setDragEdge(next.edge);
       current = next;
     };
     const move = (event: PointerEvent) => {
@@ -382,6 +384,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
       cancelAnimationFrame(frame);
       feedback.stop();
       setDragCue("");
+      setDragEdge(null);
       window.removeEventListener("blur", end);
       target.removeEventListener("pointermove", move);
       target.removeEventListener("pointerup", end);
@@ -937,6 +940,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                     </div>
                     <div className="ruler-wrap">
                       <div className="ruler" ref={ruler}>
+                        {dragEdge && <span className={`range-edge ${dragEdge}`} aria-hidden="true">{dragEdge === "upper" ? "→" : "←"}</span>}
                         <div className="grid-lines">
                           {scale.ticks.map((tick) => (
                             <i
@@ -963,7 +967,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                         {(["lower", "upper"] as const).map((part) => (
                           <button
                             key={part}
-                            className={`handle ${part} ${bounds[part] === bounds.estimate ? "at-anchor" : ""}`}
+                            className={`handle ${part} ${bounds[part] === bounds.estimate ? "at-anchor" : ""} ${dragEdge === part ? "at-edge" : ""}`}
                             style={{ left: `${clipped(bounds[part])}%` }}
                             role="slider"
                             aria-label={`Drag ${part} bound`}

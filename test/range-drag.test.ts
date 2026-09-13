@@ -35,28 +35,52 @@ test("ordinary dragging keeps the ruler steady and pointer overshoot cannot crea
 
 test("edge expansion requires movement and a sustained hold; leaving resets the delay", () => {
   assert.deepEqual(hold(initial(), 60, 1, false).domain, [0, 100]);
-  const waiting = hold(initial(), 0.7);
+  const waiting = hold(initial(), 0.15);
   assert.deepEqual(waiting.domain, [0, 100]);
   assert.equal(waiting.cue, "Hold to expand");
   const left = stepDrag(waiting, 0.8, 0.01, true);
   assert.equal(left.cue, "");
-  assert.deepEqual(hold(left, 0.7).domain, [0, 100]);
-  assert.ok(hold(left, 1).domain[1] > 100);
+  assert.deepEqual(hold(left, 0.15).domain, [0, 100]);
+  assert.ok(hold(left, 0.5).domain[1] > 115);
+  assert.equal(hold(left, 0.5).cue, "Expanding range");
 });
 
-test("expansion is linear, capped at twice the original span even after a long hold", () => {
-  const first = hold(initial(), 1.75);
+test("expansion is prompt and linear, and keeps going beyond the old per-drag stop", () => {
+  const first = hold(initial(), 0.68);
   const second = hold(first, 1);
-  assert.ok(Math.abs(first.domain[1] - 112) < 1e-8);
-  assert.ok(Math.abs(second.domain[1] - 124) < 1e-8);
-  const capped = hold(second, 120);
-  assert.ok(Math.abs(capped.domain[1] - 200) < 1e-8);
-  assert.equal(capped.cue, "Release to expand further");
-  assert.equal(capped.bounds.lower, 20);
-  const returning = hold(stepDrag(capped, 0.8, 0, true), 5);
-  assert.deepEqual(returning.domain, capped.domain);
-  const released = startDrag(capped.bounds, capped.domain, "upper");
-  assert.ok(hold(released, 2).domain[1] > capped.domain[1]);
+  assert.ok(Math.abs(first.domain[1] - 130) < 1e-8);
+  assert.ok(Math.abs(second.domain[1] - 190) < 1e-8);
+  const continued = hold(second, 10);
+  assert.ok(Math.abs(continued.domain[1] - 790) < 1e-8);
+  assert.equal(continued.cue, "Expanding range");
+  assert.equal(continued.bounds.lower, 20);
+  assert.equal(continued.bounds.estimate, 50);
+  const returned = hold(continued, 5, 0.8);
+  assert.deepEqual(returned.domain, continued.domain);
+  assert.equal(returned.edge, null);
+  assert.ok(hold(returned, 1).domain[1] > continued.domain[1]);
+});
+
+test("both edge zones are easy to reach and stay aligned with the widening scale", () => {
+  const upper = hold(initial(), 0.5, 0.96);
+  assert.equal(upper.edge, 'upper');
+  assert.ok(upper.bounds.upper > 115);
+  assert.ok(Math.abs(upper.bounds.upper - upper.domain[1]) < 1e-8);
+  assert.deepEqual(hold(initial(), 5, 0.94).domain, [0, 100]);
+  const lower = hold(startDrag({lower: 80, estimate: 100, upper: 120}, [50,150], 'lower'), .5, .04);
+  assert.equal(lower.edge, 'lower');
+  assert.ok(lower.bounds.lower < 35);
+  assert.ok(Math.abs(lower.bounds.lower - lower.domain[0]) < 1e-8);
+  assert.equal(lower.bounds.upper, 120);
+});
+
+test("expansion has the same speed at different display refresh rates", () => {
+  const values = [30,60,120].map(fps => {
+    let state = initial();
+    for (let i=0; i<fps*3; i++) state = stepDrag(state, 1, 1/fps, true);
+    return state.domain[1];
+  });
+  assert.ok(Math.max(...values) - Math.min(...values) < 1e-8);
 });
 
 test("zero floor and maximum apply during drag, fitting, widening, and reset", () => {
@@ -70,9 +94,13 @@ test("zero floor and maximum apply during drag, fitting, widening, and reset", (
   assert.equal(atZero.domain[0], 0);
   assert.equal(atZero.bounds.lower, 0);
   assert.equal(atZero.bounds.upper, 100);
+  assert.equal(atZero.cue, 'Minimum reached');
+  assert.equal(atZero.edge, null);
   const atMax = hold(initial(), 20, 100, true, 0, 150);
   assert.equal(atMax.domain[1], 150);
   assert.equal(atMax.bounds.upper, 150);
+  assert.equal(atMax.cue, 'Maximum reached');
+  assert.equal(atMax.edge, null);
   const reset = initialBounds(50, 1e100, 0);
   assert.deepEqual(reset, { lower: 25, estimate: 50, upper: 75 });
   for (const estimate of [0, 1e-100, 1, 1e30, 1e100]) {
@@ -93,7 +121,7 @@ test("dragging remains finite at very small and large scales, and long frames ca
     const after = hold(state, 30);
     assert.ok(validBounds(after.bounds, 1e100, 0));
     assert.ok(
-      (after.domain[1] - after.domain[0]) / state.initialSpan < 2.000001,
+      (after.domain[1] - after.domain[0]) / state.initialSpan <= 19.000001,
     );
     assert.deepEqual(stepDrag(state, 1, 1000, true).domain, domain);
   }

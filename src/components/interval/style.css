@@ -1833,9 +1833,25 @@
 
 .interval-app .range-cue {
   flex: 1;
-  text-align: left;
-  color: var(--muted);
+  min-height: 16px;
+  line-height: 16px;
+  text-align: center;
+  color: var(--blue);
   font-size: 11px;
+}
+.interval-app .range-edge {
+  position: absolute;
+  top: -7px;
+  color: var(--blue);
+  font-size: 20px;
+  line-height: 20px;
+  pointer-events: none;
+}
+.interval-app .range-edge.lower { left: -7px; }
+.interval-app .range-edge.upper { right: -7px; }
+.interval-app .handle.at-edge::before {
+  border-color: var(--blue);
+  filter: drop-shadow(0 0 3px color-mix(in srgb, var(--blue) 45%, transparent));
 }
 
 .interval-app .topbar .help-button {
