@@ -94,3 +94,8 @@ export function PostHogProvider({ children }: PostHogProviderProps) {
     <PostHogContext.Provider value={value}>{children}</PostHogContext.Provider>
   );
 }
+
+/** Design previews use the live UI without emitting product analytics. */
+export function PreviewAnalyticsProvider({ children }: { children: ReactNode }) {
+  return <PostHogContext.Provider value={{ capture: () => {}, identify: () => {}, reset: () => {} }}>{children}</PostHogContext.Provider>;
+}

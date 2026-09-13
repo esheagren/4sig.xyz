@@ -3,7 +3,7 @@ import vm from "node:vm";
 import assert from "node:assert/strict";
 import test from "node:test";
 const html = readFileSync(
-  new URL("../api/_lib/designspace.html", import.meta.url),
+  new URL("../api/_lib/designspace-archive.html", import.meta.url),
   "utf8",
 );
 class Events {

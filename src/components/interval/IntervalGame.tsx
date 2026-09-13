@@ -147,7 +147,11 @@ type Standings = {
     avatarColor?: string;
   }>;
 };
-export default function IntervalGame() {
+export type GamePreview = {
+  stage?: Stage; demo?: boolean; tip?: 'estimate' | 'range'; calculator?: boolean;
+  bounds?: Bounds; menu?: 'stats' | 'profile' | 'settings' | 'play'; auth?: boolean;
+};
+export default function IntervalGame({ preview }: { preview?: GamePreview } = {}) {
   const {
     user,
     authToken,
@@ -166,8 +170,9 @@ export default function IntervalGame() {
   const [practiceTip, setPracticeTip] = useState<'estimate' | 'range' | null>(null);
   const finalizing = useRef(false);
   const [standings, setStandings] = useState<Standings | null>(null),
-    [authOpen, setAuthOpen] = useState(false);
+    [authOpen, setAuthOpen] = useState(preview?.auth ?? false);
   const starting = useRef(false);
+  const previewApplied = useRef(false);
   function headers(): Record<string, string> {
     return {
       "Content-Type": "application/json",
@@ -581,6 +586,17 @@ export default function IntervalGame() {
       } else if (isOnboarding && answered === 0 && !tutorialSeen(data.sessionId)) {
         setStage('welcome'); focusHeading();
       } else resetRound();
+      if (preview && !previewApplied.current) {
+        previewApplied.current = true;
+        if (preview.stage) setStage(preview.stage);
+        setDemo(preview.demo ?? false);
+        setPracticeTip(preview.tip ?? null);
+        if (preview.stage === 'revealed') setIndex(Math.max(0, saved.length - 1));
+        if (preview.bounds) {
+          setBounds(preview.bounds); setText(String(preview.bounds.estimate));
+          setDomain(fitDomain(preview.bounds, undefined, RANGE_MIN));
+        }
+      }
       capture("game_session_started", {
         sessionId: data.sessionId,
         questionCount: data.questions.length,
@@ -880,6 +896,7 @@ export default function IntervalGame() {
               {stage === "estimate" ? (
                 <section className="estimate-panel">
                   <NumberPad
+                    initialCalculator={preview?.calculator}
                     value={text}
                     onChange={(v) => {
                       setText(v);
@@ -1186,7 +1203,7 @@ export default function IntervalGame() {
           )}
         </main>
         {demo && practiceTip && <PracticeTip step={practiceTip} onDismiss={() => { setPracticeTip(null); focusHeading(); }} />}
-        {["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) && <BottomNav score={totalPoints(visibleResults)} onOpenChange={open => {
+        {["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) && <BottomNav initialPanel={preview?.menu} score={totalPoints(visibleResults)} onOpenChange={open => {
           dragCleanup.current?.();
           feedback.stop();
           setHelp(open);

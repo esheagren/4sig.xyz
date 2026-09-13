@@ -113,11 +113,11 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
       assert.equal(result.headers["referrer-policy"], "same-origin");
     }
     const allowed = await request(`${DESIGN_COOKIE}=${designToken(secret)}`);
-    assert.match(allowed.body, /id="studies"/);
-    assert.match(allowed.body, /Cultural/);
+    assert.match(allowed.body, /id="designspace-root"/);
+    assert.match(allowed.body, /designspace.tsx|assets\/designspace.js/);
     assert.doesNotMatch(
       allowed.body,
-      /__NONCE__|test-only-placeholder|a-test-signing-secret/,
+      /__NONCE__|__DESIGNSPACE_BOOTSTRAP__|__PREVIEW_DATA__|test-only-placeholder|a-test-signing-secret/,
     );
     const nonce = /script nonce="([^"]+)"/.exec(allowed.body)?.[1];
     assert.ok(nonce);
@@ -126,6 +126,19 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     );
     assert.match(allowed.headers["x-robots-tag"], /noindex/);
     assert.equal(allowed.headers["referrer-policy"], "same-origin");
+    const frame = await request(`${DESIGN_COOKIE}=${designToken(secret)}`, "GET", undefined, undefined, "/designspace?view=screen&screen=practice-range");
+    assert.match(frame.body, /id="designspace-root"/);
+    assert.match(frame.body, /"trueValue":/);
+    assert.doesNotMatch(allowed.body, /"trueValue":/);
+    assert.match(frame.headers["content-security-policy"], /connect-src 'none'/);
+    assert.match(frame.headers["content-security-policy"], /frame-ancestors 'self'/);
+    const lockedFrame = await request(undefined, "GET", undefined, undefined, "/designspace?view=screen&screen=practice-range");
+    assert.match(lockedFrame.body, /type="password"/);
+    assert.doesNotMatch(lockedFrame.body, /id="designspace-root"|"trueValue":/);
+    assert.match(lockedFrame.body, /screen=practice-range/);
+    const oldStudies = await request(`${DESIGN_COOKIE}=${designToken(secret)}`, "GET", undefined, undefined, "/designspace?view=archive");
+    assert.match(oldStudies.body, /id="studies"/);
+    assert.match(oldStudies.body, /Cultural/);
     const scorecards = await request(`${DESIGN_COOKIE}=${designToken(secret)}`, "GET", undefined, undefined, "/designspace?view=scorecards");
     assert.equal((scorecards.body.match(/<svg xmlns=/g) ?? []).length, 8);
     assert.match(scorecards.body, /1,286.4/);
@@ -133,7 +146,7 @@ test("preview HTML is only delivered with a valid server-signed cookie", async (
     assert.doesNotMatch(scorecards.body, /__INK_EXPLORATIONS__|__NONCE__|__SCORECARD_BOOTSTRAP__|__STUDY_|__OTHER_STUDY_/);
     assert.match(scorecards.body, /id="scorecard-studies"/);
     assert.match(scorecards.headers["content-security-policy"], /worker-src 'self'/);
-    assert.match(scorecards.headers["content-security-policy"], /img-src data: blob:/);
+    assert.match(scorecards.headers["content-security-policy"], /img-src 'self' data: blob:/);
     for (const pattern of ['Orbit', 'Wave', 'Spiral', 'Pendulum', 'Bloom', 'Braid', 'Halo', 'Horizon']) assert.ok(scorecards.body.includes(pattern));
     assert.match(scorecards.body, /designspace-scorecards/);
     const scorecardNonce = /script nonce="([^"]+)"/.exec(scorecards.body)?.[1];

@@ -1,3 +1,5 @@
+import { onboardingQuestions } from './_lib/onboarding-data.js';
+import { withQuestionCopy } from './_lib/question-copy.js';
 import { randomBytes } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
@@ -19,14 +21,15 @@ import { HttpError, prepare } from "./_lib/http.js";
 function loginPage(message = "", view = "") {
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow"><title>Designspace · Four Sigma</title><style>
   *{box-sizing:border-box}body{margin:0;background:#f5f2eb;color:#292936;font:16px/1.5 system-ui,sans-serif;min-height:100svh;display:grid;place-items:center;padding:28px}main{width:100%;max-width:380px}small{font-size:12px;color:#696573;letter-spacing:.12em;text-transform:uppercase}h1{font:400 48px/1.05 Georgia,serif;letter-spacing:-2px;margin:20px 0}p{color:#696573;font-size:14px}label{display:block;margin:32px 0 9px;font-size:14px}input{font:inherit;width:100%;border:1px solid #ccc7d0;border-radius:7px;background:#fffdf8;padding:13px}button{font:inherit;width:100%;padding:14px;border:0;border-radius:7px;background:#4c49b7;color:white;cursor:pointer;margin-top:16px}input:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid #9691e4;outline-offset:4px}.error{min-height:22px;color:#9b314a}a{color:#696573;font-size:13px;display:inline-block;margin-top:22px}
-  </style></head><body><main><small>Four Sigma / Private preview</small><h1>Designspace.</h1><p>Explore design studies and the question bank.</p><form method="post" action="/designspace${view ? "?view=" + view.replaceAll("&", "&amp;") : ""}"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" autofocus><button type="submit">Enter designspace →</button><p class="error" role="status">${message}</p></form><a href="/">Back to the game</a></main></body></html>`;
+  </style></head><body><main><small>4σ / Private preview</small><h1>Designspace.</h1><p>Explore the current screens, components, and question library.</p><form method="post" action="/designspace${view ? "?view=" + view.replaceAll("&", "&amp;") : ""}"><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required maxlength="256" autofocus><button type="submit">Enter designspace →</button><p class="error" role="status">${message}</p></form><a href="/">Back to the game</a></main></body></html>`;
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const params = new URL(req.url ?? "/designspace", "https://4sig.xyz")
     .searchParams;
-  const view = ["questions", "scorecards"].includes(params.get("view") ?? "") ? params.get("view")! : "";
+  const view = ["questions", "scorecards", "screen", "archive"].includes(params.get("view") ?? "") ? params.get("view")! : "";
   const returnParams = new URLSearchParams();
+  if (view === 'screen' && /^[a-z0-9-]{1,40}$/.test(params.get('screen') ?? '')) returnParams.set('screen', params.get('screen')!);
   const exploring = params.get('mode') === 'explore' || (params.has('seed') && params.get('mode') !== 'collection');
   if (view === 'scorecards') {
     if (params.has('seed')) returnParams.set('seed', normalizeInkSeed(params.get('seed')));
@@ -47,7 +50,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader("Referrer-Policy", "same-origin");
   res.setHeader(
     "Content-Security-Policy",
-    `default-src 'none'; script-src 'nonce-${nonce}'${view === 'scorecards' ? " 'self'" : ''}; style-src 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src 'self'; img-src data:${view === 'scorecards' ? " blob:; worker-src 'self'" : ''}; form-action 'self'; base-uri 'none'; frame-ancestors 'none'`,
+    `default-src 'none'; script-src 'nonce-${nonce}'${view !== 'archive' && view !== 'questions' ? " 'self'" : ''}; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; connect-src ${view === 'screen' ? "'none'" : "'self'"}; img-src 'self' data: blob:; worker-src 'self'; frame-src 'self'; form-action 'self'; base-uri 'none'; frame-ancestors ${view === 'screen' ? "'self'" : "'none'"}`,
   );
   try {
     if (!prepare(req, res)) return;
@@ -131,10 +134,17 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         process.cwd(),
         questions
           ? "api/_lib/question-manager.html"
-          : view === "scorecards" ? "api/_lib/scorecard-studies.html" : "api/_lib/designspace.html",
+          : view === "scorecards" ? "api/_lib/scorecard-studies.html" : view === "archive" ? "api/_lib/designspace-archive.html" : "api/_lib/designspace.html",
       ),
       "utf8",
     ).replaceAll("__NONCE__", nonce);
+    if (!view || view === 'screen') {
+      const bootstrap = process.env.NODE_ENV === 'production'
+        ? "import('/assets/designspace.js');"
+        : "import('/@react-refresh').then(({default: runtime}) => { runtime.injectIntoGlobalHook(window); window.$RefreshReg$ = () => {}; window.$RefreshSig$ = () => type => type; window.__vite_plugin_react_preamble_installed__ = true; return import('/src/designspace.tsx'); });";
+      page = page.replace('__DESIGNSPACE_BOOTSTRAP__', bootstrap)
+        .replace('__PREVIEW_DATA__', JSON.stringify(view === 'screen' ? onboardingQuestions.map(withQuestionCopy) : []).replaceAll('<', '\\u003c'));
+    }
     if (view === 'scorecards') {
       const bootstrap = process.env.NODE_ENV === 'production'
         ? "import('/assets/designspace-scorecards.js');"

@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [react()],
   build: {
     rollupOptions: {
-      input: { game: 'index.html', 'designspace-scorecards': 'src/designspace-scorecards.tsx' },
-      output: { entryFileNames: chunk => chunk.name === 'designspace-scorecards' ? 'assets/designspace-scorecards.js' : 'assets/[name]-[hash].js' },
+      input: { game: 'index.html', 'designspace-scorecards': 'src/designspace-scorecards.tsx', 'designspace': 'src/designspace.tsx' },
+      output: { entryFileNames: chunk => chunk.name.startsWith('designspace') ? `assets/${chunk.name}.js` : 'assets/[name]-[hash].js' },
     },
   },
   server: {

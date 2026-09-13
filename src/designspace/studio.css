@@ -1,0 +1,776 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=Newsreader:opsz,wght@6..72,400;6..72,500&display=swap");
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: #f4f1ea;
+  color: #352a25;
+  font:
+    14px/1.5 "DM Sans",
+    sans-serif;
+}
+button,
+input,
+select {
+  font: inherit;
+  color: inherit;
+}
+button,
+a {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+}
+button {
+  border: 1px solid #dcd6cc;
+  background: transparent;
+  border-radius: 5px;
+}
+button:hover,
+a:hover {
+  color: #9c412d;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid #276c66;
+  outline-offset: 3px;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button[aria-pressed="true"] {
+  background: #e3ebe5;
+  color: #245e57;
+  border-color: #9ebbb1;
+}
+.ds-shell {
+  max-width: 1920px;
+  margin: auto;
+  padding: 0 32px;
+}
+.ds-header {
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #dbd5ca;
+  gap: 20px;
+}
+.ds-brand {
+  display: flex;
+  align-items: baseline;
+  font:
+    36px Georgia,
+    serif;
+  letter-spacing: -3px;
+  white-space: nowrap;
+}
+.ds-brand > span {
+  color: #ad4128;
+}
+.ds-brand small {
+  font:
+    12px "IBM Plex Mono",
+    monospace;
+  letter-spacing: 0;
+  margin-left: 24px;
+}
+.ds-header nav {
+  display: flex;
+  gap: 26px;
+  font-size: 12px;
+  color: #756b62;
+}
+.ds-intro {
+  padding: 37px 0 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px;
+}
+.ds-eyebrow {
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #83786e;
+  margin: 0 0 12px;
+}
+.ds-intro h1 {
+  font:
+    400 40px/1.08 "Newsreader",
+    Georgia,
+    serif;
+  letter-spacing: -1px;
+  margin: 0 0 11px;
+}
+.ds-intro p:not(.ds-eyebrow) {
+  margin: 0;
+  color: #807368;
+  font-size: 13px;
+}
+.ds-sample {
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  color: #6e786b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-bottom: 4px;
+  white-space: nowrap;
+}
+.ds-sample i {
+  height: 6px;
+  width: 6px;
+  background: #688570;
+  border-radius: 50%;
+}
+.ds-tabs {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  border-bottom: 1px solid #d5cec3;
+  min-height: 52px;
+}
+.ds-tabs > [role="tab"] {
+  border: 0;
+  border-radius: 0;
+  padding: 15px 1px;
+  background: transparent;
+  position: relative;
+  color: #867a6e;
+}
+.ds-tabs > [aria-selected="true"] {
+  color: #352a25;
+}
+.ds-tabs > [aria-selected="true"]:after {
+  content: "";
+  height: 2px;
+  background: #ad4128;
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+}
+.ds-tabs small {
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  margin-left: 9px;
+  color: #a6998c;
+}
+.ds-tab-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+.ds-tab-actions button {
+  font-size: 11px;
+  padding: 7px 12px;
+}
+.ds-tab-actions [role="status"] {
+  font-size: 11px;
+  color: #276c66;
+}
+.ds-workbench {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr) 245px;
+  min-height: 900px;
+}
+.ds-library {
+  padding: 24px 20px 24px 0;
+  border-right: 1px solid #ddd6cb;
+}
+.ds-search {
+  display: block;
+}
+.ds-search > span {
+  display: block;
+  font-size: 10px;
+  color: #8d8175;
+  margin: 0 0 8px;
+}
+.ds-search input {
+  width: 100%;
+  background: #faf8f3;
+  border: 1px solid #ded7cc;
+  border-radius: 5px;
+  padding: 10px 11px;
+  font-size: 12px;
+}
+.ds-group {
+  margin-top: 23px;
+}
+.ds-group h2 {
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: #8b7f72;
+  margin: 0 0 8px;
+}
+.ds-group button {
+  display: flex;
+  gap: 10px;
+  text-align: left;
+  border: 0;
+  width: 100%;
+  padding: 9px 8px;
+  font-size: 11px;
+  margin: 1px 0;
+  align-items: baseline;
+  line-height: 1.4;
+}
+.ds-group button > span {
+  font:
+    9px "IBM Plex Mono",
+    monospace;
+  color: #a39689;
+  flex: 0 0 26px;
+}
+.ds-group button[aria-current="page"],
+.ds-component-list button[aria-current="true"] {
+  background: #e8e1d6;
+  color: #352a25;
+}
+.ds-group button[aria-current="page"] > span {
+  color: #ad4128;
+}
+.ds-archive {
+  display: block;
+  margin-top: 30px;
+  font-size: 10px;
+  color: #968879;
+}
+.ds-canvas {
+  min-width: 0;
+  background: #eae5dc;
+}
+.ds-canvas-bar {
+  background: #f4f1ea;
+  min-height: 76px;
+  padding: 17px 22px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  border-bottom: 1px solid #dbd4c8;
+}
+.ds-canvas-bar > div:first-child {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.ds-code {
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  color: #9f7663;
+}
+.ds-canvas-bar h2 {
+  font-size: 13px;
+  font-weight: 500;
+  margin: 0;
+}
+.ds-tools {
+  display: flex;
+  gap: 6px;
+}
+.ds-tools button,
+.ds-tools select {
+  padding: 7px 9px;
+  font-size: 10px;
+  min-height: 32px;
+}
+.ds-tools select {
+  border: 1px solid #dcd6cc;
+  background: #f4f1ea;
+  border-radius: 5px;
+  max-width: 150px;
+}
+.ds-stage {
+  padding: 23px 0 30px;
+  overflow-x: auto;
+  min-height: 840px;
+  background-image: radial-gradient(#cfc6b8 0.65px, transparent 0.65px);
+  background-size: 12px 12px;
+}
+.ds-device-label {
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  color: #817569;
+  margin-bottom: 13px;
+}
+.ds-device-label span {
+  color: #a19587;
+}
+.ds-device-space {
+  position: relative;
+  margin: auto;
+  box-shadow: 0 14px 50px #51433216;
+  flex-shrink: 0;
+}
+.ds-device {
+  border: 0;
+  display: block;
+  background: #f6f0e6;
+  transform-origin: top left;
+  outline: 1px solid #cabeb0;
+  border-radius: 3px;
+}
+.ds-stage-help {
+  text-align: center;
+  font-size: 10px;
+  color: #8c8071;
+  margin: 20px 10px 0;
+}
+.ds-inspector {
+  border-left: 1px solid #d8d1c6;
+  padding: 25px 0 25px 20px;
+}
+.ds-inspector h2 {
+  font:
+    400 25px/1.1 "Newsreader",
+    serif;
+  margin: 0 0 14px;
+}
+.ds-inspector > p:not(.ds-eyebrow) {
+  font-size: 12px;
+  color: #817568;
+}
+.ds-inspector code {
+  font:
+    10px/1.6 "IBM Plex Mono",
+    monospace;
+  display: block;
+  word-break: break-word;
+  color: #276c66;
+  margin-bottom: 14px;
+}
+.ds-inspector h3 {
+  font-size: 10px;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  font-weight: 500;
+  margin: 23px 0 8px;
+  color: #7e7062;
+}
+.ds-try {
+  border-top: 1px solid #dcd4c8;
+  margin-top: 20px;
+}
+.ds-try p {
+  font-size: 12px;
+  color: #6e6154;
+}
+.ds-inspect-button {
+  font-size: 11px;
+  padding: 9px 10px;
+  width: 100%;
+  margin-top: 13px;
+}
+.ds-inspector .ds-small {
+  font-size: 10px;
+  line-height: 1.5;
+  color: #a09080;
+}
+.ds-component-chips,
+.ds-used {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.ds-component-chips button {
+  border: 0;
+  border-bottom: 1px solid #e2d9cd;
+  border-radius: 0;
+  font-size: 11px;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  text-align: left;
+  gap: 8px;
+}
+.ds-component-chips button span {
+  color: #ab9b8b;
+}
+.ds-used button {
+  font-size: 10px;
+  border: 0;
+  padding: 6px 0;
+  text-align: left;
+}
+.ds-open {
+  font-size: 11px;
+  display: block;
+  margin-top: 28px;
+  color: #276c66;
+}
+.ds-component-list {
+  margin-top: 20px;
+}
+.ds-component-list button {
+  display: block;
+  border: 0;
+  width: 100%;
+  padding: 11px 9px;
+  text-align: left;
+}
+.ds-component-list strong {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+}
+.ds-component-list small {
+  display: block;
+  font:
+    9px/1.5 "IBM Plex Mono",
+    monospace;
+  color: #a08f7f;
+  margin-top: 3px;
+  overflow-wrap: anywhere;
+}
+.ds-gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 28px 18px;
+  padding: 22px;
+}
+.ds-gallery article {
+  min-width: 0;
+}
+.ds-gallery-title {
+  border: 0;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  text-align: left;
+  width: 100%;
+  padding: 0 0 12px;
+  font-size: 10px;
+}
+.ds-gallery-title span {
+  color: #a28771;
+  font:
+    9px "IBM Plex Mono",
+    monospace;
+}
+.ds-gallery-title strong {
+  font-weight: 500;
+}
+.ds-gallery-title b {
+  margin-left: auto;
+  font-weight: 400;
+}
+.ds-thumbnail {
+  width: 195px;
+  height: 422px;
+  margin: auto;
+  position: relative;
+  background: #f6f0e6;
+  overflow: hidden;
+  box-shadow: 0 4px 12px #51433210;
+  outline: 1px solid #d2c8ba;
+}
+.ds-thumbnail iframe {
+  width: 390px;
+  height: 844px;
+  transform: scale(0.5);
+  transform-origin: top left;
+  border: 0;
+  pointer-events: none;
+}
+.ds-thumbnail > button {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+.ds-gallery article > p {
+  font-size: 10px;
+  line-height: 1.6;
+  color: #8d7d6d;
+  margin-top: 12px;
+}
+.ds-section-heading h2 {
+  font:
+    32px "Newsreader",
+    serif;
+  margin: 0 0 6px;
+}
+.ds-section-heading p {
+  font-size: 12px;
+  color: #8d7d6d;
+}
+.ds-journeys {
+  padding: 35px 0 50px;
+}
+.ds-journey {
+  border-top: 1px solid #dbd2c6;
+  padding: 25px 0 22px;
+  margin-top: 27px;
+}
+.ds-journey h3 {
+  font:
+    20px "Newsreader",
+    serif;
+  margin: 0 0 5px;
+}
+.ds-journey > p {
+  color: #887769;
+  font-size: 12px;
+  margin: 0 0 22px;
+}
+.ds-journey ol {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  align-items: stretch;
+}
+.ds-journey li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.ds-journey li > b {
+  font-weight: 400;
+  color: #b7a58e;
+}
+.ds-journey button {
+  padding: 16px;
+  text-align: left;
+  width: 155px;
+  min-height: 94px;
+  background: #faf7f1;
+  border-color: #ded4c6;
+}
+.ds-journey button span {
+  display: block;
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  color: #ab7156;
+  margin-bottom: 12px;
+}
+.ds-journey button strong {
+  font-size: 11px;
+  font-weight: 500;
+}
+.ds-journey .ds-flow-note {
+  margin: 18px 0 0;
+  font-size: 11px;
+}
+.ds-principles {
+  background: #e9e5db;
+  padding: 22px;
+  border-radius: 5px;
+  max-width: 750px;
+}
+.ds-principles h3 {
+  font-size: 12px;
+  margin: 0;
+}
+.ds-principles p {
+  font-size: 12px;
+  color: #7c6d5d;
+  margin-bottom: 0;
+}
+.ds-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid #d8cebf;
+  font:
+    10px "IBM Plex Mono",
+    monospace;
+  color: #9b8c7c;
+  padding: 24px 0;
+}
+.ds-footer form {
+  margin: 0;
+}
+.ds-footer button {
+  border: 0;
+  padding: 5px 0;
+  font-size: 10px;
+}
+.ds-empty {
+  font-size: 12px;
+  color: #927e6d;
+}
+.ds-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+@media (min-width: 1600px) {
+  .ds-shell {
+    padding: 0 48px;
+  }
+  .ds-workbench {
+    grid-template-columns: 250px minmax(0, 1fr) 280px;
+  }
+  .ds-inspector {
+    padding-left: 28px;
+  }
+  .ds-canvas-bar {
+    padding: 20px 28px;
+  }
+}
+@media (max-width: 1150px) {
+  .ds-shell {
+    padding: 0 20px;
+  }
+  .ds-workbench {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+  .ds-inspector {
+    grid-column: 2;
+    border-top: 1px solid #d8d1c6;
+    padding: 24px;
+    display: block;
+  }
+  .ds-library {
+    grid-row: span 2;
+  }
+  .ds-sample {
+    white-space: normal;
+    max-width: 190px;
+  }
+  .ds-header nav {
+    gap: 16px;
+  }
+  .ds-intro h1 {
+    font-size: 34px;
+  }
+}
+@media (max-width: 700px) {
+  .ds-shell {
+    padding: 0 14px;
+  }
+  .ds-header {
+    height: auto;
+    padding: 19px 0;
+    align-items: flex-start;
+  }
+  .ds-brand {
+    font-size: 30px;
+  }
+  .ds-brand small {
+    margin-left: 13px;
+    font-size: 10px;
+  }
+  .ds-header nav {
+    flex-direction: column;
+    gap: 6px;
+    font-size: 10px;
+    text-align: right;
+  }
+  .ds-intro {
+    padding: 27px 0 20px;
+    display: block;
+  }
+  .ds-intro h1 {
+    font-size: 31px;
+  }
+  .ds-sample {
+    margin-top: 16px;
+    max-width: none;
+    font-size: 9px;
+  }
+  .ds-tabs {
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .ds-tab-actions {
+    width: 100%;
+    padding: 0 0 10px;
+  }
+  .ds-tabs > [role="tab"] {
+    font-size: 12px;
+  }
+  .ds-workbench {
+    display: flex;
+    flex-direction: column;
+  }
+  .ds-library {
+    border-right: 0;
+    padding: 18px 0;
+    max-height: 270px;
+    overflow: auto;
+    border-bottom: 1px solid #d5cabd;
+  }
+  .ds-group {
+    margin-top: 14px;
+  }
+  .ds-group button {
+    padding: 8px;
+    font-size: 12px;
+  }
+  .ds-archive {
+    margin-top: 16px;
+  }
+  .ds-canvas-bar {
+    padding: 16px 10px;
+  }
+  .ds-tools {
+    flex-wrap: wrap;
+  }
+  .ds-inspector {
+    padding: 22px 5px;
+    border-left: 0;
+  }
+  .ds-stage {
+    min-height: 0;
+  }
+  .ds-stage-help {
+    font-size: 9px;
+  }
+  .ds-footer {
+    font-size: 8px;
+    gap: 10px;
+  }
+  .ds-footer > span:nth-child(2) {
+    display: none;
+  }
+  .ds-journey button {
+    width: 135px;
+  }
+  .ds-gallery {
+    padding: 18px 10px;
+  }
+  .ds-journey ol {
+    gap: 8px;
+  }
+}
+
+.ds-tools button:disabled,
+.ds-tools select:disabled,
+.ds-inspect-button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}

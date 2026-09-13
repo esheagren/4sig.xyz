@@ -18,6 +18,7 @@ type Props = {
   showUnit?: boolean;
   error?: string;
   submitLabel: string;
+  initialCalculator?: boolean;
 };
 export function NumberPad({
   value,
@@ -28,8 +29,9 @@ export function NumberPad({
   showUnit = true,
   error,
   submitLabel,
+  initialCalculator = false,
 }: Props) {
-  const [calculator, setCalculator] = useState(false);
+  const [calculator, setCalculator] = useState(initialCalculator);
   const [expression, setExpression] = useState("");
   const [calculationError, setCalculationError] = useState("");
   const expressionInput = useRef<HTMLInputElement>(null);

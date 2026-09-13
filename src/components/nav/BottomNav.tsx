@@ -4,10 +4,10 @@ import { useAuth } from '../../context/AuthContext';
 import { scoreText } from '../interval/game';
 import { PlayerPanel } from '../../pages/PlayerPanel';
 
-export function BottomNav({ active = 'play', score, onOpenChange }: { active?: 'play' | 'profile'; score?: number; onOpenChange?: (open: boolean) => void }) {
+export function BottomNav({ active = 'play', score, onOpenChange, initialPanel }: { active?: 'play' | 'profile'; score?: number; initialPanel?: 'stats' | 'profile' | 'settings' | 'play'; onOpenChange?: (open: boolean) => void }) {
   const { user } = useAuth();
   const points = score ?? user?.totalScore ?? 0;
-  const [panel, setPanel] = useState<'profile' | null>(null);
+  const [panel, setPanel] = useState<'profile' | null>(initialPanel ? 'profile' : null);
   const dialog = useRef<HTMLDialogElement>(null);
   const title = useId();
   useEffect(() => {
@@ -30,7 +30,7 @@ export function BottomNav({ active = 'play', score, onOpenChange }: { active?: '
       if (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom) open(null);
     }}>
       <h2 id={title} className="sr-only">Menu</h2>
-      {panel && <PlayerPanel onClose={() => open(null)} />}
+      {panel && <PlayerPanel initialView={initialPanel} onClose={() => open(null)} />}
     </dialog>
   </>;
 }
