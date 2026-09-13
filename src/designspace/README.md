@@ -14,7 +14,7 @@ For review, select a screen, interact at a named viewport, use **Inspect compone
 
 ## First visit and daily play
 
-Welcome → optional World Trade Center practice → scoring → topic overview → today’s five questions → claim username → daily scorecard. There is no separate starting game or calibration setup page. The old `setup` preview URL redirects to the topic overview; stable `calibration-estimate` and `starting-score` IDs now preview the first daily question and first daily scorecard. Returning players skip the introduction.
+Welcome → optional World Trade Center practice → scoring → topic overview → claim username → today’s five questions → daily scorecard. There is no separate starting game or calibration setup page. The old `setup` preview URL redirects to the topic overview; stable `calibration-estimate` and `starting-score` IDs now preview the first daily question and first daily scorecard. Returning players skip the introduction.
 
 New daily editions contain five questions. Already-frozen four-question editions and saved games retain their original questions and scores. Existing starting games remain available through the player’s history; no new ones are created.
 
@@ -29,3 +29,5 @@ Daily comparisons use completed, ranked games for the same edition. The API coun
 Only a small red mark appears at the bottom of the score page. It expands into dark navigation when the question review becomes active. Hidden navigation controls cannot receive keyboard focus. Review content has bottom padding to clear the navigation.
 
 The studio uses a compact toolbar and a window-height workbench. The screen library stays on the left; the library, gallery, and reference panel scroll independently. Fit scales the preview to both available width and height. On smaller windows, Details toggles the reference panel; Resources holds the libraries, live-game link, and sign-out action.
+
+The username step has one blank field, a round action, and its own animated phase field. A saved style and color are assigned at account creation; customization lives under Settings → Your style & color.

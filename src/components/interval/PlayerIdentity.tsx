@@ -1,19 +1,15 @@
-import { inkStyles, playerScorecard } from '../../../shared/ink-collection';
+import { inkStyles } from '../../../shared/ink-collection';
 import { normalizeStyle, type PlayerStyle } from '../../../shared/player-profile';
-import type { ScorecardData } from '../../../shared/scorecard';
-import { ScoreCard } from './ScoreCard';
-import { memo, useEffect, useId, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useId, useRef, useState } from "react";
 import type { FormEvent, ReactNode } from "react";
 import {
-  playerIcons,
   playerColors,
   validUsername,
   normalizeColor,
-  normalizeIcon,
   colorName,
   DEFAULT_COLOR,
 } from "./player";
-import type { Player, PlayerIcon } from "./player";
+import type { PlayerIcon } from "./player";
 import { patternFrame } from "./patterns";
 
 export const PlayerMark = memo(function PlayerMark({
@@ -202,41 +198,24 @@ export function PersonalityPicker({
   );
 }
 
-function identityDraft(initial: Partial<Player>): Player {
-  try {
-    const stored = JSON.parse(sessionStorage.getItem('four_sigma_identity_draft') ?? 'null');
-    if (stored && !initial.icon) return { username: initial.username ?? stored.username ?? '', icon: normalizeIcon(stored.icon), color: normalizeColor(stored.color), style: normalizeStyle(stored.style, stored.icon) };
-  } catch { /* Storage is optional. */ }
-  return { username: initial.username ?? '',
-    style: initial.style,
-    icon: initial.icon ?? playerIcons[Math.floor(Math.random() * playerIcons.length)].id,
-    color: initial.color ?? playerColors[Math.floor(Math.random() * playerColors.length)].value };
-}
-
 export function PlayerIdentity({
-  initial,
+  initialUsername = '',
   onStart,
-  score,
-  onboarding = false,
+  onSignIn,
+  beforeQuestions = false,
 }: {
-  initial: Partial<Player>;
-  score?: Omit<ScorecardData, 'player' | 'design'>;
-  onboarding?: boolean;
-  onStart: (player: Player) => Promise<void>;
+  initialUsername?: string;
+  beforeQuestions?: boolean;
+  onStart: (username: string) => Promise<void>;
+  onSignIn: () => void;
 }) {
-  const [draft] = useState(() => identityDraft(initial));
-  const [username, setUsername] = useState(draft.username),
-    [icon, setIcon] = useState<PlayerIcon>(draft.icon),
-    [color, setColor] = useState(draft.color),
-    [style, setStyle] = useState(normalizeStyle(draft.style, draft.icon));
-  const preview = useMemo(() => score ? playerScorecard({ ...score, player: { username: username || 'your_name', icon, color, style } }) : null, [score, username, icon, color, style]);
+  const [username, setUsername] = useState(initialUsername);
+  const heading = useRef<HTMLHeadingElement>(null);
+  useEffect(() => { heading.current?.focus({ preventScroll: true }); }, []);
   const [availability, setAvailability] = useState<{ name: string; state: 'checking' | 'available' | 'taken' | 'error' }>({name: '', state: 'checking'});
   useEffect(() => {
-    try { sessionStorage.setItem('four_sigma_identity_draft', JSON.stringify({ username, icon, color, style })); } catch { /* Optional. */ }
-  }, [username, icon, color, style]);
-  useEffect(() => {
     const name = username.trim();
-    if (initial.username || !validUsername(name)) return;
+    if (initialUsername || !validUsername(name)) return;
     const abort = new AbortController();
     const timer = setTimeout(() => {
       setAvailability({ name, state: 'checking' });
@@ -247,7 +226,7 @@ export function PlayerIdentity({
         .catch(() => { if (!abort.signal.aborted) setAvailability({ name, state: 'error' }); });
     }, 350);
     return () => { clearTimeout(timer); abort.abort(); };
-  }, [username, initial.username]);
+  }, [username, initialUsername]);
   const checked = availability.name === username.trim() ? availability.state : 'checking';
   const [error, setError] = useState(""),
     [pending, setPending] = useState(false);
@@ -262,7 +241,7 @@ export function PlayerIdentity({
     setPending(true);
     setError("");
     try {
-      await onStart({ username: name, icon, color, style });
+      await onStart(name);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Could not start. Try again.");
     } finally {
@@ -270,74 +249,38 @@ export function PlayerIdentity({
     }
   }
   return (
-    <section className="identity-screen">
-      <div className="identity-intro">
-        <div>
-          <h1>{initial.username ? "Your scorecard" : "Claim username"}</h1>
-          <p className="identity-ritual">{onboarding ? 'Your starting calibration is complete. Choose how you will appear on your scorecard.' : 'Give your score a signature.'}</p>
-        </div>
-      </div>
+    <section className="identity-screen claim-screen">
+      <span className="brand claim-brand" aria-label="Four Sigma">4<span>σ</span></span>
+      <h1 ref={heading} tabIndex={-1}>Claim username</h1>
+      <p className="claim-intro">Your scores start here.</p>
       <form onSubmit={start}>
-        <label className="identity-label" htmlFor="player-name">
-          Username
-        </label>
-        <PersonalityPicker
-          icon={icon}
-          color={color}
-          style={style}
-          disabled={pending}
-          onChange={(i, c, s) => {
-            setStyle(s);
-            setIcon(i);
-            setColor(c);
-          }}
-        >
-          <input
-            id="player-name"
-            name="username"
-            value={username}
-            onChange={(e) => {
-              setUsername(e.target.value);
-              setError("");
-            }}
-            autoComplete="username"
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            required
-            minLength={3}
-            maxLength={20}
-            pattern="[a-zA-Z0-9_]{3,20}"
-            aria-describedby={
-              initial.username
-                ? "identity-error"
-                : "username-help identity-error"
-            }
-            placeholder="Claim username"
-            disabled={pending}
-            readOnly={!!initial.username}
-          />
-        </PersonalityPicker>
-        {!initial.username && (
-          <p id="username-help" className="identity-help">
-            3–20 letters, numbers or underscores.
-          </p>
-        )}
-        {!initial.username && validUsername(username.trim()) && <p className={
-          'username-availability ' + checked} role="status">{checked === 'available' ? 'Username available' : checked === 'taken' ? 'That username is already taken.' : checked === 'error' ? 'Availability check unavailable. Submit to try again.' : 'Checking availability...'}</p>}
-        {preview && <div className="identity-scorecard-preview"><ScoreCard data={preview} /></div>}
-        <p id="identity-error" className="identity-error" role="status">
-          {error}
-        </p>
-        <button
-          type="submit"
-          className="primary"
-          disabled={pending || !validUsername(username.trim()) || (!initial.username && checked === 'taken')}
-        >
-          {pending ? "Saving…" : "See my results"}
-          <span aria-hidden="true">→</span>
-        </button>
+        <label className="sr-only" htmlFor="player-name">Username</label>
+        <input
+          id="player-name" name="username" value={username}
+          onChange={e => { setUsername(e.target.value); setError(''); }}
+          autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false}
+          required minLength={3} maxLength={20} pattern="[a-zA-Z0-9_]{3,20}"
+          aria-describedby="username-help identity-error" placeholder="Username"
+          disabled={pending} readOnly={!!initialUsername}
+        />
+        <div className="claim-feedback">
+          <p id="username-help" className="identity-help">3–20 letters, numbers or underscores.</p>
+          {!initialUsername && validUsername(username.trim()) && <p className={'username-availability ' + checked} role="status">
+            {checked === 'available' ? 'Username available' : checked === 'taken' ? 'That username is already taken.' : checked === 'error' ? 'Submit to check availability.' : 'Checking availability…'}
+          </p>}
+          <p id="identity-error" className="identity-error" role="status">{error}</p>
+        </div>
+        <div className="welcome-play">
+          <button type="submit" className="hold-commit welcome-play-button"
+            aria-label={pending ? 'Saving username' : beforeQuestions ? 'Start today’s questions' : 'See my results'}
+            disabled={pending || !validUsername(username.trim()) || (!initialUsername && checked === 'taken')}>
+            <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>
+            <svg className="commit-arrow" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 16h18m-7-7 7 7-7 7" /></svg>
+          </button>
+          <span aria-hidden="true">{pending ? 'Saving…' : beforeQuestions ? 'Start today’s questions' : 'See my results'}</span>
+        </div>
       </form>
+      {!initialUsername && <button className="text-button identity-signin" onClick={onSignIn}>Already have a username? Sign in</button>}
     </section>
   );
 }

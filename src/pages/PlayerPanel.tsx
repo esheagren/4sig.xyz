@@ -1,11 +1,9 @@
-import { normalizeStyle, type PlayerStyle } from '../../shared/player-profile';
 import { useEffect, useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { AuthModal } from "../components/nav/AuthModal";
 import {
   PlayerMark,
-  PersonalityPicker,
 } from "../components/interval/PlayerIdentity";
 import { normalizeColor, normalizeIcon } from "../components/interval/player";
 import { CalibrationScore } from '../components/interval/CalibrationScore';
@@ -13,7 +11,6 @@ import '../components/interval/onboarding.css';
 import { scoreText } from "../components/interval/game";
 import { HowToPlay } from '../components/interval/HowToPlay';
 import { ProfileSettings } from '../components/interval/ProfileSettings';
-import type { PlayerIcon } from "../components/interval/player";
 const tabs = [['stats', 'Stats'], ['profile', 'Profile'], ['settings', 'Settings'], ['play', 'How to play']] as const;
 type PanelTab = typeof tabs[number][0];
 export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: PanelTab; onClose?: () => void }) {
@@ -24,9 +21,6 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
   const [history, setHistory] = useState<
     Array<{ date: string; userScore: number; avgScore: number }>
   >([]);
-  const [icon, setIcon] = useState<PlayerIcon>("orbit"),
-    [color, setColor] = useState(normalizeColor(null)),
-    [style, setStyle] = useState<PlayerStyle>('orbit');
   const [authOpen, setAuthOpen] = useState(false),
     [editing, setEditing] = useState(false),
     [username, setUsername] = useState(""),
@@ -55,9 +49,6 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           displayName: username,
-          avatarIcon: icon,
-          avatarColor: color,
-          scorecardStyle: style,
         }),
       });
       const data = await r.json();
@@ -70,7 +61,7 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
       );
     }
   }
-  const empty = <div className="menu-empty"><h3>Your data starts here</h3><p>Finish today’s questions and claim a username to save your progress.</p><button className="text-button" onClick={() => setAuthOpen(true)}>Already have a username? Sign in</button><Link className="primary" to="/">Back to play →</Link></div>;
+  const empty = <div className="menu-empty"><h3>Your data starts here</h3><p>Claim a username to save your progress.</p><button className="text-button" onClick={() => setAuthOpen(true)}>Already have a username? Sign in</button><Link className="primary" to="/">Back to play →</Link></div>;
   return <div className="profile-page player-panel">
     <div className="player-menu-head">
       <div className="player-tabs" role="tablist" aria-label="Game information">
@@ -152,16 +143,6 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
                     maxLength={20}
                     required
                   />
-                  <PersonalityPicker
-                    icon={icon}
-                    color={color}
-                    style={style}
-                    onChange={(i, c, s) => {
-                      setStyle(s);
-                      setIcon(i);
-                      setColor(c);
-                    }}
-                  />
                   <button className="primary">Save</button>
                   <button
                     type="button"
@@ -176,13 +157,10 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
                   className="text-button"
                   onClick={() => {
                     setUsername(user.displayName);
-                    setIcon(normalizeIcon(user.avatarIcon));
-                    setColor(normalizeColor(user.avatarColor));
-                    setStyle(normalizeStyle(user.scorecardStyle, user.avatarIcon));
                     setEditing(true);
                   }}
                 >
-                  Edit personality
+                  Edit username
                 </button>
               )}
               {!user.email ? (

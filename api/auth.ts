@@ -1,3 +1,5 @@
+import { randomInt } from "node:crypto";
+import { playerColors, playerIcons, styleIcon, type PlayerStyle } from "../shared/player-profile.js";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { query, transaction } from "./_lib/db.js";
 import {
@@ -80,9 +82,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         throw new HttpError(400, "Use 3–20 letters, numbers, or underscores.");
       await rateLimit(req, "signup");
       const created = await transaction(async (client) => {
+        const styles: PlayerStyle[] = [...playerIcons.map(icon => icon.id), 'halo', 'horizon'];
+        const style = styles[randomInt(styles.length)];
+        const color = playerColors[randomInt(playerColors.length)].value;
         const { rows } = await client.query(
-          "INSERT INTO users(username) VALUES($1) RETURNING id",
-          [body.username],
+          "INSERT INTO users(username,avatar_icon,avatar_color,scorecard_style,identity_chosen) VALUES($1,$2,$3,$4,true) RETURNING id",
+          [body.username, styleIcon(style), color, style],
         );
         return {
           id: rows[0].id,

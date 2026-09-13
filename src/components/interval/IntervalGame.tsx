@@ -19,6 +19,7 @@ import "./onboarding.css";
 import { Score } from "../../../shared/scoring";
 import { ScoringExamples } from "./ScoringExamples";
 import { PracticeTip } from "./PracticeTip";
+import { IdentityField } from "./IdentityField";
 import { WelcomeProbability } from "./WelcomeProbability";
 import { WorldviewGrid } from "./WorldviewGrid";
 import { ScoreStory } from './ScoreStory';
@@ -27,7 +28,6 @@ import type { AnswerInsight } from '../../../shared/answer-insight';
 import type { ScorecardData } from '../../../shared/scorecard';
 import { PlayerIdentity } from "./PlayerIdentity";
 import {
-  validPlayerIcon,
   normalizeColor,
   normalizeIcon,
 } from "./player";
@@ -573,8 +573,10 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
         setStage("complete");
         activeGame(null);
         void refreshUser();
-      } else if (data.showIntro === true && !practice && answered === 0 && !tutorialSeen(data.sessionId)) {
+      } else if (data.showIntro === true && (!user || user.isAnonymous) && !practice && answered === 0 && !tutorialSeen(data.sessionId)) {
         setStage('welcome'); focusHeading();
+      } else if ((!user || user.isAnonymous) && !practice && answered === 0) {
+        setStage('identity');
       } else resetRound();
       if (preview && !previewApplied.current) {
         previewApplied.current = true;
@@ -616,7 +618,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
         });
       void lifecycleActions.current.startSession();
     }
-    // Signing in at the final step attaches this browser's completed guest game.
+    // Claiming or signing in resumes the account; only a fully answered game can finalize.
     if (
       stage === "identity" &&
       user &&
@@ -626,9 +628,11 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
       automaticFinish.current !== sessionId + user.id
     ) {
       automaticFinish.current = sessionId + user.id;
-      void lifecycleActions.current.finalizeScore();
+      if (results.length === orderedQuestions.length && orderedQuestions.length > 0)
+        void lifecycleActions.current.finalizeScore();
+      else void lifecycleActions.current.startSession();
     }
-  }, [authLoading, user, stage, sessionId]);
+  }, [authLoading, user, stage, sessionId, results.length, orderedQuestions.length]);
   const activeIdentity = useRef<string | null>(null);
   useEffect(() => {
     if (authLoading || !user) return;
@@ -646,29 +650,19 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
   function restart() {
     void startSession(true);
   }
-  async function startPlayer(chosen: Player) {
-    if (!user)
-      throw new Error("Could not connect to your account. Please reload.");
+  async function startPlayer(username: string) {
+    if (!user) throw new Error("Could not connect to your account. Please reload.");
     if (user.isAnonymous) {
-      const result = await claimUsername(chosen.username);
-      if (!result.success)
-        throw new Error(result.error || "Username unavailable.");
+      const result = await claimUsername(username);
+      if (!result.success) throw new Error(result.error || "Username unavailable.");
+    } else if (!user.hasPersonality) {
+      // Older accounts may predate automatically assigned designs.
+      await request('auth/profile', {
+        avatarIcon: normalizeIcon(user.avatarIcon), avatarColor: normalizeColor(user.avatarColor),
+        scorecardStyle: normalizeStyle(user.scorecardStyle, user.avatarIcon),
+      });
+      await refreshUser();
     }
-    const data = await request("auth/profile", {
-      avatarIcon: chosen.icon,
-      avatarColor: chosen.color,
-      scorecardStyle: chosen.style,
-    });
-    if (!validPlayerIcon(data.user?.avatarIcon))
-      throw new Error("Your personality could not be saved.");
-    setPlayer({
-      username: data.user.displayName,
-      icon: data.user.avatarIcon,
-      color: normalizeColor(data.user.avatarColor),
-      style: normalizeStyle(data.user.scorecardStyle, data.user.avatarIcon),
-    });
-    void refreshUser();
-    await finalizeScore();
   }
   const stateRef = useRef({
     index,
@@ -778,8 +772,9 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
     return () => lifecycle.abort();
   }, []);
   return (
-    <div className={`interval-page${stage === 'welcome' ? ' welcome-page' : ''}`}>
+    <div className={`interval-page${stage === 'welcome' ? ' welcome-page' : stage === 'identity' ? ' claim-page' : ''}`}>
       {stage === 'welcome' && <WelcomeProbability />}
+      {stage === 'identity' && <IdentityField />}
       <div
         className={`interval-app ${["estimate", "range", "saving", "sweeping", "revealed", "complete"].includes(stage) ? "has-bottom-nav" : ""}`}
         style={
@@ -798,11 +793,11 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
               </h1>
               <p>Make sense of the numbers shaping our world—and find out how sure you should be.</p>
               <div className="welcome-play">
-                <button className="hold-commit welcome-play-button" type="button" aria-label="Let’s play" onClick={() => { setDemo(true); setPracticeTip('estimate'); resetRound(); }}>
+                <button className="hold-commit welcome-play-button" type="button" aria-label="Start" onClick={() => { setDemo(true); setPracticeTip('estimate'); resetRound(); }}>
                   <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>
                   <svg className="commit-arrow" viewBox="0 0 32 32" fill="none" aria-hidden="true"><path d="M7 16h18m-7-7 7 7-7 7" /></svg>
                 </button>
-                <span aria-hidden="true">Let’s play</span>
+                <span aria-hidden="true">Start</span>
               </div>
               {(!user || user.isAnonymous) && <button className="text-button welcome-signin" onClick={() => setAuthOpen(true)}>Already have a username? Sign in</button>}
             </section>
@@ -822,8 +817,10 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
               <WorldviewGrid />
               <p className="worldview-daily">Five questions a day. The same for everyone.</p>
               <button className="primary" onClick={() => {
-                tutorialSeen(sessionId, true); setDemo(false); setIndex(0); resetRound();
-              }}>Start today’s questions <span aria-hidden="true">→</span></button>
+                tutorialSeen(sessionId, true); setDemo(false); setIndex(0);
+                if (!user || user.isAnonymous || !user.hasPersonality) setStage('identity');
+                else resetRound();
+              }}>Next <span aria-hidden="true">→</span></button>
             </section>
           ) : stage === "identity" ? (
             authLoading ? (
@@ -831,23 +828,13 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                 <p role="status">Connecting…</p>
               </section>
             ) : user ? (
-              <>
-                <PlayerIdentity
-                  key={user.id}
-                  initial={initialPlayer}
-                  onboarding={onboarding}
-                  score={{ score: totalPoints(results), hits: results.map(result => result.hit), label: onboarding ? 'STARTING CALIBRATION' : edition, practice: !isRanked }}
-                  onStart={startPlayer}
-                />
-                {user.isAnonymous && (
-                  <button
-                    className="text-button identity-signin"
-                    onClick={() => setAuthOpen(true)}
-                  >
-                    Sign in to an existing account
-                  </button>
-                )}
-              </>
+              <PlayerIdentity
+                key={user.id}
+                initialUsername={initialPlayer.username}
+                beforeQuestions={results.length < orderedQuestions.length}
+                onStart={startPlayer}
+                onSignIn={() => setAuthOpen(true)}
+              />
             ) : (
               <section className="identity-screen account-loading">
                 <p>Could not connect to your account.</p>

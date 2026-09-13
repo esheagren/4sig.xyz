@@ -155,6 +155,9 @@ test("Postgres API: profiles, ownership, resume, retries, ranking, credentials",
     username: "MigrationTest",
   });
   assert.equal(claimed.status, 200);
+  assert.equal(claimed.data.user.hasPersonality, true);
+  assert.match(claimed.data.user.avatarColor, /^#[0-9a-f]{6}$/);
+  assert.ok(['orbit', 'wave', 'spiral', 'pendulum', 'bloom', 'braid', 'halo', 'horizon'].includes(claimed.data.user.scorecardStyle));
   const id = claimed.data.user.id;
   assert.match(claimed.headers["set-cookie"], /HttpOnly; SameSite=Lax/);
   assert.equal(
@@ -628,8 +631,8 @@ test("play first: anonymous resume, ownership, final identity, and existing-acco
         sessionId: first.data.sessionId,
       })
     ).status,
-    409,
-    "pattern and color required once before score",
+    200,
+    "claiming assigns a saved design without a separate profile step",
   );
   await call(auth, "/api/auth/profile", guest, {
     avatarIcon: "pendulum",
@@ -641,7 +644,8 @@ test("play first: anonymous resume, ownership, final identity, and existing-acco
   assert.equal(final.status, 200);
   assert.equal(final.data.isRanked, true);
   assert.equal(final.data.share.player.username, "LateArrival");
-  assert.equal(final.data.share.player.icon, "pendulum");
+  assert.equal(final.data.share.player.icon, claimed.data.user.avatarIcon, "completed scorecards retain their original assigned design");
+  assert.equal((await call(auth, "/api/auth/me", guest, {}, "GET")).data.user.avatarIcon, "pendulum", "settings can change the design for future scorecards");
   assert.equal(final.data.judgements.length, first.data.questions.length);
   const ownership = (
     await query(
@@ -838,4 +842,32 @@ test("signing in before answering resumes the account's saved daily game", async
 
 test.after(async () => {
   await pool.end();
+});
+
+test('claiming before daily questions persists the assigned design and resumes the empty game', async () => {
+  const browser: Client = { ip: 'early-username-claim' };
+  const opened = await call(session, '/api/session/start', browser, {});
+  const claimed = await call(auth, '/api/auth/claim-username', browser, { username: 'EarlyArrival' });
+  assert.equal(claimed.status, 200);
+  assert.equal(claimed.data.user.hasPersonality, true);
+  const restored = await call(auth, '/api/auth/me', browser, {}, 'GET');
+  for (const field of ['id', 'avatarIcon', 'avatarColor', 'scorecardStyle'])
+    assert.equal(restored.data.user[field], claimed.data.user[field]);
+  const resumed = await call(session, '/api/session/start', browser, { resumeId: opened.data.sessionId });
+  assert.equal(resumed.data.sessionId, opened.data.sessionId);
+  assert.equal(resumed.data.savedAnswers.length, 0);
+  assert.equal(resumed.data.questions.length, 5);
+  assert.equal((await call(session, '/api/session/start', browser, {})).data.sessionId, opened.data.sessionId);
+  for (const question of resumed.data.questions) {
+    const answer = await call(session, '/api/session/answer', browser, {
+      sessionId: opened.data.sessionId, questionId: question.id, lower: 1, upper: 100,
+    });
+    assert.equal(answer.status, 200);
+  }
+  const finished = await call(session, '/api/session/finalize', browser, { sessionId: opened.data.sessionId });
+  assert.equal(finished.status, 200);
+  assert.equal(finished.data.share.player.username, 'EarlyArrival');
+  assert.equal(finished.data.share.player.style, claimed.data.user.scorecardStyle);
+  assert.equal(finished.data.share.player.color, claimed.data.user.avatarColor);
+  assert.equal((await call(session, '/api/session/start', browser, {})).data.completed, true);
 });

@@ -1,3 +1,4 @@
+import { playerIcons, playerColors, styleIcon, type PlayerStyle } from "../../shared/player-profile";
 import type { AnswerInsight } from "../../shared/answer-insight";
 import type { Question } from "../../api/_lib/types";
 import { Score } from "../../shared/scoring";
@@ -212,12 +213,15 @@ export function installPreviewData(screen: Screen) {
     if (path.endsWith("/check-username"))
       return json({
         available: body.username?.toLowerCase() !== "taken",
-        suggestions: ["sample_player", "curious_mind"],
       });
     if (path.endsWith("/claim-username")) {
       member = true;
       name = body.username;
-      hasPersonality = false;
+      hasPersonality = true;
+      const styles: PlayerStyle[] = [...playerIcons.map(item => item.id), 'halo', 'horizon'];
+      style = styles[Math.floor(Math.random() * styles.length)];
+      icon = styleIcon(style as PlayerStyle);
+      color = playerColors[Math.floor(Math.random() * playerColors.length)].value;
       return json({ user: user() });
     }
     if (path.endsWith("/profile")) {

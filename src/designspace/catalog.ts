@@ -74,9 +74,19 @@ export const screens: Screen[] = [
     name: "The numbers we focus on",
     group: "First visit",
     description: "The nine topic areas and the mesofacts we focus on.",
-    try: "Start today’s questions opens the first of five daily questions.",
+    try: "Next opens the username step, followed by today’s five questions.",
     components: ["worldview-grid"],
     preview: { stage: "worldview" },
+  },
+  {
+    id: "claim",
+    code: "O07",
+    name: "Claim username",
+    group: "First visit",
+    description: "One blank username field over an animated phase field. Style and color are assigned automatically.",
+    try: "Choose a name to begin today’s five questions. Try taken to preview an unavailable name. Saves here are simulated.",
+    components: ["username-claim", "identity-field", "round-action"],
+    preview: { stage: "identity" },
   },
   {
     id: "calibration-estimate",
@@ -174,18 +184,6 @@ export const screens: Screen[] = [
     preview: { stage: "range", bounds: { lower: 80, estimate: 80, upper: 80 } },
   },
   {
-    id: "claim",
-    code: "R01",
-    name: "Claim username",
-    group: "Results & identity",
-    answered: 5,
-    description:
-      "Choose a username, one of eight styles, and a color beneath the pattern choices.",
-    try: "Try a name and change the style. All saves here are simulated.",
-    components: ["personality", "scorecard"],
-    preview: { stage: "identity" },
-  },
-  {
     id: "starting-score",
     code: "R02",
     name: "First daily scorecard",
@@ -234,12 +232,12 @@ export const screens: Screen[] = [
     member: true,
     description: [
       "Points, calibration, streaks, and expandable history.",
-      "Your username, animated mark, style, and account.",
-      "Sound and vibration preferences.",
+      "Your username, animated mark, and account.",
+      "Sound, vibration, and optional style and color choices.",
       "The purpose of the game and the complete playing instructions.",
     ][i],
     try: "Switch between the four tabs. Close the panel to return to the game.",
-    components: ["player-menu", "bottom-nav"],
+    components: tab === "settings" ? ["player-menu", "personality", "bottom-nav"] : ["player-menu", "bottom-nav"],
     preview: { stage: "estimate" as const, menu: tab },
   })),
   {
@@ -251,7 +249,6 @@ export const screens: Screen[] = [
       "The existing-account dialog, available from the identity flow.",
     try: "Use any sample email and password to preview signing in. Nothing is sent to an account service.",
     components: ["auth-dialog"],
-    answered: 5,
     preview: { stage: "identity", auth: true },
   },
   {
@@ -260,7 +257,7 @@ export const screens: Screen[] = [
     name: "Guest profile",
     group: "Player menu",
     description:
-      "The profile before a player has finished calibration and claimed a name.",
+      "The profile before a player has claimed a name.",
     try: "Switch tabs to see the guest information states.",
     components: ["player-menu", "bottom-nav"],
     preview: { stage: "estimate", menu: "profile" },
@@ -334,7 +331,7 @@ export const components = [
     name: "Round action",
     source: "IntervalGame / HoldToConfirm",
     description:
-      "The circular action language used for Let’s play, Submit, and Share.",
+      "The circular action language used for Start, Submit, and Share.",
     screen: "welcome",
   },
   {
@@ -415,6 +412,20 @@ export const components = [
     source: "PersonalityPicker / PlayerMark",
     description:
       "Eight coherent compositions, with color as a subsection below the styles.",
+    screen: "menu-settings",
+  },
+  {
+    id: "username-claim",
+    name: "Username claim",
+    source: "PlayerIdentity",
+    description: "A single field with availability checking and a round action. No suggested name or design choices.",
+    screen: "claim",
+  },
+  {
+    id: "identity-field",
+    name: "Phase field",
+    source: "IdentityField",
+    description: "A slowly turning family of dotted phase curves, with a quiet center for the username form.",
     screen: "claim",
   },
   {

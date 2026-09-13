@@ -82,7 +82,7 @@ test('two phones on the same network cannot resume or finalize each other’s sc
   assert.equal((await call(session, '/api/session/start', firstPhone)).data.sessionId, first.data.sessionId);
 });
 
-test('first visit plays five shared daily questions, then claims a name and saves the score', async () => {
+test('a legacy guest can still finish five questions and claim a name at the end', async () => {
   const browser: Browser = { ip: 'daily-first' }, peer: Browser = { ip: 'daily-peer' };
   const before = (await query('SELECT count(*)::int n FROM users')).rows[0].n;
   const first = await call(session, '/api/session/start', browser, {onboarding:true});
@@ -108,7 +108,7 @@ test('first visit plays five shared daily questions, then claims a name and save
     assert.doesNotMatch(JSON.stringify(resumed.data.questions),/trueValue|answerContext|answerInsight|sourceUrl/);
   }
   await call(auth,'/api/auth/claim-username',browser,{username:'FirstDailyPlayer'});
-  assert.equal((await call(session,'/api/session/finalize',browser,{sessionId:first.data.sessionId})).status,409);
+  assert.equal((await call(session,'/api/session/finalize',browser,{sessionId:first.data.sessionId})).status,200);
   await call(auth,'/api/auth/profile',browser,{avatarIcon:'wave',avatarColor:'#276c66'});
   const finished = await call(session,'/api/session/finalize',browser,{sessionId:first.data.sessionId});
   assert.equal(finished.status,200);

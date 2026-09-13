@@ -218,7 +218,7 @@ export default function Studio() {
             {[
               {
                 name: "01 · A first visit",
-                note: "Welcome → practice → scoring → topics → five daily questions → claim username → scorecard.",
+                note: "Welcome → practice → scoring → topics → claim username → five daily questions → scorecard.",
                 ids: [
                   "welcome",
                   "practice-estimate",
@@ -226,8 +226,8 @@ export default function Studio() {
                   "practice-answer",
                   "scoring",
                   "worldview",
-                  "calibration-estimate",
                   "claim",
+                  "calibration-estimate",
                   "starting-score",
                 ],
               },
