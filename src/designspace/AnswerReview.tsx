@@ -183,7 +183,7 @@ export function AnswerReview({ results }: { results: Result[] }) {
       aria-label="Your answers and why they matter"
     >
       <div className="answer-review-heading">
-        <h2>The numbers, revisited.</h2>
+        <h2 tabIndex={-1}>Today’s questions</h2>
         <p>
           <span className="review-dot" /> Actual answer{" "}
           <span className="review-legend-bracket">[—]</span> Your range

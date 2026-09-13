@@ -204,9 +204,15 @@ export const screens: Screen[] = [
     answered: 8,
     member: true,
     description:
-      "A single animated identity combines username, points, and calibration.",
-    try: "Below the card, compare your range with the actual answer. Tap each short insight to read more. This answer-review layout is a design study.",
-    components: ["scorecard", "share", "answer-review", "bottom-nav"],
+      "A dark, animated starting score with a thumb-level Share action, followed by a separate question-review page.",
+    try: "Scroll or tap Today’s questions to snap to the review. Return with Your score. Share copies the chosen GIF and homepage URL. This two-page layout is a design study.",
+    components: [
+      "score-story",
+      "scorecard",
+      "share",
+      "answer-review",
+      "bottom-nav",
+    ],
     preview: { stage: "complete" },
   },
   {
@@ -218,9 +224,15 @@ export const screens: Screen[] = [
     answered: 4,
     member: true,
     description:
-      "Today’s result, question review, and standings after four answers.",
-    try: "Explore the range graphics and expandable insights below the scorecard. This answer-review layout is a design study.",
-    components: ["scorecard", "share", "answer-review", "bottom-nav"],
+      "An animated daily score, calibration against 95%, daily average, and games played; snap down to Today’s questions.",
+    try: "Scroll to snap between the dark result and Today’s questions. Expand an insight, return to your score, or share the GIF. Sample daily history supplies the average.",
+    components: [
+      "score-story",
+      "scorecard",
+      "share",
+      "answer-review",
+      "bottom-nav",
+    ],
     preview: { stage: "complete" },
   },
   ...(["stats", "profile", "settings", "play"] as const).map((tab, i) => ({
@@ -287,6 +299,14 @@ export const screens: Screen[] = [
   },
 ];
 export const components = [
+  {
+    id: "score-story",
+    name: "Two-page score · study",
+    source: "ScoreStory",
+    description:
+      "A full-height, animated result in the player’s color, with a 95% calibration target and Share at the bottom. Scroll snaps to Today’s questions; its longer review scrolls freely.",
+    screen: "daily-score",
+  },
   {
     id: "answer-review",
     name: "Answer review · study",

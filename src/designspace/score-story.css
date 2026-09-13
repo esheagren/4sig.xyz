@@ -1,0 +1,429 @@
+/* The immersive result study is mounted exclusively by Design Space. */
+.interval-app:has(.score-story) {
+  width: 100%;
+  padding: 0;
+}
+.interval-app:has(.score-story) > main {
+  padding: 0;
+}
+.interval-app .score-story {
+  --story-paper: #f6f0e6;
+  --story-muted: #c4bdb2;
+  --story-red: #d9684e;
+  position: relative;
+  height: calc(100dvh - 45px - env(safe-area-inset-bottom));
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-snap-type: y mandatory;
+  overscroll-behavior-y: contain;
+  scrollbar-width: none;
+}
+.score-story::-webkit-scrollbar {
+  display: none;
+}
+.interval-app .score-story-hero {
+  position: relative;
+  isolation: isolate;
+  min-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: max(20px, env(safe-area-inset-top)) 26px 10px;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--story-accent) 24%, #171718);
+  color: var(--story-paper);
+}
+.score-story-art {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+  overflow: hidden;
+  opacity: 0.75;
+}
+.interval-app .score-story-art .scorecard-button {
+  position: absolute;
+  width: 210%;
+  left: -60%;
+  top: 8%;
+}
+.interval-app .score-story-art svg {
+  border-radius: 0;
+}
+.score-story-art svg text,
+.score-story-art svg rect[y="630"],
+.score-story-art svg rect[y="626"],
+.score-story-art svg path[d="M64 600H896"] {
+  display: none;
+}
+.score-story-shade {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(
+    180deg,
+    #171718a8,
+    #17171822 28%,
+    #17171896 60%,
+    #171718eb
+  );
+}
+.score-story-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+.interval-app .story-brand {
+  font:
+    32px/1 "Newsreader",
+    Georgia,
+    serif;
+  letter-spacing: -2px;
+}
+.story-brand > span {
+  color: var(--story-red);
+}
+.score-story-header > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 9px var(--mono);
+  color: var(--story-muted);
+}
+.score-story-header i {
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--story-red);
+}
+.score-story-main {
+  width: 100%;
+  max-width: 440px;
+  margin: auto;
+  padding: 24px 0;
+}
+.interval-app .score-story-name {
+  font:
+    24px/1.2 "Newsreader",
+    Georgia,
+    serif;
+  overflow-wrap: anywhere;
+  margin-bottom: 16px;
+}
+.interval-app .score-story-score {
+  font:
+    500 clamp(62px, 18vw, 100px) / 1 "DM Sans",
+    sans-serif;
+  letter-spacing: -0.065em;
+  white-space: nowrap;
+  margin: 0 0 10px;
+  font-variant-numeric: tabular-nums;
+}
+.interval-app .score-story-label {
+  display: flex;
+  justify-content: space-between;
+  font: 10px var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--story-muted);
+  padding-bottom: 28px;
+}
+.score-story-label > span {
+  color: var(--story-red);
+}
+.score-story-calibration {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.score-story-calibration > div {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.score-story-calibration strong {
+  font:
+    400 42px/1 "Newsreader",
+    Georgia,
+    serif;
+  letter-spacing: -1px;
+}
+.score-story-calibration strong small {
+  font-size: 22px;
+}
+.score-story-calibration > div > span {
+  font-size: 11px;
+  color: var(--story-muted);
+}
+.interval-app .score-story-calibration p {
+  font-size: 10px;
+  text-align: right;
+  line-height: 1.7;
+}
+.score-story-calibration p span {
+  display: block;
+  color: var(--story-muted);
+}
+.score-story-gauge {
+  margin: 18px 0 24px;
+}
+.story-gauge-line {
+  position: relative;
+  height: 3px;
+  background: #f6f0e629;
+}
+.story-gauge-line > span {
+  height: 100%;
+  display: block;
+  background: #f6f0e69c;
+}
+.story-gauge-line i {
+  position: absolute;
+  top: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--story-paper);
+  transform: translateX(-50%);
+}
+.story-gauge-line b {
+  position: absolute;
+  left: 95%;
+  top: -7px;
+  height: 17px;
+  width: 2px;
+  background: var(--story-red);
+}
+.story-gauge-labels {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  font: 9px var(--mono);
+  color: var(--story-muted);
+  padding-top: 13px;
+}
+.story-gauge-labels strong {
+  font-weight: 400;
+  color: var(--story-red);
+  margin-left: auto;
+  margin-right: 20px;
+}
+.score-story-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+  padding: 18px 0 0;
+  border-top: 1px solid #f6f0e629;
+}
+.score-story-stats > div + div {
+  padding-left: 24px;
+  border-left: 1px solid #f6f0e629;
+}
+.score-story-stats dt {
+  font-size: 10px;
+  color: var(--story-muted);
+  margin-bottom: 8px;
+}
+.score-story-stats dd {
+  margin: 0;
+  font: 25px/1 var(--mono);
+  letter-spacing: -1px;
+}
+.score-story-actions {
+  position: relative;
+  width: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  flex-shrink: 0;
+}
+.interval-app .score-story-actions .scorecard-share-actions {
+  margin: 0;
+}
+.interval-app .score-story-actions .scorecard-share-button {
+  width: 80px;
+  height: 80px;
+  background: #ad4128;
+  color: var(--story-paper);
+  box-shadow: 0 0 40px #ad412821;
+}
+.interval-app .score-story-actions .commit-track {
+  stroke: #f6f0e659;
+}
+.interval-app .score-story-actions .copy-status {
+  position: absolute;
+  bottom: 118px;
+  left: 0;
+  right: 0;
+  min-height: 0;
+  color: var(--story-paper);
+  font-size: 10px;
+  margin: 0;
+  text-align: center;
+}
+.interval-app .score-story-next {
+  margin: 12px auto 0;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--story-muted);
+  font-size: 11px;
+}
+.score-story-next svg {
+  height: 18px;
+  width: 18px;
+  stroke: var(--story-red);
+  stroke-width: 1.3;
+}
+.interval-app .score-story-questions {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  min-height: 100%;
+  background: #f6f0e6;
+  padding: 22px max(24px, calc((100% - 580px) / 2)) 36px;
+}
+.score-story-review-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #786b60;
+  font: 9px var(--mono);
+}
+.interval-app .score-story-review-top button {
+  background: transparent;
+  min-height: 36px;
+  font-size: 11px;
+  padding: 0;
+}
+.interval-app .score-story-questions .answer-review {
+  margin-top: 24px;
+}
+.interval-app .score-story-daily {
+  margin-top: 20px;
+  font-size: 12px;
+}
+.interval-app:has(.score-story[data-page="score"]) > .bottom-nav {
+  --ink: #f6f0e6;
+  --muted: #b7b0a6;
+  background: #171718;
+  border-color: #f6f0e621;
+  color: #f6f0e6;
+}
+.interval-app:has(.score-story[data-page="score"]) > .bottom-nav > a,
+.interval-app:has(.score-story[data-page="score"]) > .bottom-nav > button {
+  color: #c4bdb2;
+}
+@media (max-height: 680px) {
+  .interval-app .score-story-hero {
+    padding-top: 14px;
+  }
+  .score-story-main {
+    padding: 16px 0;
+  }
+  .interval-app .score-story-name {
+    margin-bottom: 10px;
+    font-size: 21px;
+  }
+  .interval-app .score-story-score {
+    font-size: clamp(48px, 13vw, 74px);
+  }
+  .interval-app .score-story-label {
+    padding-bottom: 16px;
+  }
+  .score-story-gauge {
+    margin: 12px 0 15px;
+  }
+  .score-story-stats {
+    padding-top: 12px;
+  }
+  .score-story-stats dd {
+    font-size: 21px;
+  }
+  .interval-app .score-story-actions .scorecard-share-button {
+    width: 68px;
+    height: 68px;
+  }
+  .interval-app .score-story-next {
+    margin-top: 4px;
+    min-height: 30px;
+  }
+  .interval-app .score-story-actions .copy-status {
+    bottom: 104px;
+  }
+}
+@media (max-height: 500px) {
+  .interval-app .score-story-hero {
+    height: auto;
+    min-height: 510px;
+  }
+}
+@media (min-width: 701px) {
+  .interval-app .score-story-hero {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+  .interval-app .score-story-art .scorecard-button {
+    width: 120%;
+    top: -5%;
+    left: -10%;
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .score-story-main {
+    animation: story-arrive 650ms ease-out both;
+  }
+  @keyframes story-arrive {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* Keep light card treatments legible within this consistently dark surface. */
+.score-story-art svg > rect:first-child {
+  display: none;
+}
+.score-story-art [data-scorecard-pattern] {
+  color: color-mix(in srgb, var(--story-accent) 30%, #f6f0e6);
+}
+.interval-app .score-story-actions .commit-ring {
+  width: 100%;
+  height: 100%;
+}
+.interval-app .score-story-actions .scorecard-share-button::before {
+  background: #261e1b;
+}
+
+/* Recenter the chosen card's offset artwork in a portrait viewport. */
+.score-story[data-layout="split"],
+.score-story[data-layout="index"] {
+  --story-art-left: -110%;
+  --story-art-left-wide: -40%;
+}
+.score-story[data-layout="poster"],
+.score-story[data-layout="halo"] {
+  --story-art-left: -96%;
+  --story-art-left-wide: -33%;
+}
+.interval-app .score-story-art .scorecard-button {
+  left: var(--story-art-left, -60%);
+}
+.score-story-art svg > g {
+  opacity: 0.32;
+}
+@media (min-width: 701px) {
+  .interval-app .score-story-art .scorecard-button {
+    left: var(--story-art-left-wide, -10%);
+  }
+}

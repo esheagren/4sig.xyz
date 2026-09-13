@@ -3,7 +3,7 @@ import type { ScorecardData, ScorecardVariant } from '../../../shared/scorecard'
 import { GAME_URL, scorecardPng, copyScorecard } from '../../lib/share-scorecard';
 import { ScoreCard } from './ScoreCard';
 
-export function ScorecardShare({ data, variant = 'ink' }: { data: ScorecardData; variant?: ScorecardVariant }) {
+export function ScorecardShare({ data, variant = 'ink', showCard = true }: { data: ScorecardData; variant?: ScorecardVariant; showCard?: boolean }) {
   const [status, setStatus] = useState('');
   const [fallback, setFallback] = useState(false);
   const [preparing, setPreparing] = useState(true);
@@ -40,7 +40,7 @@ export function ScorecardShare({ data, variant = 'ink' }: { data: ScorecardData;
     finally { setSharing(false); }
   }
   return <>
-    <ScoreCard data={data} variant={variant} onShare={() => void copy()} disabled={preparing || sharing} />
+    {showCard && <ScoreCard data={data} variant={variant} onShare={() => void copy()} disabled={preparing || sharing} />}
     <div className="share-actions scorecard-share-actions">
       <button type="button" className="hold-commit scorecard-share-button" onClick={() => void copy()} disabled={preparing || sharing}>
         <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>

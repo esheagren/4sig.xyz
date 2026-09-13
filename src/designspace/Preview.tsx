@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { MemoryRouter } from "react-router-dom";
 import { AuthProvider } from "../context/AuthContext";
 import { PreviewAnalyticsProvider } from "../context/PostHogContext";
-import { AnswerReview } from "./AnswerReview";
+import { ScoreStory } from "./ScoreStory";
+import storyCss from "./score-story.css?inline";
 import reviewCss from "./answer-review.css?inline";
 import IntervalGame from "../components/interval/IntervalGame";
 import { installPreviewData } from "./fixtures";
@@ -22,6 +23,7 @@ style.textContent =
   onboardingCss +
   glossaryCss +
   reviewCss +
+  storyCss +
   `
 html.ds-inspecting [data-design-name]:hover { outline:2px solid #276c66; outline-offset:3px; cursor:crosshair; }
 `;
@@ -41,12 +43,13 @@ const selectors: Record<string, string> = {
   "worldview-grid": ".worldview-grid",
   "calibration-setup": ".setup-measures",
   personality: ".personality-picker",
-  scorecard: ".scorecard-button",
+  scorecard: ".score-story-hero, .scorecard-button",
   share: ".scorecard-share-actions",
   "bottom-nav": ".bottom-nav",
   "player-menu": ".player-panel",
   "auth-dialog": ".auth-modal",
   "answer-review": ".answer-review",
+  "score-story": ".score-story",
 };
 export default function Preview() {
   useEffect(() => {
@@ -102,7 +105,7 @@ export default function Preview() {
           <IntervalGame
             preview={{
               ...screen.preview,
-              renderResults: (results) => <AnswerReview results={results} />,
+              renderSummary: (data) => <ScoreStory {...data} />,
             }}
           />
         </PreviewAnalyticsProvider>
