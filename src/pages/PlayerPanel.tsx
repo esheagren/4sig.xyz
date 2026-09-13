@@ -70,7 +70,7 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
       );
     }
   }
-  const empty = <div className="menu-empty"><h3>Your data starts here</h3><p>Finish today’s questions and claim a username to save your progress.</p><Link className="primary" to="/">Back to play →</Link></div>;
+  const empty = <div className="menu-empty"><h3>Your data starts here</h3><p>Finish today’s questions and claim a username to save your progress.</p><button className="text-button" onClick={() => setAuthOpen(true)}>Already have a username? Sign in</button><Link className="primary" to="/">Back to play →</Link></div>;
   return <div className="profile-page player-panel">
     <div className="player-menu-head">
       <div className="player-tabs" role="tablist" aria-label="Game information">
@@ -189,7 +189,7 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
                 <div className="profile-account">
                   <p>
                     Your profile is saved in this browser. Add an email and
-                    password to sign in on another device.
+                    password to keep this same username in Safari, the home-screen app, or another browser.
                   </p>
                   <button
                     className="text-button"
@@ -211,6 +211,6 @@ export function PlayerPanel({ initialView = 'stats', onClose }: { initialView?: 
     <section className="player-tab-panel" role="tabpanel" id={`${tabId}-panel-settings`} aria-labelledby={`${tabId}-tab-settings`} hidden={view !== 'settings'} tabIndex={0}><ProfileSettings /></section>
     <section className="player-tab-panel" role="tabpanel" id={`${tabId}-panel-play`} aria-labelledby={`${tabId}-tab-play`} hidden={view !== 'play'} tabIndex={0}><HowToPlay /></section>
     <p role="status" className="entry-error">{error}</p>
-    <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} initialMode="signup" />
+    <AuthModal isOpen={authOpen} onClose={() => setAuthOpen(false)} initialMode={user && !user.isAnonymous ? "signup" : "login"} />
   </div>;
 }

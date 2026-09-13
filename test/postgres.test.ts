@@ -14,6 +14,8 @@ import { patternFrame } from "../src/components/interval/patterns.ts";
 import userApi from "../api/user.ts";
 import { pool, query } from "../api/_lib/db.ts";
 import { getDailyQuestions } from "../api/_lib/questions.js";
+import { hashToken, createAuthSession } from "../api/_lib/auth.ts";
+import { transaction } from "../api/_lib/db.ts";
 import { getDailyStats } from "../api/_lib/sessions.ts";
 import { Score } from "../api/_lib/scoring.ts";
 import {
@@ -774,6 +776,64 @@ test("daily statistics handle ties and average only completed ranked daily games
     await query("DELETE FROM game_sessions WHERE user_id=ANY($1::uuid[])", [ids]);
     await query("DELETE FROM users WHERE id=ANY($1::uuid[])", [ids]);
   }
+});
+
+test("browser identity migrates across hosts, renews, and keeps an installed app signed in", async () => {
+  const safari: Client = {ip:'identity-safari'};
+  const created = await call(auth,'/api/auth/claim-username',safari,{username:'PersistentIdentity'});
+  assert.equal(created.status,200);
+  const id = created.data.user.id;
+  try {
+    assert.match(created.headers['set-cookie'],/four_sigma_session_v2=[a-f0-9]{64}/);
+    assert.match(created.headers['set-cookie'],/HttpOnly; SameSite=Lax; Max-Age=15552000/);
+    assert.doesNotMatch(created.headers['set-cookie'],/Domain=/, 'local and preview hosts stay isolated');
+    // Simulate a cookie issued before this deployment, copied to a home-screen app.
+    const legacyCookie = safari.cookie!.replace('four_sigma_session_v2=','four_sigma_session=');
+    const installed: Client = {ip:'installed-app',cookie:legacyCookie};
+    const legacyToken = legacyCookie.split('=')[1];
+    await query("UPDATE auth_sessions SET expires_at=now()+interval '1 day' WHERE token_hash=$1",[hashToken(legacyToken)]);
+    safari.cookie=legacyCookie;
+    const restored = await call(auth,'/api/auth/me',safari,{},'GET',{host:'www.4sig.xyz'});
+    assert.equal(restored.data.user.id,id);
+    assert.match(restored.headers['set-cookie'],/; Secure; Domain=4sig.xyz/);
+    assert.ok((await query("SELECT expires_at>now()+interval '179 days' renewed FROM auth_sessions WHERE token_hash=$1",[hashToken(legacyToken)])).rows[0].renewed);
+    const apex = await call(auth,'/api/auth/me',{ip:'same-browser-apex',cookie:safari.cookie},{},'GET',{host:'4sig.xyz'});
+    assert.equal(apex.data.user.id,id);
+    await call(auth,'/api/auth/profile',safari,{avatarIcon:'wave',avatarColor:'#276c66'});
+    const credentials = await call(auth,'/api/auth/claim-account',safari,{email:'persistent@example.invalid',password:'A-long-persistent-password'});
+    assert.equal(credentials.status,200);
+    assert.equal((await call(auth,'/api/auth/me',installed,{},'GET')).data.user.id,id, 'adding sign-in must not revoke the app’s copied cookie');
+    const oldInstalledCookie = installed.cookie;
+    const login = await call(auth,'/api/auth/login',installed,{email:'persistent@example.invalid',password:'A-long-persistent-password'});
+    assert.equal(login.status,200);
+    assert.equal((await call(auth,'/api/auth/me',{ip:'still-safari',cookie:oldInstalledCookie},{},'GET')).data.user.id,id, 'signing into the same account preserves other copies');
+    // Even a valid older host cookie cannot bypass the authoritative shared state.
+    const anotherLegacy = await transaction(client=>createAuthSession(client,id));
+    const blocked: Client = {ip:'expired-shared',cookie:`four_sigma_session=${anotherLegacy}; four_sigma_session_v2=${'f'.repeat(64)}`};
+    assert.equal((await call(auth,'/api/auth/me',blocked,{},'GET')).data.user.isAnonymous,true);
+    await call(auth,'/api/auth/logout',safari,{},'POST',{host:'www.4sig.xyz'});
+    assert.match(safari.cookie!,/four_sigma_session_v2=signed-out/);
+    const otherHost: Client = {ip:'apex-after-logout',cookie:`four_sigma_session=${anotherLegacy}; four_sigma_session_v2=signed-out`};
+    assert.equal((await call(auth,'/api/auth/me',otherHost,{},'GET',{host:'4sig.xyz'})).data.user.isAnonymous,true);
+    assert.equal((await call(auth,'/api/auth/me',{ip:'new-browser'},{},'GET')).data.user.isAnonymous,true,'a new browser never guesses an identity');
+    const reclaim = await call(auth,'/api/auth/claim-username',{ip:'imposter'},{username:'PersistentIdentity'});
+    assert.equal(reclaim.status,409,'a public username is not a sign-in credential');
+  } finally { await query('DELETE FROM users WHERE id=$1',[id]); }
+});
+
+test("signing in before answering resumes the account's saved daily game", async () => {
+  const browser: Client = {ip:'signin-empty-guest'};
+  const own = (await call(auth,'/api/auth/login',browser,{email:'migration@example.invalid',password:'Testing-a-long-password'})).data.user;
+  const ownedGame = (await call(session,'/api/session/start',browser)).data;
+  await call(auth,'/api/auth/logout',browser);
+  const guestGame = (await call(session,'/api/session/start',browser)).data;
+  assert.notEqual(guestGame.sessionId,ownedGame.sessionId);
+  await call(auth,'/api/auth/login',browser,{email:'migration@example.invalid',password:'Testing-a-long-password'});
+  const resumed = (await call(session,'/api/session/start',browser,{resumeId:guestGame.sessionId})).data;
+  assert.equal(resumed.sessionId,ownedGame.sessionId);
+  assert.equal(resumed.isRanked,true);
+  assert.equal((await call(auth,'/api/auth/me',browser,{},'GET')).data.user.id,own.id);
+  assert.equal((await query('SELECT user_id FROM game_sessions WHERE id=$1',[guestGame.sessionId])).rows[0].user_id,null);
 });
 
 test.after(async () => {

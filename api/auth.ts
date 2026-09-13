@@ -5,6 +5,7 @@ import {
   requireUser,
   createAuthSession,
   setSessionCookie,
+  renewAuthSession,
   revokeSession,
   rateLimit,
   hashPassword,
@@ -44,11 +45,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const auth = await getAuthUser(req);
     if (action === "device" || action === "me") {
       const user = auth ? await getUserById(auth.userId) : null;
+      if (auth && user) await renewAuthSession(req, res, auth.sessionHash);
       return res.json({ user: user ? publicUser(user) : guest });
     }
     if (action === "logout") {
       await revokeSession(req);
-      setSessionCookie(res, null);
+      setSessionCookie(res, null, req);
       return res.json({ success: true });
     }
     if (action === "check-username") {
@@ -87,7 +89,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
           token: await createAuthSession(client, rows[0].id),
         };
       });
-      setSessionCookie(res, created.token);
+      setSessionCookie(res, created.token, req);
       return res.json({ user: publicUser((await getUserById(created.id))!) });
     }
     if (!["signup", "claim-account", "login"].includes(action ?? ""))
@@ -113,8 +115,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       const token = await transaction((client) =>
         createAuthSession(client, rows[0].id),
       );
-      await revokeSession(req);
-      setSessionCookie(res, token);
+      if (auth && auth.userId !== rows[0].id) await revokeSession(req);
+      setSessionCookie(res, token, req);
       return res.json({ user: publicUser((await getUserById(rows[0].id))!) });
     }
     if (password.length < 12)
@@ -150,8 +152,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       );
       return { id: id!, token: await createAuthSession(client, id!) };
     });
-    await revokeSession(req);
-    setSessionCookie(res, created.token);
+    // Adding credentials to this same account must not invalidate an installed app’s copied cookie.
+    setSessionCookie(res, created.token, req);
     return res.json({ user: publicUser((await getUserById(created.id))!) });
   } catch (error) {
     return fail(res, error);

@@ -78,6 +78,8 @@ export async function attachGuestGame(
       "SELECT id FROM game_sessions WHERE user_id=$1 AND (edition=$2 OR $3='onboarding') AND kind=$3 AND is_ranked",
       [userId, rows[0].edition, rows[0].kind],
     );
+    // An empty guest run must not hide a signed-in player's existing daily result.
+    if (existing.rowCount && !(await client.query('SELECT 1 FROM game_answers WHERE session_id=$1 LIMIT 1', [sessionId])).rowCount) return;
     await client.query(
       "UPDATE game_sessions SET user_id=$2,guest_session_hash=NULL,is_ranked=$3 WHERE id=$1",
       [sessionId, userId, rows[0].is_ranked && !existing.rowCount],

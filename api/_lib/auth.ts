@@ -4,26 +4,31 @@ import type { PoolClient } from "pg";
 import { query } from "./db.js";
 import { HttpError } from "./http.js";
 export { getUserById } from "./users.js";
-const COOKIE = "four_sigma_session";
+const COOKIE = "four_sigma_session_v2";
+const LEGACY_COOKIE = "four_sigma_session";
 export const hashToken = (token: string) =>
   createHash("sha256").update(token).digest("hex");
-export function sessionToken(req: VercelRequest) {
-  const value = req.headers.cookie
-    ?.split(";")
-    .map((c) => c.trim())
-    .find((c) => c.startsWith(COOKIE + "="))
-    ?.slice(COOKIE.length + 1);
-  return value && /^[a-f0-9]{64}$/.test(value) ? value : null;
+function sessionTokens(req: VercelRequest, includeLegacy = false) {
+  const parts = (req.headers.cookie?.split(';') ?? []).map(part => part.trim());
+  // The shared cookie is authoritative, even after logout or expiry. An older
+  // host-only cookie must not silently sign someone back into another account.
+  const names = !includeLegacy && parts.some(part => part.startsWith(COOKIE + '='))
+    ? [COOKIE] : [COOKIE, LEGACY_COOKIE];
+  return [...new Set(parts.filter(part => names.includes(part.split('=')[0]))
+    .map(part => part.slice(part.indexOf('=') + 1))
+    .filter(value => /^[a-f0-9]{64}$/.test(value)))];
 }
 export async function getAuthUser(req: VercelRequest) {
-  const token = sessionToken(req);
-  if (!token) return null;
+  const tokens = sessionTokens(req);
+  if (!tokens.length) return null;
+  // Migrate a valid old cookie only when the browser has no shared-cookie state.
   const { rows } = await query(
-    "SELECT user_id FROM auth_sessions WHERE token_hash=$1 AND expires_at>now()",
-    [hashToken(token)],
+    `SELECT user_id,token_hash FROM auth_sessions
+     WHERE token_hash=ANY($1::text[]) AND expires_at>now() ORDER BY created_at DESC,token_hash LIMIT 1`,
+    [tokens.map(hashToken)],
   );
   return rows[0]
-    ? { userId: rows[0].user_id as string, authId: null, isAnonymous: false }
+    ? { userId: rows[0].user_id as string, sessionHash: rows[0].token_hash as string, authId: null, isAnonymous: false }
     : null;
 }
 export async function requireUser(req: VercelRequest) {
@@ -39,18 +44,26 @@ export async function createAuthSession(client: PoolClient, userId: string) {
   );
   return token;
 }
-export function setSessionCookie(res: VercelResponse, token: string | null) {
-  res.setHeader(
-    "Set-Cookie",
-    `${COOKIE}=${token ?? ""}; Path=/; HttpOnly; SameSite=Lax; Max-Age=${token ? 15552000 : 0}${process.env.NODE_ENV === "production" ? "; Secure" : ""}`,
-  );
+export function setSessionCookie(res: VercelResponse, token: string | null, req: VercelRequest) {
+  const host = req.headers.host?.toLowerCase().split(':')[0];
+  const shared = host === '4sig.xyz' || host === 'www.4sig.xyz';
+  const secure = shared || process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  // A non-credential logout marker blocks legacy host-only cookies on both hosts.
+  // It lasts at least as long as those old cookies; a new sign-in replaces it.
+  const cookie = `${COOKIE}=${token ?? 'signed-out'}; Path=/; HttpOnly; SameSite=Lax; Max-Age=15552000${secure}`;
+  res.setHeader('Set-Cookie', cookie + (shared ? '; Domain=4sig.xyz' : ''));
+}
+export async function renewAuthSession(req: VercelRequest, res: VercelResponse, sessionHash: string) {
+  const token = sessionTokens(req).find(value => hashToken(value) === sessionHash);
+  if (!token) return;
+  const result = await query(`UPDATE auth_sessions SET expires_at=now()+interval '180 days'
+    WHERE token_hash=$1 AND expires_at>now()`, [sessionHash]);
+  // Never recreate a revoked or expired session.
+  if (result.rowCount) setSessionCookie(res, token, req);
 }
 export async function revokeSession(req: VercelRequest) {
-  const token = sessionToken(req);
-  if (token)
-    await query("DELETE FROM auth_sessions WHERE token_hash=$1", [
-      hashToken(token),
-    ]);
+  const tokens = sessionTokens(req, true);
+  if (tokens.length) await query('DELETE FROM auth_sessions WHERE token_hash=ANY($1::text[])', [tokens.map(hashToken)]);
 }
 function derive(password: string, salt: string) {
   return new Promise<Buffer>((resolve, reject) =>

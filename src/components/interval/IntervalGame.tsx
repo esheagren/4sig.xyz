@@ -629,6 +629,20 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
       void lifecycleActions.current.finalizeScore();
     }
   }, [authLoading, user, stage, sessionId]);
+  const activeIdentity = useRef<string | null>(null);
+  useEffect(() => {
+    if (authLoading || !user) return;
+    const identity = user.isAnonymous ? "guest" : user.id;
+    if (activeIdentity.current === null || stage === "identity") {
+      activeIdentity.current = identity;
+      return;
+    }
+    if (activeIdentity.current === identity || starting.current || finalizing.current) return;
+    activeIdentity.current = identity;
+    // Sign-in before the final step resumes this account's game; answered guest
+    // questions are attached by the server, while an empty run cannot hide history.
+    void lifecycleActions.current.startSession();
+  }, [authLoading, user, stage]);
   function restart() {
     void startSession(true);
   }
@@ -790,6 +804,7 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                 </button>
                 <span aria-hidden="true">Let’s play</span>
               </div>
+              {(!user || user.isAnonymous) && <button className="text-button welcome-signin" onClick={() => setAuthOpen(true)}>Already have a username? Sign in</button>}
             </section>
           ) : stage === "scoring" ? (
             <section className="scoring-lesson">

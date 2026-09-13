@@ -273,7 +273,7 @@ export function PlayerIdentity({
     <section className="identity-screen">
       <div className="identity-intro">
         <div>
-          <h1>Claim username</h1>
+          <h1>{initial.username ? "Your scorecard" : "Claim username"}</h1>
           <p className="identity-ritual">{onboarding ? 'Your starting calibration is complete. Choose how you will appear on your scorecard.' : 'Give your score a signature.'}</p>
         </div>
       </div>

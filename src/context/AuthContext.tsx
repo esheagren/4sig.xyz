@@ -57,12 +57,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null),
     [isLoading, setLoading] = useState(true),
     initialized = useRef(false);
+  const authRevision = useRef(0), authChanging = useRef(0), readSequence = useRef(0);
   const request = useCallback(
     async (
       action: string,
       body: unknown = {},
       method = "POST",
     ): Promise<Outcome> => {
+      const changing = action !== "me";
+      if (!changing && authChanging.current) return { success: true };
+      if (changing) { authRevision.current++; authChanging.current++; }
+      const revision = authRevision.current, sequence = ++readSequence.current;
       try {
         const response = await fetch("/api/auth/" + action, {
           method,
@@ -76,13 +81,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             success: false,
             error: data.error ?? "Could not connect. Please try again.",
           };
-        if (data.user) setUser(data.user);
+        if (data.user && revision === authRevision.current &&
+            (changing || (!authChanging.current && sequence === readSequence.current))) setUser(data.user);
         return { success: true };
       } catch {
         return {
           success: false,
           error: "Could not connect. Please try again.",
         };
+      } finally {
+        if (changing) { authChanging.current--; authRevision.current++; }
       }
     },
     [],
@@ -95,6 +103,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       initialized.current = true;
       void refreshUser().finally(() => setLoading(false));
     }
+  }, [refreshUser]);
+  useEffect(() => {
+    const refresh = () => { if (document.visibilityState === "visible") void refreshUser(); };
+    window.addEventListener("focus", refresh);
+    document.addEventListener("visibilitychange", refresh);
+    return () => {
+      window.removeEventListener("focus", refresh);
+      document.removeEventListener("visibilitychange", refresh);
+    };
   }, [refreshUser]);
   async function logout() {
     const result = await request("logout");
