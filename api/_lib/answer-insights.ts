@@ -1,4 +1,5 @@
 import type { AnswerInsight } from "../../shared/answer-insight.js";
+import { dailyAnswerInsights, remainingLegacyInsights } from "./daily-answer-insights.js";
 
 // Verified editorial context; served only after an answer is revealed.
 const insights: AnswerInsight[] = [
@@ -106,7 +107,10 @@ const insights: AnswerInsight[] = [
   },
 ];
 
-const byId = new Map<string, AnswerInsight>();
+const byId = new Map<string, AnswerInsight>(Object.entries({
+  ...dailyAnswerInsights,
+  ...remainingLegacyInsights,
+}));
 const originalIndices = [0, 2, 3, 5, 6, 7, 8, 9];
 insights.forEach((insight, index) => {
   byId.set(
@@ -118,5 +122,8 @@ insights.forEach((insight, index) => {
     insight,
   );
 });
+// The same genome-cost question also has a separate daily-bank identity.
+byId.set("490e4646-9fbe-42b6-9030-fb2eae2211e2", insights[6]);
+export const reviewedAnswerInsights: ReadonlyMap<string, AnswerInsight> = byId;
 export const answerInsight = (questionId: string): AnswerInsight | undefined =>
   byId.get(questionId);

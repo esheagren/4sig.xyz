@@ -82,6 +82,7 @@ export async function startGame(
 }
 function judgement(row: QueryResultRow): Judgement {
   const q: Question = row.snapshot;
+  const insight = answerInsight(row.question_id);
   return {
     questionId: row.question_id,
     prompt: questionPrompt(q.prompt),
@@ -89,8 +90,9 @@ function judgement(row: QueryResultRow): Judgement {
     trueValue: q.trueValue,
     source: q.source,
     sourceUrl: q.sourceUrl,
-    answerContext: q.answerContext,
-    answerInsight: answerInsight(row.question_id),
+    // Refresh editorial prose without changing the frozen scored question.
+    answerContext: insight ? `${insight.short} ${insight.more}` : q.answerContext,
+    answerInsight: insight,
     topic: q.topic,
     observationPeriod: q.observationPeriod,
     lower: Number(row.lower_bound),

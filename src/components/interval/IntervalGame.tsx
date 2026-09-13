@@ -128,7 +128,9 @@ function toResult(j: ServerJudgement): Result {
       answer: j.trueValue,
       source: j.source ?? "",
       url: j.sourceUrl ?? "",
-      context: j.answerContext ?? "",
+      context: j.answerInsight
+        ? `${j.answerInsight.short} ${j.answerInsight.more}`
+        : j.answerContext ?? "",
       insight: j.answerInsight,
       category: j.topic ?? "Daily",
       date: j.observationPeriod ?? "",
@@ -1056,8 +1058,8 @@ export default function IntervalGame({ preview }: { preview?: GamePreview } = {}
                         <summary>Behind the number</summary>
                         <p>{question.context}</p>
                         <SourceLinks
-                          urls={question.url}
-                          names={question.source}
+                          urls={[...(question.insight?.sources.map(s => s.url) ?? []), question.url].join(";")}
+                          names={[...(question.insight?.sources.map(s => s.label) ?? []), question.source].join(";")}
                         />
                       </details>
                       <button className="primary" onClick={() => {
