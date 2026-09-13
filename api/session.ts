@@ -58,7 +58,8 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         }
       }
       const baseline = await onboardingForOwner(owner);
-      if (baseline && (!baseline.completed_at || (!body.playDaily && !body.practice) || baseline.completed_day >= edition)) {
+      // Keep the baseline on its completion day; later visits open today's game directly.
+      if (baseline && (!baseline.completed_at || baseline.completed_day >= edition)) {
         return res.json({ ...await resumeGame(baseline.id, owner), dailyAvailable: !!baseline.completed_at && baseline.completed_day < edition });
       }
       // Rollout switch affects new starts only; unfinished baseline games still resume.

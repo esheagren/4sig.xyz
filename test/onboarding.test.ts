@@ -165,10 +165,25 @@ test('first eight: per-answer reveal, ownership, cross-day resume, identity, dai
     assert.equal(sameDay.data.dailyAvailable, false);
   }
   await query("UPDATE game_sessions SET completed_at=now()-interval '2 days' WHERE id=$1", [first.data.sessionId]);
-  assert.equal((await call(session, '/api/session/start', browser)).data.dailyAvailable, true);
-  const daily = await call(session, '/api/session/start', browser, { playDaily: true });
+  const daily = await call(session, '/api/session/start', browser);
+  assert.equal(daily.status, 200);
   assert.equal(daily.data.kind, 'daily');
   assert.equal(daily.data.questions.length, 4);
+  assert.deepEqual(daily.data.savedAnswers, []);
+  assert.deepEqual(daily.data.judgements, []);
+  assert.equal(daily.data.completed, false);
+  assert.notEqual(daily.data.sessionId, first.data.sessionId);
+  // Neither a stale baseline hint nor the old daily button can restart onboarding.
+  for (const body of [{ resumeId: first.data.sessionId }, { playDaily: true }]) {
+    assert.equal((await call(session, '/api/session/start', browser, body)).data.sessionId, daily.data.sessionId);
+  }
+  await call(auth, '/api/auth/claim-account', browser, { email: 'firstten@example.invalid', password: 'A-long-test-password-123' });
+  const returning: Browser = { ip: 'returning-without-local-storage' };
+  assert.equal((await call(auth, '/api/auth/login', returning, { email: 'firstten@example.invalid', password: 'A-long-test-password-123' })).status, 200);
+  const loggedBackIn = await call(session, '/api/session/start', returning);
+  assert.equal(loggedBackIn.data.sessionId, daily.data.sessionId);
+  assert.equal(loggedBackIn.data.kind, 'daily');
+  assert.deepEqual(loggedBackIn.data.savedAnswers, []);
   for (const q of daily.data.questions) await call(session, '/api/session/answer', browser, {
     sessionId: daily.data.sessionId, questionId: q.id, lower: 0, upper: 1e100,
   });
@@ -185,7 +200,6 @@ test('first eight: per-answer reveal, ownership, cross-day resume, identity, dai
   assert.equal(standings[0].score, dayResult.data.score);
 
   // A guest can sign in to an account with a baseline without replacing it.
-  await call(auth, '/api/auth/claim-account', browser, { email: 'firstten@example.invalid', password: 'A-long-test-password-123' });
   const duplicate = (await call(session, '/api/session/start', outsider)).data;
   for (const q of duplicate.questions) await call(session, '/api/session/answer', outsider, {
     sessionId: duplicate.sessionId, questionId: q.id, lower: 0, upper: 100,
