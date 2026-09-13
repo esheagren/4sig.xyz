@@ -22,7 +22,7 @@ export function ScorecardShare({ data, variant = 'ink', showCard = true }: { dat
     return () => { abort.abort(); image.current = null; };
   }, [data, variant]);
   useEffect(() => {
-    if (status !== 'Copied to your clipboard.') return;
+    if (status !== 'Copied') return;
     const timer = window.setTimeout(() => setStatus(''), 3000);
     return () => window.clearTimeout(timer);
   }, [status]);
@@ -35,7 +35,7 @@ export function ScorecardShare({ data, variant = 'ink', showCard = true }: { dat
       const png = cached?.png ?? scorecardPng(data, variant);
       const outcome = await copyScorecard(png, cached?.gif ?? null);
       setFallback(outcome === 'unavailable');
-      setStatus(outcome === 'copied-gif' || outcome === 'copied' ? 'Copied to your clipboard.' : outcome === 'copied-text' ? 'Link copied. This browser couldn’t copy the image.' : 'Select and copy the link below.');
+      setStatus(outcome === 'copied-gif' || outcome === 'copied' ? 'Copied' : outcome === 'copied-text' ? 'Link copied. This browser couldn’t copy the image.' : 'Select and copy the link below.');
     } catch { setFallback(true); setStatus('Select and copy the link below.'); }
     finally { setSharing(false); }
   }
@@ -44,10 +44,10 @@ export function ScorecardShare({ data, variant = 'ink', showCard = true }: { dat
     <div className="share-actions scorecard-share-actions">
       <button type="button" className="hold-commit scorecard-share-button" onClick={() => void copy()} disabled={preparing || sharing}>
         <svg className="commit-ring" viewBox="0 0 80 80" aria-hidden="true"><circle className="commit-track" cx="40" cy="40" r="36" /></svg>
-        <span>Share</span>
+        <span aria-live="polite">{status === 'Copied' ? 'Copied' : 'Share'}</span>
       </button>
     </div>
-    <p className="copy-status" role="status">{preparing ? 'Preparing animation…' : sharing ? 'Copying…' : status}</p>
+    <p className="copy-status" role="status">{preparing ? 'Preparing animation…' : sharing ? 'Copying…' : status === 'Copied' ? '' : status}</p>
     {fallback && <textarea className="share-fallback" aria-label="Shareable link" readOnly
       value={GAME_URL} onFocus={event => event.target.select()} />}
   </>;
