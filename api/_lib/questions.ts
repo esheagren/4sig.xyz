@@ -1,3 +1,4 @@
+import { questionMaximum } from "./question-limits.js";
 import { chooseQuestions } from './question-planner.js';
 import { query, transaction } from "./db.js";
 import type { PoolClient, QueryResultRow } from "pg";
@@ -12,6 +13,7 @@ export function question(row: QueryResultRow): Question {
     id: row.id,
     prompt: row.question_text,
     unit: row.unit ?? "",
+    max: questionMaximum({ id: row.id, unit: row.unit }),
     topic: row.editorial_topic ?? undefined,
     observationPeriod: row.observation_period ?? undefined,
     trueValue: Number(row.answer_value),
