@@ -1,3 +1,4 @@
+import { questionMaximum } from "./question-limits.js";
 import { answerInsight } from "./answer-insights.js";
 import { withGlossary } from "./glossary.js";
 import { transaction, query } from "./db.js";
@@ -165,7 +166,7 @@ export async function readGame(
     ).map((q, i) =>
       withQuestionCopy({
         ...q,
-        max: items[i].snapshot.max,
+        max: questionMaximum(items[i].snapshot),
         topic: items[i].snapshot.topic,
         observationPeriod: items[i].snapshot.observationPeriod,
         ...(rows[0].kind === "onboarding"
@@ -240,9 +241,10 @@ export async function saveAnswer(
     if (items.find((r) => r.lower_bound === null)?.question_id !== questionId)
       throw new HttpError(409, "Answer the current question first.");
     const q: Question = item.snapshot;
+    const max = questionMaximum(q);
     if (
-      rows[0].kind === "onboarding" &&
-      (lower < 0 || upper > (q.max ?? 1e100))
+      (rows[0].kind === "onboarding" || max !== undefined) &&
+      (lower < 0 || upper > (max ?? 1e100))
     )
       throw new HttpError(400, "Keep your bounds within the question units.");
     const score = Score.calculateScore(
